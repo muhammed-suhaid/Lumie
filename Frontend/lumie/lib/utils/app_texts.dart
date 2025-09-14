@@ -28,4 +28,7 @@ class AppTexts {
   // Errors / Warnings
   static const String errorRequired = "This field is required";
   static const String errorInvalidEmail = "Please enter a valid email";
+
+  // Others
+  static const String letsGetStarted = "Let’s Get Started";
 }

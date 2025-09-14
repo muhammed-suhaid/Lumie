@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lumie/screens/get_started/get_started_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Lumie',
       debugShowCheckedModeBanner: false,
-      home: SizedBox(),
+      home: GetStartedScreen(),
     );
   }
 }
