@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lumie/utils/app_colors.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
 import 'package:lumie/widgets/custom_button.dart';
@@ -10,9 +9,12 @@ class GetStartedScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get screen width for responsiveness
+    // Responsive sizing
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+
+    // Colors from theme
+    final colorScheme = Theme.of(context).colorScheme;
 
     //************************* Get Started Screen *************************//
     return Scaffold(
@@ -22,9 +24,9 @@ class GetStartedScreen extends StatelessWidget {
         height: double.infinity,
 
         // Background gradient
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [AppColors.primaryLavender, AppColors.deepPurple],
+            colors: [colorScheme.primary, colorScheme.secondary],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -43,7 +45,7 @@ class GetStartedScreen extends StatelessWidget {
                   AppTexts.appName,
                   style: GoogleFonts.dancingScript(
                     fontSize: AppConstants.kFontSizeTextLogo,
-                    color: AppColors.textWhite,
+                    color: colorScheme.onPrimary,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -54,9 +56,7 @@ class GetStartedScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: GoogleFonts.poppins(
                     fontSize: AppConstants.kFontSizeM,
-                    color: AppColors.lilacBackground.withAlpha(
-                      (0.9 * 255).round(),
-                    ),
+                    color: colorScheme.onPrimary.withAlpha(150),
                     fontWeight: FontWeight.w400,
                   ),
                 ),
@@ -70,8 +70,8 @@ class GetStartedScreen extends StatelessWidget {
               type: ButtonType.primary,
               width: screenWidth * 0.8,
               height: 50,
-              backgroundColor: AppColors.lilacBackground,
-              textColor: AppColors.deepPurple,
+              backgroundColor: colorScheme.surface,
+              textColor: colorScheme.onSurface,
               borderRadius: AppConstants.kRadiusM,
               fontSize: AppConstants.kFontSizeM,
               onPressed: () {
