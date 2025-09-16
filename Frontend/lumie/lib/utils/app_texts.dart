@@ -5,7 +5,7 @@ class AppTexts {
 
   // Authentication
   static const String signIn = "Sign in to continue";
-  static const String signup = "Sign Up";
+  static const String continueText = "Continue";
   static const String forgetPassword = "Forgot Password?";
   static const String getStarted = "Get Started";
   static const String continueWithGoogle = "Continue with Google";
@@ -34,4 +34,7 @@ class AppTexts {
   static const String letsGetStarted = "Let’s Get Started";
   static const String welcomBack = "Welcome Back";
   static const String dontHaveAnAccount = "Don’t have an account?";
+  static const String phoneTitle1 = "What’s your";
+  static const String phoneTitle2 = "number?";
+  static const String phoneSubtitle = "Please enter your valid phone number. We will send you a 4-digit code to verify your account.";
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lumie/screens/phone_number/phone_number_screen.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
 import 'package:lumie/widgets/custom_button.dart';
@@ -11,6 +12,15 @@ class AuthScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final colorScheme = Theme.of(context).colorScheme;
+
+    //************************* Navigate to SignIn Method *************************//
+    void _goToPhoneNumberScreen(BuildContext context) {
+      debugPrint("Navigate to Phone Number Screen");
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const PhoneNumberScreen()),
+      );
+    }
 
     return Scaffold(
       body: SafeArea(
@@ -75,8 +85,7 @@ class AuthScreen extends StatelessWidget {
                 icon: Icons.phone,
                 isIconRight: false,
                 onPressed: () {
-                  debugPrint("Phone Sign In Pressed");
-                  // TODO: Navigate to Phone OTP Screen
+                  _goToPhoneNumberScreen(context);
                 },
               ),
 
