@@ -170,7 +170,7 @@ class CustomButton extends StatelessWidget {
     if (isFullWidth) {
       button = SizedBox(
         width: double.infinity,
-        height: height ?? 48,
+        height: height ?? 50,
         child: button,
       );
     } else if (width != null || height != null) {

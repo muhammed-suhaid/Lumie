@@ -4,11 +4,12 @@ class AppTexts {
   static const String tagline = "For the ones who light up your world";
 
   // Authentication
-  static const String login = "Login";
+  static const String signIn = "Sign in to continue";
   static const String signup = "Sign Up";
+  static const String forgetPassword = "Forgot Password?";
   static const String getStarted = "Get Started";
   static const String continueWithGoogle = "Continue with Google";
-  static const String continueWithEmail = "Continue with Email";
+  static const String continueWithPhone = "Continue with Phone";
 
   // Profile
   static const String editProfile = "Edit Profile";
@@ -31,4 +32,6 @@ class AppTexts {
 
   // Others
   static const String letsGetStarted = "Let’s Get Started";
+  static const String welcomBack = "Welcome Back";
+  static const String dontHaveAnAccount = "Don’t have an account?";
 }

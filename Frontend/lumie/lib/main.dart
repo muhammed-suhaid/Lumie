@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       // Light theme
       theme: ThemeData(
         brightness: Brightness.light,
-        scaffoldBackgroundColor: AppColors.lightBackground,
+        scaffoldBackgroundColor: AppColors.lilacBackground,
         textTheme: GoogleFonts.poppinsTextTheme().apply(
           bodyColor: AppColors.textDark,
           displayColor: AppColors.textDark,

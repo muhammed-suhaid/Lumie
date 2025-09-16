@@ -18,7 +18,7 @@ class AppColors {
 
   // Dark Mode
   static const Color darkDeepPurple = Color(0xFF5B2A6E);
-  static const Color darkLavender = Color(0xFF6D4C7D);
+  static const Color darkLavender = Color(0xFF836B97);
   static const Color darkBackground1 = Color(0xFF121212);
   static const Color darkBackground2 = Color(0xFF1E1E1E);
   static const Color darkSurface = Color(0xFF2A2A2A);

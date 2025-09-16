@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lumie/screens/auth/auth_screen.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
 import 'package:lumie/widgets/custom_button.dart';
@@ -7,10 +8,18 @@ import 'package:lumie/widgets/custom_button.dart';
 class GetStartedScreen extends StatelessWidget {
   const GetStartedScreen({super.key});
 
+  //************************* Navigate to SignIn Method *************************//
+  void _goToSignIn(BuildContext context) {
+    debugPrint("Navigate to SignIn Screen");
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const AuthScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // Responsive sizing
-    final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
     // Colors from theme
@@ -65,19 +74,20 @@ class GetStartedScreen extends StatelessWidget {
             const Spacer(flex: 3),
 
             //************************* Custom Button *************************//
-            CustomButton(
-              text: AppTexts.letsGetStarted,
-              type: ButtonType.primary,
-              width: screenWidth * 0.8,
-              height: 50,
-              backgroundColor: colorScheme.surface,
-              textColor: colorScheme.onSurface,
-              borderRadius: AppConstants.kRadiusM,
-              fontSize: AppConstants.kFontSizeM,
-              onPressed: () {
-                // Navigate to Auth Screen
-                // TODO: Navigate to Auth Screen
-              },
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppConstants.kPaddingL,
+              ),
+              child: CustomButton(
+                text: AppTexts.letsGetStarted,
+                type: ButtonType.primary,
+                isFullWidth: true,
+                backgroundColor: colorScheme.surface,
+                textColor: colorScheme.onSurface,
+                borderRadius: AppConstants.kRadiusM,
+                fontSize: AppConstants.kFontSizeM,
+                onPressed: () => _goToSignIn(context),
+              ),
             ),
             SizedBox(height: screenHeight * 0.08),
           ],
