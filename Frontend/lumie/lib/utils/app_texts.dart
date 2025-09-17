@@ -7,7 +7,7 @@ class AppTexts {
   static const String signIn = "Sign in to continue";
   static const String continueText = "Continue";
   static const String forgetPassword = "Forgot Password?";
-  static const String getStarted = "Get Started";
+  
   static const String continueWithGoogle = "Continue with Google";
   static const String continueWithPhone = "Continue with Phone";
 
@@ -30,6 +30,13 @@ class AppTexts {
   static const String errorRequired = "This field is required";
   static const String errorInvalidEmail = "Please enter a valid email";
 
+  // Button
+  static const String getStarted = "Get Started";
+  static const String addYourPhoto = "Add Your Photo";
+  static const String changePhoto = "Change Photo";
+  static const String chooseFromGallery = "Choose from Gallery";
+  static const String takeAPhoto = "Take a Photo";
+
   // Others
   static const String letsGetStarted = "Let’s Get Started";
   static const String welcomBack = "Welcome Back";
@@ -41,4 +48,6 @@ class AppTexts {
   static const String otpTitle1 = "Enter Your";
   static const String otpTitle2 = "Code?";
   static const String otpSubtitle = "Enter 4-digit code we have sent to you at";
+  static const String buildProfileTitle = "Build Your Profile";
+  static const String buildProfileSubtitle = "Lumie is building real dating between real people. At least add one photo of yourself.";
 }
