@@ -1,36 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lumie/screens/otp_verification/otp_verification_screen.dart';
+import 'package:lumie/screens/otp_verification/widgets/custom_otp_field.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
 import 'package:lumie/widgets/custom_button.dart';
 
-class PhoneNumberScreen extends StatefulWidget {
-  const PhoneNumberScreen({super.key});
+class OtpVerificationScreen extends StatefulWidget {
+  final String phone;
+  const OtpVerificationScreen({super.key, required this.phone});
 
   @override
-  State<PhoneNumberScreen> createState() => _PhoneNumberScreenState();
+  State<OtpVerificationScreen> createState() => _OtpVerificationScreenState();
 }
 
-class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
-  final TextEditingController _phoneController = TextEditingController();
+class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
+  String _otpCode = "";
 
   //************************* onContinue method *************************//
   void _onContinue() {
-    final phone = _phoneController.text.trim();
-    if (phone.isEmpty || phone.length < 10) {
+    if (_otpCode.isEmpty || _otpCode.length < 4) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter a valid phone number")),
+        const SnackBar(content: Text("Please enter the 4-digit OTP")),
       );
       return;
     }
 
-    debugPrint("Phone entered: $phone");
-    // TODO: Trigger Firebase Phone Auth (send OTP)
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => OtpVerificationScreen(phone: phone)),
-    );
+    debugPrint("Entered OTP: $_otpCode");
+    // TODO: Verify OTP with Firebase
   }
 
   @override
@@ -38,20 +34,19 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
     final colorScheme = Theme.of(context).colorScheme;
 
-    //************************* Phone Number Screen *************************//
+    //************************* OTP Screen *************************//
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppConstants.kPaddingL,
-          ),
+          padding: EdgeInsets.symmetric(horizontal: AppConstants.kPaddingL),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              //************************* Title *************************//
               SizedBox(height: screenHeight * 0.08),
+
+              //************************* Title *************************//
               Text(
-                AppTexts.phoneTitle1,
+                AppTexts.otpTitle1,
                 style: GoogleFonts.poppins(
                   fontSize: AppConstants.kFontSizeXXXL,
                   fontWeight: FontWeight.bold,
@@ -59,18 +54,25 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
                 ),
               ),
               Text(
-                AppTexts.phoneTitle2,
+                AppTexts.otpTitle2,
                 style: GoogleFonts.poppins(
                   fontSize: AppConstants.kFontSizeXXXL,
                   fontWeight: FontWeight.bold,
                   color: colorScheme.onSurface,
                 ),
               ),
-              SizedBox(height: screenHeight * 0.01),
+              const SizedBox(height: AppConstants.kPaddingS),
 
               //************************* Subtitle *************************//
               Text(
-                AppTexts.phoneSubtitle,
+                AppTexts.otpSubtitle,
+                style: GoogleFonts.poppins(
+                  fontSize: AppConstants.kFontSizeM,
+                  color: colorScheme.onSurface.withAlpha(160),
+                ),
+              ),
+              Text(
+                "+91 ${widget.phone}",
                 style: GoogleFonts.poppins(
                   fontSize: AppConstants.kFontSizeM,
                   color: colorScheme.onSurface.withAlpha(160),
@@ -78,32 +80,21 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
               ),
               SizedBox(height: screenHeight * 0.04),
 
-              //************************* Phone Input *************************//
-              TextField(
-                controller: _phoneController,
-                keyboardType: TextInputType.phone,
-                decoration: InputDecoration(
-                  prefixText: "+91  ",
-                  prefixStyle: GoogleFonts.poppins(
-                    fontSize: AppConstants.kFontSizeM,
-                  ),
-                  hintText: "Enter Your Phone Number",
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: colorScheme.primary),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: colorScheme.primary,
-                      width: 2,
-                    ),
-                  ),
-                ),
+              //************************* OTP Input *************************//
+              CustomOtpField(
+                onChanged: (value) {
+                  setState(() => _otpCode = value);
+                },
+                onCompleted: (value) {
+                  setState(() => _otpCode = value);
+                },
               ),
+
               const Spacer(flex: 3),
 
               //************************* Continue Button *************************//
               CustomButton(
-                text: AppTexts.continueText,
+                text: "Continue",
                 type: ButtonType.primary,
                 isFullWidth: true,
                 backgroundColor: colorScheme.secondary,
