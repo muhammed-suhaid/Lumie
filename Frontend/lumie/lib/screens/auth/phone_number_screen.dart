@@ -82,8 +82,10 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
               TextField(
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
+                maxLength: 10, 
                 decoration: InputDecoration(
                   prefixText: "+91  ",
+                  counterText: "",
                   prefixStyle: GoogleFonts.poppins(
                     fontSize: AppConstants.kFontSizeM,
                   ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lumie/screens/auth/otp_verification/widgets/custom_otp_field.dart';
-import 'package:lumie/screens/build_profile/build_profile_screen.dart';
+import 'package:lumie/screens/on_boarding/on_borading_screen.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
 import 'package:lumie/widgets/custom_button.dart';
@@ -29,7 +29,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     debugPrint("Entered OTP: $_otpCode");
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (_) => const BuildProfileScreen()),
+      MaterialPageRoute(builder: (_) => const OnboardingScreen()),
       (route) => false,
     );
     // TODO: Verify OTP with Firebase
