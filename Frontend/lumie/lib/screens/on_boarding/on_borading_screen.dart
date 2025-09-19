@@ -7,6 +7,7 @@ import 'package:lumie/screens/on_boarding/identify_yourself_screen.dart';
 import 'package:lumie/screens/on_boarding/widgets/custom_step_indicator.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
+import 'package:lumie/utils/custom_snakbar.dart';
 import 'package:lumie/widgets/custom_button.dart';
 
 //************************* Main Onboarding Screen *************************//
@@ -86,8 +87,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   //************************* _validateProfile method *************************//
   void _validateProfile() {
     if (_selectedImage == null) {
-      // TODO:show custom snackbar
-      debugPrint("Please Select an image");
+      debugPrint("Please select a profile photo");
+      CustomSnackbar.show(context, "Please select a profile photo");
     } else {
       debugPrint("Image Selected, Going to next page");
       _goToNextPage();
@@ -99,10 +100,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     // Gender check
     if (_selectedGender == null) {
       debugPrint("Please select a gender");
-      // TODO:show custom snackbar
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Please select a gender")));
+      CustomSnackbar.show(context, "Please select a gender");
       return;
     }
 
@@ -113,33 +111,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
     if (day == null || month == null || year == null) {
       debugPrint("Birthday fields must be numbers");
-      // TODO:show custom snackbar
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter a valid birthday")),
-      );
+      CustomSnackbar.show(context, "Please enter a valid birthday");
       return;
     }
 
     if (day < 1 || day > 31 || month < 1 || month > 12) {
       debugPrint("Invalid day or month");
-      // TODO:show custom snackbar
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Invalid day or month")));
+      CustomSnackbar.show(context, "Invalid day or month");
       return;
     }
 
     final currentYear = DateTime.now().year;
     if (year < currentYear - 100 || year > currentYear) {
       debugPrint("Year not in valid range");
-      // TODO:show custom snackbar
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter a valid year")),
-      );
+      CustomSnackbar.show(context, "Please enter a valid year");
       return;
     }
 
-    // Optional: check if the date is actually valid (e.g., no Feb 30)
+    // check if the date is actually valid (e.g., no Feb 30)
     try {
       final birthDate = DateTime(year, month, day);
       if (birthDate.day != day ||
@@ -149,10 +138,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       }
     } catch (_) {
       debugPrint("Invalid date");
-      // TODO:show custom snackbar
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter a valid date")),
-      );
+      CustomSnackbar.show(context, "Please enter a valid date");
       return;
     }
 
@@ -161,10 +147,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     final nameRegex = RegExp(r"^[a-zA-Z\s]+$");
     if (name.isEmpty || name.length < 3 || !nameRegex.hasMatch(name)) {
       debugPrint("Please enter a valid name with at least 3 characters");
-      // TODO:show custom snackbar
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter a valid name")),
-      );
+      CustomSnackbar.show(context, "Please enter a valid name");
       return;
     }
 

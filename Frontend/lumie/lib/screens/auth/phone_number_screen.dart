@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lumie/screens/auth/otp_verification/otp_verification_screen.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
+import 'package:lumie/utils/custom_snakbar.dart';
 import 'package:lumie/widgets/custom_button.dart';
 import 'package:lumie/widgets/custom_textfield.dart';
 
@@ -20,10 +21,7 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
   void _onContinue() {
     final phone = _phoneController.text.trim();
     if (phone.isEmpty || phone.length < 10) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        // TODO:show custom snackbar
-        const SnackBar(content: Text("Please enter a valid phone number")),
-      );
+      CustomSnackbar.show(context, "Please enter a valid phone number");
       return;
     }
 

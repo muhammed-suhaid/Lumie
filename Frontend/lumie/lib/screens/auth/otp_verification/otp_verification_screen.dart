@@ -4,6 +4,7 @@ import 'package:lumie/screens/auth/otp_verification/widgets/custom_otp_field.dar
 import 'package:lumie/screens/on_boarding/on_borading_screen.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
+import 'package:lumie/utils/custom_snakbar.dart';
 import 'package:lumie/widgets/custom_button.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
@@ -20,10 +21,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   //************************* onContinue method *************************//
   void _onContinue() {
     if (_otpCode.isEmpty || _otpCode.length < 4) {
-      // TODO:show custom snackbar
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter the 4-digit OTP")),
-      );
+      CustomSnackbar.show(context, "Please enter the 4-digit OTP");
       return;
     }
 
