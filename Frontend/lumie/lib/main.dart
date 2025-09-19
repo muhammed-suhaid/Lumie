@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lumie/screens/get_started/get_started_screen.dart';
+import 'package:lumie/screens/on_boarding/on_borading_screen.dart';
 import 'package:lumie/utils/app_colors.dart';
 
 void main() {
@@ -53,7 +53,8 @@ class MyApp extends StatelessWidget {
 
       // Automatically follows system dark mode
       themeMode: ThemeMode.system,
-      home: GetStartedScreen(),
+      home: OnboardingScreen(),
+      // TODO: Change to GetStartedScreen
     );
   }
 }

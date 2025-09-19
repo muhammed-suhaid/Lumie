@@ -4,6 +4,7 @@ import 'package:lumie/screens/auth/otp_verification/otp_verification_screen.dart
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
 import 'package:lumie/widgets/custom_button.dart';
+import 'package:lumie/widgets/custom_textfield.dart';
 
 class PhoneNumberScreen extends StatefulWidget {
   const PhoneNumberScreen({super.key});
@@ -20,6 +21,7 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
     final phone = _phoneController.text.trim();
     if (phone.isEmpty || phone.length < 10) {
       ScaffoldMessenger.of(context).showSnackBar(
+        // TODO:show custom snackbar
         const SnackBar(content: Text("Please enter a valid phone number")),
       );
       return;
@@ -79,27 +81,12 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
               SizedBox(height: screenHeight * 0.04),
 
               //************************* Phone Input *************************//
-              TextField(
+              CustomTextField(
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
-                maxLength: 10, 
-                decoration: InputDecoration(
-                  prefixText: "+91  ",
-                  counterText: "",
-                  prefixStyle: GoogleFonts.poppins(
-                    fontSize: AppConstants.kFontSizeM,
-                  ),
-                  hintText: "Enter Your Phone Number",
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: colorScheme.primary),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: colorScheme.primary,
-                      width: 2,
-                    ),
-                  ),
-                ),
+                maxLength: 10,
+                hintText: AppTexts.enterPhoneNumber,
+                prefixText: "+91  ",
               ),
               const Spacer(flex: 3),
 

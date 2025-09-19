@@ -23,7 +23,6 @@ class BuildProfileScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: AppConstants.kPaddingL),
       child: Column(
         children: [
-          SizedBox(height: screenHeight * 0.08),
           //************************* Profile Placeholder / Image *************************//
           CircleAvatar(
             radius: 80,
@@ -72,7 +71,6 @@ class BuildProfileScreen extends StatelessWidget {
             fontSize: AppConstants.kFontSizeM,
             onPressed: onPickPhoto,
           ),
-          SizedBox(height: screenHeight * 0.08),
         ],
       ),
     );

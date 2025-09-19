@@ -18,6 +18,7 @@ class CustomButton extends StatelessWidget {
   final bool? isIconRight;
   final double? iconSize;
   final double? fontSize;
+  final Color? borderColor;
 
   const CustomButton({
     super.key,
@@ -35,6 +36,7 @@ class CustomButton extends StatelessWidget {
     this.isIconRight,
     this.iconSize,
     this.fontSize,
+    this.borderColor,
   });
 
   @override
@@ -123,7 +125,8 @@ class CustomButton extends StatelessWidget {
           onPressed: isLoading ? null : onPressed,
           style: OutlinedButton.styleFrom(
             foregroundColor: textColor ?? colorScheme.primary,
-            side: BorderSide(color: backgroundColor ?? colorScheme.primary),
+            backgroundColor: backgroundColor,
+            side: BorderSide(color: borderColor ?? colorScheme.primary),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(
                 borderRadius ?? AppConstants.kRadiusM,

@@ -7,7 +7,6 @@ class AppTexts {
   static const String signIn = "Sign in to continue";
   static const String continueText = "Continue";
   static const String forgetPassword = "Forgot Password?";
-  
   static const String continueWithGoogle = "Continue with Google";
   static const String continueWithPhone = "Continue with Phone";
 
@@ -37,6 +36,19 @@ class AppTexts {
   static const String chooseFromGallery = "Choose from Gallery";
   static const String takeAPhoto = "Take a Photo";
 
+  // Gender
+  static const String maleGender = "Male";
+  static const String femaleGender = "Female";
+
+  // Date
+  static const String dd = "DD";
+  static const String mm = "MM";
+  static const String yyyy = "YYYY";
+
+  // TextField
+  static const String enterPhoneNumber = "Enter Your Phone Number";
+  static const String addYourNameHere = "Add your name here";
+
   // Others
   static const String letsGetStarted = "Let’s Get Started";
   static const String welcomBack = "Welcome Back";
@@ -49,5 +61,13 @@ class AppTexts {
   static const String otpTitle2 = "Code?";
   static const String otpSubtitle = "Enter 4-digit code we have sent to you at";
   static const String buildProfileTitle = "Build Your Profile";
-  static const String buildProfileSubtitle = "Lumie is building real dating between real people. At least add one photo of yourself.";
+  static const String buildProfileSubtitle =
+      "Lumie is building real dating between real people. At least add one photo of yourself.";
+  static const String identifyYourselfTitle = "Identify Yourself";
+  static const String identifyYourselfSubtitle =
+      "Introduce yourself, fill out the details so people know about you.";
+  static const String iAmA = "I am a";
+  static const String otherOptions = "Other Options";
+  static const String birthday = "Birthday";
+  static const String name = "Name";
 }

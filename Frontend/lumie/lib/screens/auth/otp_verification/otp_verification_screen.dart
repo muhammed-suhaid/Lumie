@@ -20,6 +20,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   //************************* onContinue method *************************//
   void _onContinue() {
     if (_otpCode.isEmpty || _otpCode.length < 4) {
+      // TODO:show custom snackbar
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please enter the 4-digit OTP")),
       );
