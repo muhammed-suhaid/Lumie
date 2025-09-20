@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lumie/screens/on_boarding/add_recovery_email_screen.dart';
 import 'package:lumie/screens/on_boarding/build_profile_screen.dart';
 import 'package:lumie/screens/on_boarding/identify_yourself_screen.dart';
 import 'package:lumie/screens/on_boarding/widgets/custom_step_indicator.dart';
@@ -32,6 +33,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final TextEditingController _dayController = TextEditingController();
   final TextEditingController _monthController = TextEditingController();
   final TextEditingController _yearController = TextEditingController();
+
+  // For Add Recovery Email Screen
+  final TextEditingController _emailController = TextEditingController();
 
   //************************* Pick photo from camera/gallery *************************//
   Future<void> _pickPhoto(ImageSource source) async {
@@ -157,6 +161,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     _goToNextPage();
   }
 
+  //************************* _validateRecoveryEmail method *************************//
+  void _validateRecoveryEmail() {
+    final email = _emailController.text.trim();
+
+    // Simple regex for email validation
+    final emailRegex = RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
+
+    if (email.isEmpty || !emailRegex.hasMatch(email)) {
+      debugPrint("Please enter a valid email address");
+      CustomSnackbar.show(context, "Please enter a valid email address");
+      return;
+    }
+
+    debugPrint("Valid Email: $email");
+    _goToNextPage();
+  }
+
   //************************* _handleContinue method *************************//
   void _handleContinue() {
     switch (_currentStep) {
@@ -165,6 +186,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         break;
       case 1:
         _validateIdentifyYourself();
+        break;
+      case 2:
+        _validateRecoveryEmail();
         break;
       default:
         _goToNextPage();
@@ -223,9 +247,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       });
                     },
                   ),
-                  SizedBox(
-                    child: Center(child: Text("Add Recovery Email Screen")),
-                  ),
+                  AddRecoveryEmailScreen(emailController: _emailController),
                   SizedBox(
                     child: Center(child: Text("Secure Your Account Screen")),
                   ),

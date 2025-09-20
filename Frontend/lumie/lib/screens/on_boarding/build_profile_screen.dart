@@ -23,6 +23,17 @@ class BuildProfileScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: AppConstants.kPaddingL),
       child: Column(
         children: [
+          //************************* Title *************************//
+          Text(
+            AppTexts.buildProfileTitle,
+            style: GoogleFonts.poppins(
+              fontSize: AppConstants.kFontSizeXXXL,
+              fontWeight: FontWeight.bold,
+              color: colorScheme.secondary,
+            ),
+          ),
+          SizedBox(height: screenHeight * 0.03),
+
           //************************* Profile Placeholder / Image *************************//
           CircleAvatar(
             radius: 80,
@@ -34,18 +45,7 @@ class BuildProfileScreen extends StatelessWidget {
                 ? Icon(Icons.person, size: 120, color: colorScheme.secondary)
                 : null,
           ),
-          SizedBox(height: screenHeight * 0.05),
-
-          //************************* Title *************************//
-          Text(
-            AppTexts.buildProfileTitle,
-            style: GoogleFonts.poppins(
-              fontSize: AppConstants.kFontSizeXXXL,
-              fontWeight: FontWeight.bold,
-              color: colorScheme.secondary,
-            ),
-          ),
-          const SizedBox(height: AppConstants.kPaddingS),
+          SizedBox(height: screenHeight * 0.03),
 
           //************************* Subtitle *************************//
           Text(

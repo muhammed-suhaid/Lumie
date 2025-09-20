@@ -48,6 +48,7 @@ class AppTexts {
   // TextField
   static const String enterPhoneNumber = "Enter Your Phone Number";
   static const String addYourNameHere = "Add your name here";
+  static const String addYourEmailHere = "Add your email here";
 
   // Others
   static const String letsGetStarted = "Let’s Get Started";
@@ -70,4 +71,9 @@ class AppTexts {
   static const String otherOptions = "Other Options";
   static const String birthday = "Birthday";
   static const String name = "Name";
+  static const String addRecoveryEmailTitle = "Add Recovery Email";
+  static const String addRecoveryEmailSubtitle =
+      "Your email will be used for security purposes, "
+      "such as helping you get back into your account if you ever forget your password.";
+  static const String email = "Email";
 }

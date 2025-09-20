@@ -73,7 +73,7 @@ class IdentifyYourselfScreen extends StatelessWidget {
           Text(
             AppTexts.identifyYourselfTitle,
             style: GoogleFonts.poppins(
-              fontSize: AppConstants.kFontSizeXXL,
+              fontSize: AppConstants.kFontSizeXXXL,
               fontWeight: FontWeight.bold,
               color: colorScheme.secondary,
             ),
