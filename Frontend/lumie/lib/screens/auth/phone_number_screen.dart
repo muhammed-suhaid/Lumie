@@ -83,7 +83,7 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
                 maxLength: 10,
-                hintText: AppTexts.enterPhoneNumber,
+                hintText: AppTexts.phoneNumberHint,
                 prefixText: "+91  ",
               ),
               const Spacer(flex: 3),

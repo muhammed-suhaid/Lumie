@@ -55,7 +55,7 @@ class AddRecoveryEmailScreen extends StatelessWidget {
           //************************* Email Input *************************//
           CustomTextField(
             controller: emailController,
-            hintText: AppTexts.addYourEmailHere,
+            hintText: AppTexts.emailHint,
             keyboardType: TextInputType.emailAddress,
           ),
         ],

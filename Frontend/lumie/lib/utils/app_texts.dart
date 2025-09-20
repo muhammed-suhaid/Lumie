@@ -9,6 +9,7 @@ class AppTexts {
   static const String forgetPassword = "Forgot Password?";
   static const String continueWithGoogle = "Continue with Google";
   static const String continueWithPhone = "Continue with Phone";
+  static const String done = "Done";
 
   // Profile
   static const String editProfile = "Edit Profile";
@@ -46,9 +47,11 @@ class AppTexts {
   static const String yyyy = "YYYY";
 
   // TextField
-  static const String enterPhoneNumber = "Enter Your Phone Number";
-  static const String addYourNameHere = "Add your name here";
-  static const String addYourEmailHere = "Add your email here";
+  static const String phoneNumberHint = "Enter Your Phone Number";
+  static const String nameHint = "Enter your name";
+  static const String emailHint = "Enter your email";
+  static const String usernameHint = "Enter your username";
+  static const String passwordHint = "Enter your password";
 
   // Others
   static const String letsGetStarted = "Let’s Get Started";
@@ -76,4 +79,9 @@ class AppTexts {
       "Your email will be used for security purposes, "
       "such as helping you get back into your account if you ever forget your password.";
   static const String email = "Email";
+  static const String secureYourAccountTitle = "Secure Your Account";
+  static const String secureYourAccountSubtitle =
+      "Add a username and password to keep your account safe";
+  static const String username = "Username";
+  static const String password = "Password";
 }

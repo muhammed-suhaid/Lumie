@@ -79,6 +79,7 @@ class IdentifyYourselfScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppConstants.kPaddingS),
+          //************************* Subtitle *************************//
           Text(
             AppTexts.identifyYourselfSubtitle,
             style: GoogleFonts.poppins(
@@ -164,7 +165,7 @@ class IdentifyYourselfScreen extends StatelessWidget {
           // Name field
           CustomTextField(
             controller: nameController,
-            hintText: AppTexts.addYourNameHere,
+            hintText: AppTexts.nameHint,
           ),
         ],
       ),

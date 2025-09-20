@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lumie/utils/app_constants.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends StatefulWidget {
   final TextEditingController controller;
   final String hintText;
   final TextInputType keyboardType;
@@ -10,6 +10,7 @@ class CustomTextField extends StatelessWidget {
   final TextAlign textAlign;
   final bool obscureText;
   final String? prefixText;
+  final Widget? suffixIcon;
 
   const CustomTextField({
     super.key,
@@ -20,45 +21,73 @@ class CustomTextField extends StatelessWidget {
     this.textAlign = TextAlign.start,
     this.obscureText = false,
     this.prefixText,
+    this.suffixIcon,
   });
+
+  @override
+  State<CustomTextField> createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  bool _isFilled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_checkFilled);
+  }
+
+  void _checkFilled() {
+    setState(() {
+      _isFilled = widget.controller.text.isNotEmpty;
+    });
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_checkFilled);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
+    final borderColor = _isFilled
+        ? colorScheme.secondary
+        : colorScheme.onSurface.withAlpha(150);
+
     return TextField(
-      controller: controller,
-      keyboardType: keyboardType,
-      maxLength: maxLength,
-      textAlign: textAlign,
-      obscureText: obscureText,
-      cursorColor: colorScheme.primary,
+      controller: widget.controller,
+      keyboardType: widget.keyboardType,
+      maxLength: widget.maxLength,
+      textAlign: widget.textAlign,
+      obscureText: widget.obscureText,
+      cursorColor: colorScheme.secondary,
       style: GoogleFonts.poppins(
         fontSize: AppConstants.kFontSizeM,
         color: colorScheme.onSurface,
       ),
       decoration: InputDecoration(
-        hintText: hintText,
+        hintText: widget.hintText,
         counterText: "",
-        prefixText: prefixText,
+        prefixText: widget.prefixText,
         prefixStyle: GoogleFonts.poppins(fontSize: AppConstants.kFontSizeM),
+        suffixIcon: widget.suffixIcon,
         filled: true,
         fillColor: Colors.transparent,
         contentPadding: const EdgeInsets.symmetric(
           vertical: 14,
           horizontal: 12,
         ),
-        // Default border
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppConstants.kRadiusM),
-          borderSide: BorderSide(color: colorScheme.onSurface.withAlpha(150)),
+          borderSide: BorderSide(color: borderColor),
         ),
-        // When not focused
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppConstants.kRadiusM),
-          borderSide: BorderSide(color: colorScheme.onSurface.withAlpha(150)),
+          borderSide: BorderSide(color: borderColor),
         ),
-        // When focused (same as gender button highlight)
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppConstants.kRadiusM),
           borderSide: BorderSide(color: colorScheme.secondary, width: 2),

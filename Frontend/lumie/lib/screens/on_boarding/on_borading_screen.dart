@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:lumie/screens/on_boarding/add_recovery_email_screen.dart';
 import 'package:lumie/screens/on_boarding/build_profile_screen.dart';
 import 'package:lumie/screens/on_boarding/identify_yourself_screen.dart';
+import 'package:lumie/screens/on_boarding/secure_account_screen.dart';
 import 'package:lumie/screens/on_boarding/widgets/custom_step_indicator.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
@@ -36,6 +37,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   // For Add Recovery Email Screen
   final TextEditingController _emailController = TextEditingController();
+
+  // For Secure Account Screen
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   //************************* Pick photo from camera/gallery *************************//
   Future<void> _pickPhoto(ImageSource source) async {
@@ -89,23 +94,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   //************************* _validateProfile method *************************//
-  void _validateProfile() {
+  bool _validateProfile({bool showSnackbar = true}) {
     if (_selectedImage == null) {
-      debugPrint("Please select a profile photo");
-      CustomSnackbar.show(context, "Please select a profile photo");
-    } else {
-      debugPrint("Image Selected, Going to next page");
-      _goToNextPage();
+      if (showSnackbar) {
+        CustomSnackbar.show(context, "Please select a profile photo");
+      }
+      return false;
     }
+    return true;
   }
 
   //************************* _validateIdentifyYourself method *************************//
-  void _validateIdentifyYourself() {
+  bool _validateIdentifyYourself({bool showSnackbar = true}) {
     // Gender check
     if (_selectedGender == null) {
-      debugPrint("Please select a gender");
-      CustomSnackbar.show(context, "Please select a gender");
-      return;
+      if (showSnackbar) CustomSnackbar.show(context, "Please select a gender");
+      return false;
     }
 
     // Birthday check
@@ -114,22 +118,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     final year = int.tryParse(_yearController.text);
 
     if (day == null || month == null || year == null) {
-      debugPrint("Birthday fields must be numbers");
-      CustomSnackbar.show(context, "Please enter a valid birthday");
-      return;
+      if (showSnackbar) {
+        CustomSnackbar.show(context, "Please enter a valid birthday");
+      }
+      return false;
     }
 
     if (day < 1 || day > 31 || month < 1 || month > 12) {
-      debugPrint("Invalid day or month");
-      CustomSnackbar.show(context, "Invalid day or month");
-      return;
+      if (showSnackbar) CustomSnackbar.show(context, "Invalid day or month");
+      return false;
     }
 
     final currentYear = DateTime.now().year;
     if (year < currentYear - 100 || year > currentYear) {
-      debugPrint("Year not in valid range");
-      CustomSnackbar.show(context, "Please enter a valid year");
-      return;
+      if (showSnackbar) {
+        CustomSnackbar.show(context, "Please enter a valid year");
+      }
+      return false;
     }
 
     // check if the date is actually valid (e.g., no Feb 30)
@@ -141,57 +146,107 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         throw Exception();
       }
     } catch (_) {
-      debugPrint("Invalid date");
-      CustomSnackbar.show(context, "Please enter a valid date");
-      return;
+      if (showSnackbar) {
+        CustomSnackbar.show(context, "Please enter a valid date");
+      }
+      return false;
     }
 
     // Name check
     final name = _nameController.text.trim();
     final nameRegex = RegExp(r"^[a-zA-Z\s]+$");
     if (name.isEmpty || name.length < 3 || !nameRegex.hasMatch(name)) {
-      debugPrint("Please enter a valid name with at least 3 characters");
-      CustomSnackbar.show(context, "Please enter a valid name");
-      return;
+      if (showSnackbar) {
+        CustomSnackbar.show(context, "Please enter a valid name");
+      }
+      return false;
     }
 
-    debugPrint(
-      "All fields valid: Gender=$_selectedGender, Name=$name, Birthday=$day/$month/$year",
-    );
-    _goToNextPage();
+    return true;
   }
 
   //************************* _validateRecoveryEmail method *************************//
-  void _validateRecoveryEmail() {
+  bool _validateRecoveryEmail({bool showSnackbar = true}) {
     final email = _emailController.text.trim();
-
-    // Simple regex for email validation
     final emailRegex = RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
 
     if (email.isEmpty || !emailRegex.hasMatch(email)) {
-      debugPrint("Please enter a valid email address");
-      CustomSnackbar.show(context, "Please enter a valid email address");
-      return;
+      if (showSnackbar) {
+        CustomSnackbar.show(context, "Please enter a valid email address");
+      }
+      return false;
     }
 
-    debugPrint("Valid Email: $email");
-    _goToNextPage();
+    return true;
   }
 
-  //************************* _handleContinue method *************************//
+  //************************* _validateSecureAccount method *************************//
+  bool _validateSecureAccount({bool showSnackbar = true}) {
+    final username = _usernameController.text.trim();
+    final password = _passwordController.text.trim();
+
+    if (username.length < 3) {
+      if (showSnackbar) {
+        CustomSnackbar.show(context, "Username must be at least 3 characters");
+      }
+      return false;
+    }
+
+    if (password.length < 6) {
+      if (showSnackbar) {
+        CustomSnackbar.show(context, "Password must be at least 6 characters");
+      }
+      return false;
+    }
+
+    return true;
+  }
+
+  //************************* Full Validation *************************//
+  bool _validateAllSteps() {
+    return _validateProfile(showSnackbar: true) &&
+        _validateIdentifyYourself(showSnackbar: true) &&
+        _validateRecoveryEmail(showSnackbar: true) &&
+        _validateSecureAccount(showSnackbar: true);
+  }
+
+  //************************* Collect all onboarding data *************************//
+  Map<String, dynamic> _collectOnboardingData() {
+    return {
+      "profileImage": _selectedImage?.path ?? "No image selected",
+      "gender": _selectedGender,
+      "name": _nameController.text.trim(),
+      "birthday":
+          "${_dayController.text}/${_monthController.text}/${_yearController.text}",
+      "email": _emailController.text.trim(),
+      "username": _usernameController.text.trim(),
+      "password": _passwordController.text.trim(),
+    };
+  }
+
+  //************************* Continue / Done Handler *************************//
   void _handleContinue() {
-    switch (_currentStep) {
-      case 0:
-        _validateProfile();
-        break;
-      case 1:
-        _validateIdentifyYourself();
-        break;
-      case 2:
-        _validateRecoveryEmail();
-        break;
-      default:
-        _goToNextPage();
+    if (_currentStep < 3) {
+      switch (_currentStep) {
+        case 0:
+          if (_validateProfile()) _goToNextPage();
+          break;
+        case 1:
+          if (_validateIdentifyYourself()) _goToNextPage();
+          break;
+        case 2:
+          if (_validateRecoveryEmail()) _goToNextPage();
+          break;
+      }
+    } else {
+      // Done pressed, validate all steps
+      if (_validateAllSteps()) {
+        final data = _collectOnboardingData();
+        debugPrint("===== Final Onboarding Data =====");
+        data.forEach((key, value) => debugPrint("$key: $value"));
+        debugPrint("=================================");
+        // TODO: API call
+      }
     }
   }
 
@@ -248,8 +303,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     },
                   ),
                   AddRecoveryEmailScreen(emailController: _emailController),
-                  SizedBox(
-                    child: Center(child: Text("Secure Your Account Screen")),
+                  SecureAccountScreen(
+                    usernameController: _usernameController,
+                    passwordController: _passwordController,
                   ),
                 ],
               ),
@@ -266,7 +322,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           right: AppConstants.kPaddingL,
         ),
         child: CustomButton(
-          text: AppTexts.continueText,
+          text: _currentStep == 3 ? AppTexts.done : AppTexts.continueText,
           type: ButtonType.primary,
           isFullWidth: true,
           backgroundColor: colorScheme.secondary,
