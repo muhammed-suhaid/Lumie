@@ -78,7 +78,7 @@ class AuthScreen extends StatelessWidget {
                 text: AppTexts.continueWithPhone,
                 type: ButtonType.outline,
                 isFullWidth: true,
-                backgroundColor: colorScheme.secondary,
+                borderColor: colorScheme.secondary,
                 textColor: colorScheme.secondary,
                 borderRadius: AppConstants.kRadiusL,
                 fontSize: AppConstants.kFontSizeM,
