@@ -33,6 +33,13 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
     );
   }
 
+  //************************* Dispose Method *************************//
+  @override
+  void dispose() {
+    _phoneController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;

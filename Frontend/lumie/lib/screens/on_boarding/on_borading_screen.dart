@@ -46,7 +46,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Future<void> _pickPhoto(ImageSource source) async {
     final XFile? pickedFile = await _picker.pickImage(
       source: source,
-      imageQuality: 80,
+      imageQuality: 50,
     );
 
     if (pickedFile != null) {
@@ -260,6 +260,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
   }
 
+  //************************* Dispose Method *************************//
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _nameController.dispose();
+    _dayController.dispose();
+    _monthController.dispose();
+    _yearController.dispose();
+    _emailController.dispose();
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   //************************* Body *************************//
   //************************* Body *************************//
   //************************* Body *************************//
@@ -277,37 +291,48 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             SizedBox(height: screenHeight * 0.05),
             // Pages
             Expanded(
-              child: PageView(
+              child: PageView.builder(
                 controller: _pageController,
-                physics: BouncingScrollPhysics(),
+                itemCount: 4,
+                itemBuilder: (context, index) {
+                  switch (index) {
+                    case 0:
+                      return BuildProfileScreen(
+                        selectedImage: _selectedImage,
+                        onPickPhoto: () => _showImageSourceActionSheet(context),
+                      );
+                    case 1:
+                      return IdentifyYourselfScreen(
+                        nameController: _nameController,
+                        dayController: _dayController,
+                        monthController: _monthController,
+                        yearController: _yearController,
+                        selectedGender: _selectedGender,
+                        onGenderSelected: (gender) {
+                          setState(() {
+                            _selectedGender = gender;
+                          });
+                        },
+                      );
+                    case 2:
+                      return AddRecoveryEmailScreen(
+                        emailController: _emailController,
+                      );
+                    case 3:
+                      return SecureAccountScreen(
+                        usernameController: _usernameController,
+                        passwordController: _passwordController,
+                      );
+                    default:
+                      return const SizedBox();
+                  }
+                },
+                physics: const BouncingScrollPhysics(),
                 onPageChanged: (index) {
                   setState(() {
                     _currentStep = index;
                   });
                 },
-                children: [
-                  BuildProfileScreen(
-                    selectedImage: _selectedImage,
-                    onPickPhoto: () => _showImageSourceActionSheet(context),
-                  ),
-                  IdentifyYourselfScreen(
-                    nameController: _nameController,
-                    dayController: _dayController,
-                    monthController: _monthController,
-                    yearController: _yearController,
-                    selectedGender: _selectedGender,
-                    onGenderSelected: (gender) {
-                      setState(() {
-                        _selectedGender = gender;
-                      });
-                    },
-                  ),
-                  AddRecoveryEmailScreen(emailController: _emailController),
-                  SecureAccountScreen(
-                    usernameController: _usernameController,
-                    passwordController: _passwordController,
-                  ),
-                ],
               ),
             ),
           ],
