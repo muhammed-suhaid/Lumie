@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lumie/screens/preferences/pages/preference_goal_screen.dart';
+import 'package:lumie/screens/preferences/pages/preference_interests_screen.dart';
 import 'package:lumie/screens/preferences/pages/preference_meet_screen.dart';
 import 'package:lumie/screens/preferences/pages/preference_status_screen.dart';
 import 'package:lumie/screens/preferences/pages/preference_type_screen.dart';
@@ -26,6 +27,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   String? _whoToMeet;
   String? _relationshipStatus;
   String? _relationshipType;
+  List<String> _interests = [];
 
   //************************* _onNextPressed Method *************************//
   void _onNextPressed() {
@@ -64,13 +66,20 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
           CustomSnackbar.show(context, "Please choose a relationship type");
           return;
         }
-        _finishPreferences();
+        break;
+
+      case 4:
+        if (_interests.length < 5) {
+          CustomSnackbar.show(context, "Please select at least 5 interests");
+          return;
+        }
         break;
     }
 
     if (_currentStep < 4) {
       _goToNextPage();
     } else {
+      // TODO: Validate All Pages
       _finishPreferences();
     }
   }
@@ -91,6 +100,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
       "whoToMeet": _whoToMeet,
       "relationshipStatus": _relationshipStatus,
       "relationshipType": _relationshipType,
+      "interests": _interests,
     };
 
     debugPrint("===== Preferences Collected =====");
@@ -151,8 +161,9 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                     selected: _relationshipType,
                     onSelected: (s) => setState(() => _relationshipType = s),
                   ),
-                  SizedBox(
-                    child: Center(child: Text("Preference Interest Page")),
+                  PreferenceInterestsPage(
+                    selectedInterests: _interests,
+                    onChanged: (list) => setState(() => _interests = list),
                   ),
                 ],
               ),

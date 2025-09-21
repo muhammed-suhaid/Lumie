@@ -5,6 +5,8 @@ class CustomSelectableTile extends StatelessWidget {
   final String label;
   final bool selected;
   final bool isSplit;
+  final bool isFullWidth;
+  final double? height;
   final VoidCallback onTap;
 
   const CustomSelectableTile({
@@ -13,6 +15,8 @@ class CustomSelectableTile extends StatelessWidget {
     required this.selected,
     required this.onTap,
     this.isSplit = false,
+    this.isFullWidth = true,
+    this.height,
   });
 
   @override
@@ -24,8 +28,8 @@ class CustomSelectableTile extends StatelessWidget {
             child: CustomButton(
               text: label,
               type: ButtonType.outline,
-              isFullWidth: true,
-              height: 50,
+              isFullWidth: isFullWidth,
+              height: isFullWidth ? 50 : height,
               backgroundColor: selected
                   ? colorScheme.secondary
                   : Colors.transparent,
@@ -41,8 +45,8 @@ class CustomSelectableTile extends StatelessWidget {
         : CustomButton(
             text: label,
             type: ButtonType.outline,
-            isFullWidth: true,
-            height: 50,
+            isFullWidth: isFullWidth,
+            height: isFullWidth ? 50 : height,
             backgroundColor: selected
                 ? colorScheme.secondary
                 : Colors.transparent,
