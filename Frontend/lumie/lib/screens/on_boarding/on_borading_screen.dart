@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lumie/screens/on_boarding/account_created_screen.dart';
-import 'package:lumie/screens/on_boarding/add_recovery_email_screen.dart';
-import 'package:lumie/screens/on_boarding/build_profile_screen.dart';
-import 'package:lumie/screens/on_boarding/identify_yourself_screen.dart';
-import 'package:lumie/screens/on_boarding/secure_account_screen.dart';
+import 'package:lumie/screens/on_boarding/pages/add_recovery_email_screen.dart';
+import 'package:lumie/screens/on_boarding/pages/build_profile_screen.dart';
+import 'package:lumie/screens/on_boarding/pages/identify_yourself_screen.dart';
+import 'package:lumie/screens/on_boarding/pages/secure_account_screen.dart';
 import 'package:lumie/screens/on_boarding/widgets/custom_step_indicator.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
@@ -203,14 +203,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return true;
   }
 
-  //************************* Full Validation *************************//
-  bool _validateAllSteps() {
-    return _validateProfile(showSnackbar: true) &&
-        _validateIdentifyYourself(showSnackbar: true) &&
-        _validateRecoveryEmail(showSnackbar: true) &&
-        _validateSecureAccount(showSnackbar: true);
-  }
-
   //************************* Collect all onboarding data *************************//
   Map<String, dynamic> _collectOnboardingData() {
     return {
@@ -240,8 +232,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           break;
       }
     } else {
-      // Done pressed, validate all steps
-      if (_validateAllSteps()) {
+       // Last page (Secure Account Screen)
+      if (_validateSecureAccount()) {
         final data = _collectOnboardingData();
         debugPrint("===== Final Onboarding Data =====");
         data.forEach((key, value) => debugPrint("$key: $value"));
@@ -338,7 +330,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       return const SizedBox();
                   }
                 },
-                physics: const BouncingScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 onPageChanged: (index) {
                   setState(() {
                     _currentStep = index;
