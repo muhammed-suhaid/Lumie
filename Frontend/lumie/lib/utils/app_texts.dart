@@ -98,6 +98,7 @@ class AppTexts {
   static const String preferenceGoalSubTitle =
       "Choose a main goal (Dating or Friends). If Dating, choose a subtype.";
   static const String preferenceMeetTitle = "Who do you want to meet?";
+  static const String preferenceStatusTitle = "Relationship status";
 
   // Dummy Content
   static const String privacyPolicyContent = """

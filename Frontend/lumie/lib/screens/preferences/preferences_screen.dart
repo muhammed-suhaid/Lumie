@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lumie/screens/preferences/pages/preference_goal_screen.dart';
 import 'package:lumie/screens/preferences/pages/preference_meet_screen.dart';
+import 'package:lumie/screens/preferences/pages/preference_status_screen.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
 import 'package:lumie/utils/custom_snakbar.dart';
@@ -22,6 +23,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   String? _goalMain;
   String? _goalSub;
   String? _whoToMeet;
+  String? _relationshipStatus;
 
   //************************* _onNextPressed Method *************************//
   void _onNextPressed() {
@@ -37,9 +39,20 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
           return;
         }
         break;
+
       case 1:
         if (_whoToMeet == null) {
           CustomSnackbar.show(context, "Please choose who you want to meet");
+          return;
+        }
+        break;
+
+      case 2:
+        if (_relationshipStatus == null) {
+          CustomSnackbar.show(
+            context,
+            "Please choose your relationship status",
+          );
           return;
         }
         _finishPreferences();
@@ -67,6 +80,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
       "goalMain": _goalMain,
       "goalSub": _goalSub,
       "whoToMeet": _whoToMeet,
+      "relationshipStatus": _relationshipStatus,
     };
 
     debugPrint("===== Preferences Collected =====");
@@ -119,9 +133,9 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                     onSelected: (selected) =>
                         setState(() => _whoToMeet = selected),
                   ),
-
-                  SizedBox(
-                    child: Center(child: Text("Preference Status Page")),
+                  PreferenceStatusPage(
+                    selected: _relationshipStatus,
+                    onSelected: (s) => setState(() => _relationshipStatus = s),
                   ),
                   SizedBox(child: Center(child: Text("Preference Type Page"))),
                   SizedBox(
