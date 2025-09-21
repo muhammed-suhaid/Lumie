@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lumie/screens/on_boarding/account_created_screen.dart';
 import 'package:lumie/screens/on_boarding/add_recovery_email_screen.dart';
 import 'package:lumie/screens/on_boarding/build_profile_screen.dart';
 import 'package:lumie/screens/on_boarding/identify_yourself_screen.dart';
@@ -246,6 +247,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         data.forEach((key, value) => debugPrint("$key: $value"));
         debugPrint("=================================");
         // TODO: API call
+        _finishOnboarding();
       }
     }
   }
@@ -258,6 +260,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         curve: Curves.easeInOut,
       );
     }
+  }
+
+  //************************* _finishOnboarding method *************************//
+  void _finishOnboarding() {
+    debugPrint("Onboarding finished, navigating to AccountCreatedScreen");
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const AccountCreatedScreen()),
+    );
   }
 
   //************************* Dispose Method *************************//

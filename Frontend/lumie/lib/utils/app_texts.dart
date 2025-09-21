@@ -84,4 +84,7 @@ class AppTexts {
       "Add a username and password to keep your account safe";
   static const String username = "Username";
   static const String password = "Password";
+  static const String accountCreatedSubtitle =
+      "Dear user your account has been created successfully. "
+      "Continue to start using app";
 }
