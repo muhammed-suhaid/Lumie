@@ -37,6 +37,7 @@ class AppTexts {
   static const String chooseFromGallery = "Choose from Gallery";
   static const String takeAPhoto = "Take a Photo";
   static const String privacyPolicy = "Privacy Policy";
+  static const String termsAndConditions = "Terms & Conditions";
 
   // Gender
   static const String maleGender = "Male";
@@ -97,5 +98,14 @@ We value your privacy. This Privacy Policy explains how we handle your personal 
 - We use your data to provide a safe and secure experience.
 
 By using this app, you agree to this Privacy Policy.
+""";
+  static const String termsAndConditionsContent = """
+Welcome to our app! By using our services, you agree to the following terms:
+1. You must be at least 18 years old to use this app.
+2. You are responsible for the information you provide.
+3. Do not misuse or abuse the service.
+4. Violation of terms may lead to account suspension.
+
+Please read carefully before continuing.
 """;
 }
