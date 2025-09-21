@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lumie/screens/preferences/pages/preference_goal_screen.dart';
+import 'package:lumie/screens/preferences/pages/preference_meet_screen.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
 import 'package:lumie/utils/custom_snakbar.dart';
@@ -20,6 +21,8 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   // Preference state
   String? _goalMain;
   String? _goalSub;
+  String? _whoToMeet;
+
   //************************* _onNextPressed Method *************************//
   void _onNextPressed() {
     // Validate current step before moving forward
@@ -33,6 +36,13 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
           CustomSnackbar.show(context, "Please choose a dating preference");
           return;
         }
+        break;
+      case 1:
+        if (_whoToMeet == null) {
+          CustomSnackbar.show(context, "Please choose who you want to meet");
+          return;
+        }
+        _finishPreferences();
         break;
     }
 
@@ -53,7 +63,11 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
 
   //************************* _finishPreferences Method *************************//
   void _finishPreferences() {
-    final prefs = {"goalMain": _goalMain, "goalSub": _goalSub};
+    final prefs = {
+      "goalMain": _goalMain,
+      "goalSub": _goalSub,
+      "whoToMeet": _whoToMeet,
+    };
 
     debugPrint("===== Preferences Collected =====");
     prefs.forEach((key, value) => debugPrint("$key: $value"));
@@ -91,7 +105,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
             Expanded(
               child: PageView(
                 controller: _pageController,
-                physics: const NeverScrollableScrollPhysics(),
+                // physics: const NeverScrollableScrollPhysics(),
                 onPageChanged: (index) => setState(() => _currentStep = index),
                 children: [
                   PreferenceGoalPage(
@@ -100,7 +114,12 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                     onMainSelected: (main) => setState(() => _goalMain = main),
                     onSubSelected: (sub) => setState(() => _goalSub = sub),
                   ),
-                  SizedBox(child: Center(child: Text("Preference Meet Page"))),
+                  PreferenceMeetPage(
+                    selected: _whoToMeet,
+                    onSelected: (selected) =>
+                        setState(() => _whoToMeet = selected),
+                  ),
+
                   SizedBox(
                     child: Center(child: Text("Preference Status Page")),
                   ),

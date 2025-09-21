@@ -44,6 +44,9 @@ class AppTexts {
   static const String femaleGender = "Female";
   static const String dating = "Dating";
   static const String friends = "Friends";
+  static const String man = "Man";
+  static const String women = "Women";
+  static const String everyone = "Everyone";
 
   // Date
   static const String dd = "DD";
@@ -92,7 +95,9 @@ class AppTexts {
       "Dear user your account has been created successfully. "
       "Continue to start using app";
   static const String preferenceGoalTitle = "What are you looking for?";
-  static const String preferenceGoalSubTitle = "Choose a main goal (Dating or Friends). If Dating, choose a subtype.";
+  static const String preferenceGoalSubTitle =
+      "Choose a main goal (Dating or Friends). If Dating, choose a subtype.";
+  static const String preferenceMeetTitle = "Who do you want to meet?";
 
   // Dummy Content
   static const String privacyPolicyContent = """
