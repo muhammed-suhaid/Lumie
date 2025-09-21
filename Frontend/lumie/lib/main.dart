@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lumie/screens/get_started/get_started_screen.dart';
 import 'package:lumie/screens/preferences/preferences_screen.dart';
 import 'package:lumie/utils/app_colors.dart';
 

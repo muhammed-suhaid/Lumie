@@ -39,9 +39,11 @@ class AppTexts {
   static const String privacyPolicy = "Privacy Policy";
   static const String termsAndConditions = "Terms & Conditions";
 
-  // Gender
+  // Custom Selectable Tile
   static const String maleGender = "Male";
   static const String femaleGender = "Female";
+  static const String dating = "Dating";
+  static const String friends = "Friends";
 
   // Date
   static const String dd = "DD";
@@ -89,6 +91,8 @@ class AppTexts {
   static const String accountCreatedSubtitle =
       "Dear user your account has been created successfully. "
       "Continue to start using app";
+  static const String preferenceGoalTitle = "What are you looking for?";
+  static const String preferenceGoalSubTitle = "Choose a main goal (Dating or Friends). If Dating, choose a subtype.";
 
   // Dummy Content
   static const String privacyPolicyContent = """

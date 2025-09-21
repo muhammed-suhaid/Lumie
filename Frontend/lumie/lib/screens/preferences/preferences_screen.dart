@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:lumie/screens/preferences/pages/preference_goal_screen.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
+import 'package:lumie/utils/custom_snakbar.dart';
 import 'package:lumie/widgets/custom_button.dart';
 import 'package:lumie/screens/on_boarding/widgets/custom_step_indicator.dart';
 
@@ -14,22 +16,58 @@ class PreferencesScreen extends StatefulWidget {
 class _PreferencesScreenState extends State<PreferencesScreen> {
   final PageController _pageController = PageController();
   int _currentStep = 0;
+
+  // Preference state
+  String? _goalMain;
+  String? _goalSub;
+  //************************* _onNextPressed Method *************************//
+  void _onNextPressed() {
+    // Validate current step before moving forward
+    switch (_currentStep) {
+      case 0:
+        if (_goalMain == null) {
+          CustomSnackbar.show(context, "Please choose Dating or Friends");
+          return;
+        }
+        if (_goalMain == "Dating" && _goalSub == null) {
+          CustomSnackbar.show(context, "Please choose a dating preference");
+          return;
+        }
+        break;
+    }
+
+    if (_currentStep < 4) {
+      _goToNextPage();
+    } else {
+      _finishPreferences();
+    }
+  }
+
+  //************************* _goToNextPage method *************************//
+  void _goToNextPage() {
+    _pageController.nextPage(
+      duration: const Duration(milliseconds: 320),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  //************************* _finishPreferences Method *************************//
+  void _finishPreferences() {
+    final prefs = {"goalMain": _goalMain, "goalSub": _goalSub};
+
+    debugPrint("===== Preferences Collected =====");
+    prefs.forEach((key, value) => debugPrint("$key: $value"));
+    debugPrint("=================================");
+
+    // TODO: send prefs to API / Firestore
+    // TODO: Navigate to Next Screen
+  }
+
   //************************* Dispose Method *************************//
   @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
-  }
-
-  //************************* _goToNextPage method *************************//
-  void _goToNextPage() {
-    if (_currentStep < 4) {
-      debugPrint("Continue button pressed");
-      _pageController.nextPage(
-        duration: const Duration(milliseconds: 320),
-        curve: Curves.easeInOut,
-      );
-    }
   }
 
   //************************* Body *************************//
@@ -56,7 +94,12 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                 physics: const NeverScrollableScrollPhysics(),
                 onPageChanged: (index) => setState(() => _currentStep = index),
                 children: [
-                  SizedBox(child: Center(child: Text("Preference Goal Page"))),
+                  PreferenceGoalPage(
+                    selectedMain: _goalMain,
+                    selectedSub: _goalSub,
+                    onMainSelected: (main) => setState(() => _goalMain = main),
+                    onSubSelected: (sub) => setState(() => _goalSub = sub),
+                  ),
                   SizedBox(child: Center(child: Text("Preference Meet Page"))),
                   SizedBox(
                     child: Center(child: Text("Preference Status Page")),
@@ -87,7 +130,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
           textColor: colorScheme.onPrimary,
           borderRadius: AppConstants.kRadiusM,
           fontSize: AppConstants.kFontSizeM,
-          onPressed: _goToNextPage,
+          onPressed: _onNextPressed,
         ),
       ),
     );

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
-import 'package:lumie/widgets/custom_button.dart';
+import 'package:lumie/widgets/custom_selectable_tile.dart';
 import 'package:lumie/widgets/custom_textfield.dart';
 
 class IdentifyYourselfScreen extends StatelessWidget {
@@ -22,25 +22,6 @@ class IdentifyYourselfScreen extends StatelessWidget {
     required this.selectedGender,
     required this.onGenderSelected,
   });
-
-  //************************* _genderButton Widget *************************//
-  Widget _genderButton(String gender, ColorScheme colorScheme) {
-    final isSelected = selectedGender == gender;
-
-    return Expanded(
-      child: CustomButton(
-        text: gender,
-        type: ButtonType.outline,
-        onPressed: () => onGenderSelected(gender),
-        backgroundColor: isSelected
-            ? colorScheme.secondary
-            : Colors.transparent,
-        textColor: isSelected ? colorScheme.onSecondary : colorScheme.onSurface,
-        borderColor: isSelected ? colorScheme.secondary : colorScheme.onSurface,
-        isFullWidth: true,
-      ),
-    );
-  }
 
   //************************* _birthdayField Widget *************************//
   Widget _birthdayField(
@@ -101,9 +82,21 @@ class IdentifyYourselfScreen extends StatelessWidget {
           const SizedBox(height: AppConstants.kPaddingS),
           Row(
             children: [
-              _genderButton(AppTexts.maleGender, colorScheme),
+              // Custom Selectable Tile
+              CustomSelectableTile(
+                label: AppTexts.maleGender,
+                isSplit: true,
+                selected: selectedGender == AppTexts.maleGender,
+                onTap: () => onGenderSelected(AppTexts.maleGender),
+              ),
               const SizedBox(width: AppConstants.kPaddingM),
-              _genderButton(AppTexts.femaleGender, colorScheme),
+              // Custom Selectable Tile
+              CustomSelectableTile(
+                label: AppTexts.femaleGender,
+                isSplit: true,
+                selected: selectedGender == AppTexts.femaleGender,
+                onTap: () => onGenderSelected(AppTexts.femaleGender),
+              ),
             ],
           ),
 
