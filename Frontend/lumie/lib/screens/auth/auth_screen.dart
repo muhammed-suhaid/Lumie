@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lumie/screens/auth/phone_number_screen.dart';
+import 'package:lumie/screens/legal/privacy_policy_screen.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
 import 'package:lumie/widgets/custom_button.dart';
@@ -124,13 +125,18 @@ class AuthScreen extends StatelessWidget {
 
                   // Privacy Policy button
                   CustomButton(
-                    text: "Privacy Policy",
+                    text: AppTexts.privacyPolicy,
                     type: ButtonType.text,
                     textColor: colorScheme.secondary,
                     fontSize: AppConstants.kFontSizeXS,
                     onPressed: () {
                       debugPrint("Navigate to Privacy Policy");
-                      // TODO: Navigate to Privacy Screen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PrivacyPolicyScreen(),
+                        ),
+                      );
                     },
                   ),
                 ],

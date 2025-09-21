@@ -36,6 +36,7 @@ class AppTexts {
   static const String changePhoto = "Change Photo";
   static const String chooseFromGallery = "Choose from Gallery";
   static const String takeAPhoto = "Take a Photo";
+  static const String privacyPolicy = "Privacy Policy";
 
   // Gender
   static const String maleGender = "Male";
@@ -87,4 +88,14 @@ class AppTexts {
   static const String accountCreatedSubtitle =
       "Dear user your account has been created successfully. "
       "Continue to start using app";
+
+  // Dummy Content
+  static const String privacyPolicyContent = """
+We value your privacy. This Privacy Policy explains how we handle your personal data when you use our app.
+- We do not share your data with third parties without consent.
+- You can request account deletion at any time.
+- We use your data to provide a safe and secure experience.
+
+By using this app, you agree to this Privacy Policy.
+""";
 }

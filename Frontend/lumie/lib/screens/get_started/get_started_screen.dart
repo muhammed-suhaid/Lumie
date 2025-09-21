@@ -10,7 +10,7 @@ class GetStartedScreen extends StatelessWidget {
 
   //************************* Navigate to SignIn Method *************************//
   void _goToSignIn(BuildContext context) {
-    debugPrint("Navigate to SignIn Screen");
+    debugPrint("Navigate to Auth Screen");
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const AuthScreen()),
