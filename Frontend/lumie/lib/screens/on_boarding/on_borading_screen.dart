@@ -203,6 +203,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return true;
   }
 
+  //************************* Full Validation *************************//
+  bool _validateAllSteps() {
+    return _validateProfile(showSnackbar: true) &&
+        _validateIdentifyYourself(showSnackbar: true) &&
+        _validateRecoveryEmail(showSnackbar: true) &&
+        _validateSecureAccount(showSnackbar: true);
+  }
+
   //************************* Collect all onboarding data *************************//
   Map<String, dynamic> _collectOnboardingData() {
     return {
@@ -232,8 +240,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           break;
       }
     } else {
-       // Last page (Secure Account Screen)
-      if (_validateSecureAccount()) {
+      // Done pressed, validate all steps
+      if (_validateAllSteps()) {
         final data = _collectOnboardingData();
         debugPrint("===== Final Onboarding Data =====");
         data.forEach((key, value) => debugPrint("$key: $value"));
@@ -330,7 +338,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       return const SizedBox();
                   }
                 },
-                physics: const NeverScrollableScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 onPageChanged: (index) {
                   setState(() {
                     _currentStep = index;

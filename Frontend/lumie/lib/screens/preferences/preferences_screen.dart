@@ -105,7 +105,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
             Expanded(
               child: PageView(
                 controller: _pageController,
-                // physics: const NeverScrollableScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 onPageChanged: (index) => setState(() => _currentStep = index),
                 children: [
                   PreferenceGoalPage(
