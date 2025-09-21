@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lumie/screens/preferences/pages/preference_goal_screen.dart';
 import 'package:lumie/screens/preferences/pages/preference_meet_screen.dart';
 import 'package:lumie/screens/preferences/pages/preference_status_screen.dart';
+import 'package:lumie/screens/preferences/pages/preference_type_screen.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
 import 'package:lumie/utils/custom_snakbar.dart';
@@ -24,6 +25,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   String? _goalSub;
   String? _whoToMeet;
   String? _relationshipStatus;
+  String? _relationshipType;
 
   //************************* _onNextPressed Method *************************//
   void _onNextPressed() {
@@ -55,6 +57,13 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
           );
           return;
         }
+        break;
+
+      case 3:
+        if (_relationshipType == null) {
+          CustomSnackbar.show(context, "Please choose a relationship type");
+          return;
+        }
         _finishPreferences();
         break;
     }
@@ -81,6 +90,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
       "goalSub": _goalSub,
       "whoToMeet": _whoToMeet,
       "relationshipStatus": _relationshipStatus,
+      "relationshipType": _relationshipType,
     };
 
     debugPrint("===== Preferences Collected =====");
@@ -137,7 +147,10 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                     selected: _relationshipStatus,
                     onSelected: (s) => setState(() => _relationshipStatus = s),
                   ),
-                  SizedBox(child: Center(child: Text("Preference Type Page"))),
+                  PreferenceTypePage(
+                    selected: _relationshipType,
+                    onSelected: (s) => setState(() => _relationshipType = s),
+                  ),
                   SizedBox(
                     child: Center(child: Text("Preference Interest Page")),
                   ),
