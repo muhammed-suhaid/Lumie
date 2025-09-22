@@ -9,6 +9,7 @@ import 'package:lumie/utils/app_texts.dart';
 import 'package:lumie/utils/custom_snakbar.dart';
 import 'package:lumie/widgets/custom_button.dart';
 import 'package:lumie/screens/on_boarding/widgets/custom_step_indicator.dart';
+import 'package:lumie/widgets/transition_screen.dart';
 
 class PreferencesScreen extends StatefulWidget {
   const PreferencesScreen({super.key});
@@ -29,58 +30,99 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   String? _relationshipType;
   List<String> _interests = [];
 
-  //************************* _onNextPressed Method *************************//
-  void _onNextPressed() {
-    // Validate current step before moving forward
+  //************************* _validateCurrentStep Method *************************//
+  bool _validateCurrentStep() {
     switch (_currentStep) {
-      case 0:
+      case 0: // Goal Page
         if (_goalMain == null) {
           CustomSnackbar.show(context, "Please choose Dating or Friends");
-          return;
+          return false;
         }
         if (_goalMain == "Dating" && _goalSub == null) {
           CustomSnackbar.show(context, "Please choose a dating preference");
-          return;
+          return false;
         }
         break;
 
-      case 1:
+      case 1: // Meet Page
         if (_whoToMeet == null) {
           CustomSnackbar.show(context, "Please choose who you want to meet");
-          return;
+          return false;
         }
         break;
 
-      case 2:
+      case 2: // Status Page
         if (_relationshipStatus == null) {
           CustomSnackbar.show(
             context,
             "Please choose your relationship status",
           );
-          return;
+          return false;
         }
         break;
 
-      case 3:
+      case 3: // Type Page
         if (_relationshipType == null) {
           CustomSnackbar.show(context, "Please choose a relationship type");
-          return;
+          return false;
         }
         break;
 
-      case 4:
+      case 4: // Interests Page
         if (_interests.length < 5) {
           CustomSnackbar.show(context, "Please select at least 5 interests");
-          return;
+          return false;
         }
         break;
     }
+    return true;
+  }
+
+  //************************* _validateAllSteps Method *************************//
+  bool _validateAllSteps() {
+    if (_goalMain == null) {
+      CustomSnackbar.show(context, "Please choose Dating or Friends");
+      return false;
+    }
+    if (_goalMain == "Dating" && _goalSub == null) {
+      CustomSnackbar.show(context, "Please choose a dating preference");
+      return false;
+    }
+    if (_whoToMeet == null) {
+      CustomSnackbar.show(context, "Please choose who you want to meet");
+      return false;
+    }
+    if (_relationshipStatus == null) {
+      CustomSnackbar.show(context, "Please choose your relationship status");
+      return false;
+    }
+    if (_relationshipType == null) {
+      CustomSnackbar.show(context, "Please choose a relationship type");
+      return false;
+    }
+    if (_interests.length < 5) {
+      CustomSnackbar.show(context, "Please select at least 5 interests");
+      return false;
+    }
+    return true;
+  }
+
+  //************************* _onNextPressed Method *************************//
+  void _onNextPressed() {
+    if (!_validateCurrentStep()) return;
 
     if (_currentStep < 4) {
       _goToNextPage();
     } else {
-      // TODO: Validate All Pages
-      _finishPreferences();
+      // Validate all pages at once before finishing
+      if (_validateAllSteps()) {
+        final data = _collectPreferencesData();
+        debugPrint("===== Preferences Collected =====");
+        data.forEach((key, value) => debugPrint("$key: $value"));
+        debugPrint("=================================");
+        // TODO: send prefs to API / Firestore
+        _finishPreferences();
+      }
     }
   }
 
@@ -92,9 +134,9 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
     );
   }
 
-  //************************* _finishPreferences Method *************************//
-  void _finishPreferences() {
-    final prefs = {
+  //************************* _collectPreferencesData Method *************************//
+  Map<String, dynamic> _collectPreferencesData() {
+    return {
       "goalMain": _goalMain,
       "goalSub": _goalSub,
       "whoToMeet": _whoToMeet,
@@ -102,13 +144,24 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
       "relationshipType": _relationshipType,
       "interests": _interests,
     };
+  }
 
-    debugPrint("===== Preferences Collected =====");
-    prefs.forEach((key, value) => debugPrint("$key: $value"));
-    debugPrint("=================================");
-
-    // TODO: send prefs to API / Firestore
-    // TODO: Navigate to Next Screen
+  //************************* _finishPreferences Method *************************//
+  void _finishPreferences() {
+    debugPrint("Preferences finished, Navigating to TransitionScreen");
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TransitionScreen(
+          subtitle: AppTexts.transitonPreferencsSubtitle,
+          buttonText: AppTexts.startPersonalityQuiz,
+          onContinue: () {
+            debugPrint("Navigating to PersonalityQuizPage");
+            // TODO: Navigation to PersonalityQuiz Screen
+          },
+        ),
+      ),
+    );
   }
 
   //************************* Dispose Method *************************//

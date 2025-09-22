@@ -39,6 +39,7 @@ class AppTexts {
   static const String privacyPolicy = "Privacy Policy";
   static const String termsAndConditions = "Terms & Conditions";
   static const String setPreferences = "Set Preferences";
+  static const String startPersonalityQuiz = "Start Personality Quiz";
 
   // Custom Selectable Tile
   static const String maleGender = "Male";
@@ -123,4 +124,7 @@ Please read carefully before continuing.
   static const String transitonOnboardingSubtitle =
       "Your journey begins here ✨"
       "\nLet’s learn more about you to help you find the right connections.";
+  static const String transitonPreferencsSubtitle =
+      "Your preferences are set ✨"
+      "\nNow let’s dive into your personality so we can connect you with people who truly vibe with you.";
 }
