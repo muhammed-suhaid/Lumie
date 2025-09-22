@@ -38,6 +38,7 @@ class AppTexts {
   static const String takeAPhoto = "Take a Photo";
   static const String privacyPolicy = "Privacy Policy";
   static const String termsAndConditions = "Terms & Conditions";
+  static const String setPreferences = "Set Preferences";
 
   // Custom Selectable Tile
   static const String maleGender = "Male";
@@ -91,9 +92,6 @@ class AppTexts {
       "Add a username and password to keep your account safe";
   static const String username = "Username";
   static const String password = "Password";
-  static const String accountCreatedSubtitle =
-      "Dear user your account has been created successfully. "
-      "Continue to start using app";
   static const String preferenceGoalTitle = "What are you looking for?";
   static const String preferenceGoalSubTitle =
       "Choose a main goal (Dating or Friends). If Dating, choose a subtype.";
@@ -120,4 +118,9 @@ Welcome to our app! By using our services, you agree to the following terms:
 
 Please read carefully before continuing.
 """;
+
+  // Transition Screen content
+  static const String transitonOnboardingSubtitle =
+      "Your journey begins here ✨"
+      "\nLet’s learn more about you to help you find the right connections.";
 }

@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:lumie/screens/on_boarding/account_created_screen.dart';
 import 'package:lumie/screens/on_boarding/pages/add_recovery_email_screen.dart';
 import 'package:lumie/screens/on_boarding/pages/build_profile_screen.dart';
 import 'package:lumie/screens/on_boarding/pages/identify_yourself_screen.dart';
@@ -12,6 +11,7 @@ import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
 import 'package:lumie/utils/custom_snakbar.dart';
 import 'package:lumie/widgets/custom_button.dart';
+import 'package:lumie/widgets/transition_screen.dart';
 
 //************************* Main Onboarding Screen *************************//
 class OnboardingScreen extends StatefulWidget {
@@ -264,10 +264,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   //************************* _finishOnboarding method *************************//
   void _finishOnboarding() {
-    debugPrint("Onboarding finished, navigating to AccountCreatedScreen");
+    debugPrint("Onboarding finished, navigating to TransitonScreen");
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const AccountCreatedScreen()),
+      MaterialPageRoute(
+        builder: (context) => TransitionScreen(
+          subtitle: AppTexts.transitonOnboardingSubtitle,
+          buttonText: AppTexts.setPreferences,
+          onContinue: () {
+            debugPrint("Navigating to PreferencesScreen");
+          },
+        ),
+      ),
     );
   }
 

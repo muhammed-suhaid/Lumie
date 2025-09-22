@@ -4,8 +4,19 @@ import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
 import 'package:lumie/widgets/custom_button.dart';
 
-class AccountCreatedScreen extends StatelessWidget {
-  const AccountCreatedScreen({super.key});
+class TransitionScreen extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final String buttonText;
+  final VoidCallback onContinue;
+
+  const TransitionScreen({
+    super.key,
+    this.title = AppTexts.appName,
+    required this.subtitle,
+    required this.buttonText,
+    required this.onContinue,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +30,11 @@ class AccountCreatedScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Spacer(flex: 2),
-              //************************* App Name *************************//
+              const Spacer(flex: 2),
+
+              //************************* Title *************************//
               Text(
-                AppTexts.appName,
+                title,
                 style: GoogleFonts.dancingScript(
                   fontSize: AppConstants.kFontSizeTextLogo,
                   color: colorScheme.secondary,
@@ -33,7 +45,7 @@ class AccountCreatedScreen extends StatelessWidget {
 
               //************************* Subtitle *************************//
               Text(
-                AppTexts.accountCreatedSubtitle,
+                subtitle,
                 textAlign: TextAlign.center,
                 style: GoogleFonts.poppins(
                   fontSize: AppConstants.kFontSizeM,
@@ -41,21 +53,21 @@ class AccountCreatedScreen extends StatelessWidget {
                   color: colorScheme.onSurface,
                 ),
               ),
+
               const Spacer(flex: 3),
 
-              //************************* Custom Button *************************//
+              //************************* Continue Button *************************//
               CustomButton(
-                text: AppTexts.continueText,
+                text: buttonText,
                 type: ButtonType.primary,
                 isFullWidth: true,
                 backgroundColor: colorScheme.secondary,
                 textColor: colorScheme.onPrimary,
                 borderRadius: AppConstants.kRadiusM,
                 fontSize: AppConstants.kFontSizeM,
-                onPressed: () {
-                  // TODO: Navigation
-                },
+                onPressed: onContinue,
               ),
+
               SizedBox(height: screenHeight * 0.08),
             ],
           ),
