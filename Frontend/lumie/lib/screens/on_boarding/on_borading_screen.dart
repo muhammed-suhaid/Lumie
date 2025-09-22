@@ -7,6 +7,7 @@ import 'package:lumie/screens/on_boarding/pages/build_profile_screen.dart';
 import 'package:lumie/screens/on_boarding/pages/identify_yourself_screen.dart';
 import 'package:lumie/screens/on_boarding/pages/secure_account_screen.dart';
 import 'package:lumie/screens/on_boarding/widgets/custom_step_indicator.dart';
+import 'package:lumie/screens/preferences/preferences_screen.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
 import 'package:lumie/utils/custom_snakbar.dart';
@@ -273,6 +274,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           buttonText: AppTexts.setPreferences,
           onContinue: () {
             debugPrint("Navigating to PreferencesScreen");
+            // Navigating to Preferences Screen
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => PreferencesScreen()),
+            );
           },
         ),
       ),
