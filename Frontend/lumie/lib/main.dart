@@ -1,9 +1,14 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lumie/firebase_options.dart';
 import 'package:lumie/utils/app_colors.dart';
 import 'package:lumie/widgets/tab_screen.dart';
 
-void main() {
+void main() async {
+  // Firebase Initizing
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
