@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lumie/dummyData/personality_quiz_data.dart';
 import 'package:lumie/models/personality_quiz_model.dart';
+import 'package:lumie/screens/personality/personality_result_screen.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
 import 'package:lumie/utils/custom_snakbar.dart';
@@ -82,8 +83,15 @@ class _PersonalityQuizScreenState extends State<PersonalityQuizScreen> {
     mbti += tScore >= 0 ? "T" : "F";
     mbti += jScore >= 0 ? "J" : "P";
 
-    debugPrint(mbti);
-    //TODO: Go to  result screen
+    debugPrint("Personality = $mbti");
+    debugPrint("Navigating to PersonalityResultScreen");
+    // Navigating to PersonalityResultScreen
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PersonalityResultScreen(mbti: mbti),
+      ),
+    );
   }
 
   //************************* Body *************************//
@@ -163,7 +171,7 @@ class _PersonalityQuizScreenState extends State<PersonalityQuizScreen> {
                     CustomButton(
                       text: "Previous",
                       type: ButtonType.secondary,
-                      width: (screenWidth) /3,
+                      width: (screenWidth) / 3,
                       onPressed: _previousQuestion,
                     ),
                   const SizedBox(width: 10),

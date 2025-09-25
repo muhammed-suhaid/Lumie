@@ -101,6 +101,10 @@ class AppTexts {
   static const String preferenceTypeTitle = "Relationship type";
   static const String preferenceInterestTitle = "Pick your interests";
   static const String personalityQuizTitle = "Personality Quiz";
+  static const String personalityResultTitle = "Your Personality Result";
+  static const String strengths = "Strengths";
+  static const String weaknesses = "Weaknesses";
+  static const String idealMatches = "Ideal Matches";
 
   // Dummy Content
   static const String privacyPolicyContent = """
