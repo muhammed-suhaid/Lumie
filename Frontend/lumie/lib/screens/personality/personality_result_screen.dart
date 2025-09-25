@@ -45,6 +45,22 @@ class PersonalityResultScreen extends StatelessWidget {
     debugPrint("Navigating to Home Screen");
     // Navigating to Home Screen
     // TODO: Navigating to Home Screen
+    // TabScreen(
+    //     pages: [
+    //       const SizedBox(
+    //         child: Center(child: Text("Discover screen")),
+    //       ), // Discover screen
+    //       const SizedBox(
+    //         child: Center(child: Text("Match Requests Screen")),
+    //       ), // Match Requests Screen
+    //       const SizedBox(
+    //         child: Center(child: Text("Chat Screen")),
+    //       ), // Chat Screen
+    //       const SizedBox(
+    //         child: Center(child: Text("Profile Screen")),
+    //       ), // Profile settings
+    //     ],
+    //   ),
   }
 
   //************************* Body *************************//
