@@ -100,6 +100,7 @@ class AppTexts {
   static const String preferenceStatusTitle = "Relationship status";
   static const String preferenceTypeTitle = "Relationship type";
   static const String preferenceInterestTitle = "Pick your interests";
+  static const String personalityQuizTitle = "Personality Quiz";
 
   // Dummy Content
   static const String privacyPolicyContent = """

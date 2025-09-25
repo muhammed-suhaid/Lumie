@@ -74,7 +74,6 @@ class PreferenceGoalPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppConstants.kPaddingL),
       child: Column(

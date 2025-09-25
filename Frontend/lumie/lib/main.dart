@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lumie/screens/preferences/preferences_screen.dart';
+import 'package:lumie/screens/personality/personality_quiz_screen.dart';
 import 'package:lumie/utils/app_colors.dart';
 
 void main() {
@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
 
       // Automatically follows system dark mode
       themeMode: ThemeMode.system,
-      home: PreferencesScreen(),
+      home: PersonalityQuizScreen(),
       // TODO: Change to GetStartedScreen
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lumie/screens/personality/personality_quiz_screen.dart';
 import 'package:lumie/screens/preferences/pages/preference_goal_screen.dart';
 import 'package:lumie/screens/preferences/pages/preference_interests_screen.dart';
 import 'package:lumie/screens/preferences/pages/preference_meet_screen.dart';
@@ -157,7 +158,11 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
           buttonText: AppTexts.startPersonalityQuiz,
           onContinue: () {
             debugPrint("Navigating to PersonalityQuizPage");
-            // TODO: Navigation to PersonalityQuiz Screen
+            // Navigating to PersonalityQuizPage
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => PersonalityQuizScreen()),
+            );
           },
         ),
       ),
