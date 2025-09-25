@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lumie/screens/personality/personality_quiz_screen.dart';
 import 'package:lumie/utils/app_colors.dart';
+import 'package:lumie/widgets/tab_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -53,7 +53,22 @@ class MyApp extends StatelessWidget {
 
       // Automatically follows system dark mode
       themeMode: ThemeMode.system,
-      home: PersonalityQuizScreen(),
+      home: TabScreen(
+        pages: [
+          const SizedBox(
+            child: Center(child: Text("Discover screen")),
+          ), // Discover screen
+          const SizedBox(
+            child: Center(child: Text("Match Requests Screen")),
+          ), // Match Requests Screen
+          const SizedBox(
+            child: Center(child: Text("Chat Screen")),
+          ), // Chat Screen
+          const SizedBox(
+            child: Center(child: Text("Profile Screen")),
+          ), // Profile settings
+        ],
+      ),
       // TODO: Change to GetStartedScreen
     );
   }
