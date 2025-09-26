@@ -98,10 +98,10 @@ class AuthScreen extends StatelessWidget {
               //************************* Phone Sign In *************************//
               CustomButton(
                 text: AppTexts.continueWithPhone,
-                type: ButtonType.outline,
+                type: ButtonType.primary,
                 isFullWidth: true,
-                borderColor: colorScheme.secondary,
-                textColor: colorScheme.secondary,
+                backgroundColor: colorScheme.onSurface,
+                textColor: colorScheme.surface,
                 borderRadius: AppConstants.kRadiusL,
                 fontSize: AppConstants.kFontSizeM,
                 icon: Icons.phone,

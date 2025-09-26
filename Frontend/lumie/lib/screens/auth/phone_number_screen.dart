@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lumie/screens/auth/otp_verification/otp_verification_screen.dart';
+import 'package:lumie/services/phone_auth_service.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
 import 'package:lumie/utils/custom_snakbar.dart';
@@ -16,21 +17,45 @@ class PhoneNumberScreen extends StatefulWidget {
 
 class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
   final TextEditingController _phoneController = TextEditingController();
+  bool _isLoading = false;
 
   //************************* onContinue method *************************//
-  void _onContinue() {
+  void _onContinue() async {
     final phone = _phoneController.text.trim();
     if (phone.isEmpty || phone.length < 10) {
       CustomSnackbar.show(context, "Please enter a valid phone number");
       return;
     }
 
-    debugPrint("Phone entered: $phone");
-    // TODO: Trigger Firebase Phone Auth (send OTP)
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => OtpVerificationScreen(phone: phone)),
-    );
+    setState(() => _isLoading = true);
+
+    try {
+      await PhoneAuthService.sendOTP(
+        phoneNumber: "+91$phone",
+        codeSent: (verificationId, resendToken) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => OtpVerificationScreen(
+                phone: "+91$phone",
+                verificationId: verificationId,
+              ),
+            ),
+          );
+        },
+        onFailed: (error) {
+          CustomSnackbar.show(context, "Verification failed: ${error.message}");
+        },
+      );
+    } catch (e) {
+      if (mounted) {
+        CustomSnackbar.show(context, "Something went wrong: $e");
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
   }
 
   //************************* Dispose Method *************************//
@@ -104,7 +129,8 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
                 textColor: colorScheme.onPrimary,
                 borderRadius: AppConstants.kRadiusM,
                 fontSize: AppConstants.kFontSizeM,
-                onPressed: _onContinue,
+                isLoading: _isLoading,
+                onPressed: _isLoading ? null : _onContinue,
               ),
               SizedBox(height: screenHeight * 0.08),
             ],

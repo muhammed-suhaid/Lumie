@@ -72,7 +72,7 @@ class AppTexts {
       "Please enter your valid phone number. We will send you a 4-digit code to verify your account.";
   static const String otpTitle1 = "Enter Your";
   static const String otpTitle2 = "Code?";
-  static const String otpSubtitle = "Enter 4-digit code we have sent to you at";
+  static const String otpSubtitle = "Enter 6-digit code we have sent to you at";
   static const String buildProfileTitle = "Build Your Profile";
   static const String buildProfileSubtitle =
       "Lumie is building real dating between real people. At least add one photo of yourself.";

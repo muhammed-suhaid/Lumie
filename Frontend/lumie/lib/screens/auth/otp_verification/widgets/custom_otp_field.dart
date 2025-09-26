@@ -10,7 +10,7 @@ class CustomOtpField extends StatelessWidget {
 
   const CustomOtpField({
     super.key,
-    this.length = 4,
+    this.length = 6,
     this.onChanged,
     this.onCompleted,
   });

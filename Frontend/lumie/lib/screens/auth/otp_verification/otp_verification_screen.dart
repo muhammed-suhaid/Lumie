@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lumie/screens/auth/otp_verification/widgets/custom_otp_field.dart';
 import 'package:lumie/screens/on_boarding/on_borading_screen.dart';
+import 'package:lumie/services/phone_auth_service.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
 import 'package:lumie/utils/custom_snakbar.dart';
@@ -9,7 +10,12 @@ import 'package:lumie/widgets/custom_button.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
   final String phone;
-  const OtpVerificationScreen({super.key, required this.phone});
+  final String verificationId;
+  const OtpVerificationScreen({
+    super.key,
+    required this.phone,
+    required this.verificationId,
+  });
 
   @override
   State<OtpVerificationScreen> createState() => _OtpVerificationScreenState();
@@ -19,19 +25,29 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   String _otpCode = "";
 
   //************************* onContinue method *************************//
-  void _onContinue() {
-    if (_otpCode.isEmpty || _otpCode.length < 4) {
-      CustomSnackbar.show(context, "Please enter the 4-digit OTP");
+  void _onContinue() async {
+    if (_otpCode.isEmpty || _otpCode.length < 6) {
+      CustomSnackbar.show(context, "Please enter the 6-digit OTP");
       return;
     }
 
+    debugPrint("Entered Phone Number: ${widget.phone}");
     debugPrint("Entered OTP: $_otpCode");
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (_) => const OnboardingScreen()),
-      (route) => false,
-    );
-    // TODO: Verify OTP with Firebase
+    try {
+      final userCredential = await PhoneAuthService.verifyOTP(_otpCode);
+
+      if (!mounted) return;
+
+      if (userCredential != null) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const OnboardingScreen()),
+          (route) => false,
+        );
+      }
+    } catch (e) {
+      CustomSnackbar.show(context, "Invalid OTP");
+    }
   }
 
   @override
@@ -99,7 +115,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
               //************************* Continue Button *************************//
               CustomButton(
-                text: "Continue",
+                text: AppTexts.continueText,
                 type: ButtonType.primary,
                 isFullWidth: true,
                 backgroundColor: colorScheme.secondary,
