@@ -24,6 +24,29 @@ class AuthScreen extends StatelessWidget {
       );
     }
 
+    //************************* Google Sign-In Method *************************//
+    // Future<void> handleGoogleSignIn() async {
+    //   try {
+    //     final userCredential = await GoogleSignInService.signInWithGoogle();
+
+    //     if (userCredential != null &&
+    //         userCredential.user != null &&
+    //         context.mounted) {
+    //       // Sign-in successful, go to OnBoardingScreen
+    //       debugPrint("Sign-in successful, go to OnBoardingScreen");
+    //       Navigator.pushReplacement(
+    //         context,
+    //         MaterialPageRoute(builder: (context) => const OnboardingScreen()),
+    //       );
+    //     }
+    //   } catch (e) {
+    //     debugPrint("Google Sign-In error: $e");
+    //     if (context.mounted) {
+    //       CustomSnackbar.show(context, "Google Sign-In failed");
+    //     }
+    //   }
+    // }
+
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -58,22 +81,19 @@ class AuthScreen extends StatelessWidget {
               const Spacer(flex: 2),
 
               //************************* Google Sign In *************************//
-              CustomButton(
-                text: AppTexts.continueWithGoogle,
-                type: ButtonType.primary,
-                isFullWidth: true,
-                backgroundColor: colorScheme.onSurface,
-                textColor: colorScheme.surface,
-                borderRadius: AppConstants.kRadiusL,
-                fontSize: AppConstants.kFontSizeM,
-                icon: Icons.g_mobiledata,
-                isIconRight: false,
-                onPressed: () {
-                  debugPrint("Google Sign In Pressed");
-                  // TODO: Implement Google Sign In
-                },
-              ),
-              const SizedBox(height: AppConstants.kPaddingM),
+              // CustomButton(
+              //   text: AppTexts.continueWithGoogle,
+              //   type: ButtonType.primary,
+              //   isFullWidth: true,
+              //   backgroundColor: colorScheme.onSurface,
+              //   textColor: colorScheme.surface,
+              //   borderRadius: AppConstants.kRadiusL,
+              //   fontSize: AppConstants.kFontSizeM,
+              //   icon: Icons.g_mobiledata,
+              //   isIconRight: false,
+              //   onPressed: handleGoogleSignIn,
+              // ),
+              // const SizedBox(height: AppConstants.kPaddingM),
 
               //************************* Phone Sign In *************************//
               CustomButton(
