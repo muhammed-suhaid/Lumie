@@ -90,7 +90,7 @@ class AppTexts {
   static const String email = "Email";
   static const String secureYourAccountTitle = "Secure Your Account";
   static const String secureYourAccountSubtitle =
-      "Add a username and password to keep your account safe";
+      "Add a email and password to keep your account safe";
   static const String username = "Username";
   static const String password = "Password";
   static const String preferenceGoalTitle = "What are you looking for?";
@@ -105,6 +105,9 @@ class AppTexts {
   static const String strengths = "Strengths";
   static const String weaknesses = "Weaknesses";
   static const String idealMatches = "Ideal Matches";
+  static const String addMediaTitle = "Add Media";
+  static const String addMediaSubTitle =
+      "Add at least one photo and one video to complete your profile";
 
   // Dummy Content
   static const String privacyPolicyContent = """

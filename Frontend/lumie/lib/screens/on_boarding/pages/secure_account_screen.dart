@@ -5,12 +5,12 @@ import 'package:lumie/utils/app_texts.dart';
 import 'package:lumie/widgets/custom_textfield.dart';
 
 class SecureAccountScreen extends StatefulWidget {
-  final TextEditingController usernameController;
+  final TextEditingController emailController;
   final TextEditingController passwordController;
 
   const SecureAccountScreen({
     super.key,
-    required this.usernameController,
+    required this.emailController,
     required this.passwordController,
   });
 
@@ -52,9 +52,9 @@ class _SecureAccountScreenState extends State<SecureAccountScreen> {
           ),
           SizedBox(height: screenHeight * 0.04),
 
-          //************************* Username *************************//
+          //************************* Email Label *************************//
           Text(
-            AppTexts.username,
+            AppTexts.email,
             style: GoogleFonts.poppins(
               fontSize: AppConstants.kFontSizeM,
               fontWeight: FontWeight.w500,
@@ -62,10 +62,12 @@ class _SecureAccountScreenState extends State<SecureAccountScreen> {
             ),
           ),
           const SizedBox(height: AppConstants.kPaddingS),
-          //************************* Username Input *************************//
+
+          //************************* Email Input *************************//
           CustomTextField(
-            controller: widget.usernameController,
-            hintText: AppTexts.usernameHint,
+            controller: widget.emailController,
+            hintText: AppTexts.emailHint,
+            keyboardType: TextInputType.emailAddress,
           ),
           SizedBox(height: screenHeight * 0.03),
 

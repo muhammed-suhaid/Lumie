@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:lumie/screens/on_boarding/pages/add_recovery_email_screen.dart';
+import 'package:lumie/screens/on_boarding/pages/add_media_screen.dart';
 import 'package:lumie/screens/on_boarding/pages/build_profile_screen.dart';
 import 'package:lumie/screens/on_boarding/pages/identify_yourself_screen.dart';
 import 'package:lumie/screens/on_boarding/pages/secure_account_screen.dart';
@@ -37,12 +37,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final TextEditingController _monthController = TextEditingController();
   final TextEditingController _yearController = TextEditingController();
 
+  // For Add Media Screen
+  List<File> _selectedPhotos = [];
+  File? _selectedVideo;
+
   // For Add Recovery Email Screen
-  final TextEditingController _emailController = TextEditingController();
+  // final TextEditingController _emailController = TextEditingController();
 
   // For Secure Account Screen
-  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  //************************* onMediaSelected method *************************//
 
   //************************* Pick photo from camera/gallery *************************//
   Future<void> _pickPhoto(ImageSource source) async {
@@ -167,29 +173,43 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return true;
   }
 
+  //************************* _validateMedia method *************************//
+  bool _validateMedia({bool showSnackbar = true}) {
+    if (_selectedPhotos.isEmpty) {
+      CustomSnackbar.show(context, "Please select at least one photo");
+      return false;
+    }
+    if (_selectedVideo == null) {
+      CustomSnackbar.show(context, "Please select a video");
+      return false;
+    }
+    return true;
+  }
+
   //************************* _validateRecoveryEmail method *************************//
-  bool _validateRecoveryEmail({bool showSnackbar = true}) {
+  // bool _validateRecoveryEmail({bool showSnackbar = true}) {
+  //   final email = _emailController.text.trim();
+  //   final emailRegex = RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
+
+  //   if (email.isEmpty || !emailRegex.hasMatch(email)) {
+  //     if (showSnackbar) {
+  //       CustomSnackbar.show(context, "Please enter a valid email address");
+  //     }
+  //     return false;
+  //   }
+
+  //   return true;
+  // }
+
+  //************************* _validateSecureAccount method *************************//
+  bool _validateSecureAccount({bool showSnackbar = true}) {
     final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
     final emailRegex = RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
 
     if (email.isEmpty || !emailRegex.hasMatch(email)) {
       if (showSnackbar) {
         CustomSnackbar.show(context, "Please enter a valid email address");
-      }
-      return false;
-    }
-
-    return true;
-  }
-
-  //************************* _validateSecureAccount method *************************//
-  bool _validateSecureAccount({bool showSnackbar = true}) {
-    final username = _usernameController.text.trim();
-    final password = _passwordController.text.trim();
-
-    if (username.length < 3) {
-      if (showSnackbar) {
-        CustomSnackbar.show(context, "Username must be at least 3 characters");
       }
       return false;
     }
@@ -208,7 +228,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   bool _validateAllSteps() {
     return _validateProfile(showSnackbar: true) &&
         _validateIdentifyYourself(showSnackbar: true) &&
-        _validateRecoveryEmail(showSnackbar: true) &&
+        _validateMedia(showSnackbar: true) &&
+        // _validateRecoveryEmail(showSnackbar: true) &&
         _validateSecureAccount(showSnackbar: true);
   }
 
@@ -216,12 +237,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Map<String, dynamic> _collectOnboardingData() {
     return {
       "profileImage": _selectedImage?.path ?? "No image selected",
+      "photos": _selectedPhotos.isNotEmpty
+          ? _selectedPhotos.map((file) => file.path).toList()
+          : [],
+      "video": _selectedVideo?.path ?? "No video selected",
       "gender": _selectedGender,
       "name": _nameController.text.trim(),
       "birthday":
           "${_dayController.text}/${_monthController.text}/${_yearController.text}",
       "email": _emailController.text.trim(),
-      "username": _usernameController.text.trim(),
       "password": _passwordController.text.trim(),
     };
   }
@@ -237,8 +261,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           if (_validateIdentifyYourself()) _goToNextPage();
           break;
         case 2:
-          if (_validateRecoveryEmail()) _goToNextPage();
+          if (_validateMedia()) _goToNextPage();
           break;
+        // case 2:
+        //   if (_validateRecoveryEmail()) _goToNextPage();
+        //   break;
       }
     } else {
       // Done pressed, validate all steps
@@ -294,7 +321,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     _monthController.dispose();
     _yearController.dispose();
     _emailController.dispose();
-    _usernameController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -340,12 +366,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         },
                       );
                     case 2:
-                      return AddRecoveryEmailScreen(
-                        emailController: _emailController,
+                      return AddMediaScreen(
+                        selectedPhotos: _selectedPhotos,
+                        selectedVideo: _selectedVideo,
+                        onMediaSelected: (photos, video) {
+                          setState(() {
+                            _selectedPhotos = photos;
+                            _selectedVideo = video;
+                          });
+                        },
                       );
                     case 3:
                       return SecureAccountScreen(
-                        usernameController: _usernameController,
+                        emailController: _emailController,
                         passwordController: _passwordController,
                       );
                     default:
