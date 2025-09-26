@@ -1,5 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
-
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lumie/screens/on_boarding/pages/add_media_screen.dart';
@@ -8,6 +9,7 @@ import 'package:lumie/screens/on_boarding/pages/identify_yourself_screen.dart';
 import 'package:lumie/screens/on_boarding/pages/secure_account_screen.dart';
 import 'package:lumie/screens/on_boarding/widgets/custom_step_indicator.dart';
 import 'package:lumie/screens/preferences/preferences_screen.dart';
+import 'package:lumie/services/onboarding_service.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
 import 'package:lumie/utils/custom_snakbar.dart';
@@ -233,6 +235,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         _validateSecureAccount(showSnackbar: true);
   }
 
+  //  password hashing function
+  String hashPassword(String input) {
+    final bytes = utf8.encode(input);
+    return sha256.convert(bytes).toString();
+  }
+
   //************************* Collect all onboarding data *************************//
   Map<String, dynamic> _collectOnboardingData() {
     return {
@@ -246,7 +254,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       "birthday":
           "${_dayController.text}/${_monthController.text}/${_yearController.text}",
       "email": _emailController.text.trim(),
-      "password": _passwordController.text.trim(),
+      "password": hashPassword(_passwordController.text.trim()),
     };
   }
 
@@ -274,7 +282,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         debugPrint("===== Final Onboarding Data =====");
         data.forEach((key, value) => debugPrint("$key: $value"));
         debugPrint("=================================");
-        // TODO: API call
         _finishOnboarding();
       }
     }
@@ -291,25 +298,38 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   //************************* _finishOnboarding method *************************//
-  void _finishOnboarding() {
-    debugPrint("Onboarding finished, navigating to TransitonScreen");
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TransitionScreen(
-          subtitle: AppTexts.transitonOnboardingSubtitle,
-          buttonText: AppTexts.setPreferences,
-          onContinue: () {
-            debugPrint("Navigating to PreferencesScreen");
-            // Navigating to Preferences Screen
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => PreferencesScreen()),
-            );
-          },
-        ),
-      ),
+  void _finishOnboarding() async {
+    final data = _collectOnboardingData();
+
+    await OnboardingService.uploadOnboardingData(
+      context: context,
+      profileImage: File(data["profileImage"]),
+      photos: List<File>.from(data["photos"].map((p) => File(p))),
+      video: File(data["video"]),
+      gender: data["gender"],
+      name: data["name"],
+      birthday: data["birthday"],
+      email: data["email"],
+      password: data["password"],
     );
+
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TransitionScreen(
+            subtitle: AppTexts.transitonOnboardingSubtitle,
+            buttonText: AppTexts.setPreferences,
+            onContinue: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => PreferencesScreen()),
+              );
+            },
+          ),
+        ),
+      );
+    }
   }
 
   //************************* Dispose Method *************************//

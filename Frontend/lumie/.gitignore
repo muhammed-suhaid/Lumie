@@ -51,3 +51,6 @@ app.*.map.json
 
 # Google auth
 /lib/services/google_auth.dart
+
+# cloudinary_service.dart
+/lib/services/cloudinary_service.dart
