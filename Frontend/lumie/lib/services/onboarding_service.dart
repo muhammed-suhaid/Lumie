@@ -47,17 +47,20 @@ class OnboardingService {
         return;
       }
 
-      await FirebaseFirestore.instance.collection("users").doc(user.uid).set({
-        "profileImage": profileImageUrl,
-        "photos": photoUrls,
-        "video": videoUrl,
-        "gender": gender,
-        "name": name,
-        "birthday": birthday,
-        "email": email,
-        "password": password,
-        "updatedAt": FieldValue.serverTimestamp(),
-      });
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(user.uid)
+          .update({
+            "profileImage": profileImageUrl,
+            "photos": photoUrls,
+            "video": videoUrl,
+            "gender": gender,
+            "name": name,
+            "birthday": birthday,
+            "email": email,
+            "password": password,
+            "updatedAt": FieldValue.serverTimestamp(),
+          });
     } catch (e) {
       if (!context.mounted) return;
       CustomSnackbar.show(context, "Error uploading onboarding data");

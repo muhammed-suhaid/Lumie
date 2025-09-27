@@ -12,6 +12,7 @@ import 'package:lumie/screens/preferences/preferences_screen.dart';
 import 'package:lumie/services/onboarding_service.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
+import 'package:lumie/utils/custom_loading_screen.dart';
 import 'package:lumie/utils/custom_snakbar.dart';
 import 'package:lumie/widgets/custom_button.dart';
 import 'package:lumie/widgets/transition_screen.dart';
@@ -27,6 +28,7 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentStep = 0;
+  bool _isLoading = false;
 
   // For Build Profile Screen
   File? _selectedImage;
@@ -301,6 +303,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   void _finishOnboarding() async {
     final data = _collectOnboardingData();
 
+    setState(() => _isLoading = true);
+
     await OnboardingService.uploadOnboardingData(
       context: context,
       profileImage: File(data["profileImage"]),
@@ -330,6 +334,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         ),
       );
     }
+    setState(() => _isLoading = false);
   }
 
   //************************* Dispose Method *************************//
@@ -352,89 +357,92 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final colorScheme = Theme.of(context).colorScheme;
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            SizedBox(height: screenHeight * 0.03),
-            // Custom Step Indicator Widget
-            CustomStepIndicator(currentStep: _currentStep, totalSteps: 4),
-            SizedBox(height: screenHeight * 0.05),
-            // Pages
-            Expanded(
-              child: PageView.builder(
-                controller: _pageController,
-                itemCount: 4,
-                itemBuilder: (context, index) {
-                  switch (index) {
-                    case 0:
-                      return BuildProfileScreen(
-                        selectedImage: _selectedImage,
-                        onPickPhoto: () => _showImageSourceActionSheet(context),
-                      );
-                    case 1:
-                      return IdentifyYourselfScreen(
-                        nameController: _nameController,
-                        dayController: _dayController,
-                        monthController: _monthController,
-                        yearController: _yearController,
-                        selectedGender: _selectedGender,
-                        onGenderSelected: (gender) {
-                          setState(() {
-                            _selectedGender = gender;
-                          });
-                        },
-                      );
-                    case 2:
-                      return AddMediaScreen(
-                        selectedPhotos: _selectedPhotos,
-                        selectedVideo: _selectedVideo,
-                        onMediaSelected: (photos, video) {
-                          setState(() {
-                            _selectedPhotos = photos;
-                            _selectedVideo = video;
-                          });
-                        },
-                      );
-                    case 3:
-                      return SecureAccountScreen(
-                        emailController: _emailController,
-                        passwordController: _passwordController,
-                      );
-                    default:
-                      return const SizedBox();
-                  }
-                },
-                physics: const BouncingScrollPhysics(),
-                onPageChanged: (index) {
-                  setState(() {
-                    _currentStep = index;
-                  });
-                },
+    return _isLoading
+        ? LoadingScreen()
+        : Scaffold(
+            body: SafeArea(
+              child: Column(
+                children: [
+                  SizedBox(height: screenHeight * 0.03),
+                  // Custom Step Indicator Widget
+                  CustomStepIndicator(currentStep: _currentStep, totalSteps: 4),
+                  SizedBox(height: screenHeight * 0.05),
+                  // Pages
+                  Expanded(
+                    child: PageView.builder(
+                      controller: _pageController,
+                      itemCount: 4,
+                      itemBuilder: (context, index) {
+                        switch (index) {
+                          case 0:
+                            return BuildProfileScreen(
+                              selectedImage: _selectedImage,
+                              onPickPhoto: () =>
+                                  _showImageSourceActionSheet(context),
+                            );
+                          case 1:
+                            return IdentifyYourselfScreen(
+                              nameController: _nameController,
+                              dayController: _dayController,
+                              monthController: _monthController,
+                              yearController: _yearController,
+                              selectedGender: _selectedGender,
+                              onGenderSelected: (gender) {
+                                setState(() {
+                                  _selectedGender = gender;
+                                });
+                              },
+                            );
+                          case 2:
+                            return AddMediaScreen(
+                              selectedPhotos: _selectedPhotos,
+                              selectedVideo: _selectedVideo,
+                              onMediaSelected: (photos, video) {
+                                setState(() {
+                                  _selectedPhotos = photos;
+                                  _selectedVideo = video;
+                                });
+                              },
+                            );
+                          case 3:
+                            return SecureAccountScreen(
+                              emailController: _emailController,
+                              passwordController: _passwordController,
+                            );
+                          default:
+                            return const SizedBox();
+                        }
+                      },
+                      physics: const BouncingScrollPhysics(),
+                      onPageChanged: (index) {
+                        setState(() {
+                          _currentStep = index;
+                        });
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
-      //************************* Continue Button at Bottom *************************//
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(
-          top: AppConstants.kPaddingM,
-          bottom: AppConstants.kPaddingL,
-          left: AppConstants.kPaddingL,
-          right: AppConstants.kPaddingL,
-        ),
-        child: CustomButton(
-          text: _currentStep == 3 ? AppTexts.done : AppTexts.continueText,
-          type: ButtonType.primary,
-          isFullWidth: true,
-          backgroundColor: colorScheme.secondary,
-          textColor: colorScheme.onPrimary,
-          borderRadius: AppConstants.kRadiusM,
-          fontSize: AppConstants.kFontSizeM,
-          onPressed: _handleContinue,
-        ),
-      ),
-    );
+            //************************* Continue Button at Bottom *************************//
+            bottomNavigationBar: Padding(
+              padding: const EdgeInsets.only(
+                top: AppConstants.kPaddingM,
+                bottom: AppConstants.kPaddingL,
+                left: AppConstants.kPaddingL,
+                right: AppConstants.kPaddingL,
+              ),
+              child: CustomButton(
+                text: _currentStep == 3 ? AppTexts.done : AppTexts.continueText,
+                type: ButtonType.primary,
+                isFullWidth: true,
+                backgroundColor: colorScheme.secondary,
+                textColor: colorScheme.onPrimary,
+                borderRadius: AppConstants.kRadiusM,
+                fontSize: AppConstants.kFontSizeM,
+                onPressed: _handleContinue,
+              ),
+            ),
+          );
   }
 }
