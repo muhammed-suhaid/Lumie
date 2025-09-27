@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lumie/dummyData/personality_results_data.dart';
 import 'package:lumie/models/personality_result_model.dart';
+import 'package:lumie/services/personality_service.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
+import 'package:lumie/utils/custom_snakbar.dart';
 import 'package:lumie/widgets/custom_button.dart';
 import 'package:lumie/widgets/custom_selectable_tile.dart';
+import 'package:lumie/widgets/tab_screen.dart';
 
 class PersonalityResultScreen extends StatelessWidget {
   final String mbti;
@@ -41,26 +44,47 @@ class PersonalityResultScreen extends StatelessWidget {
   }
 
   //************************* Navigate to Home *************************//
-  void _onButtonClicked(BuildContext context) {
-    debugPrint("Navigating to Home Screen");
-    // Navigating to Home Screen
-    // TODO: Navigating to Home Screen
-    // TabScreen(
-    //     pages: [
-    //       const SizedBox(
-    //         child: Center(child: Text("Discover screen")),
-    //       ), // Discover screen
-    //       const SizedBox(
-    //         child: Center(child: Text("Match Requests Screen")),
-    //       ), // Match Requests Screen
-    //       const SizedBox(
-    //         child: Center(child: Text("Chat Screen")),
-    //       ), // Chat Screen
-    //       const SizedBox(
-    //         child: Center(child: Text("Profile Screen")),
-    //       ), // Profile settings
-    //     ],
-    //   ),
+  void _onButtonClicked(BuildContext context) async {
+    // Save to Firestore
+    try {
+      await PersonalityService.savePersonality(mbti);
+      if (context.mounted) {
+        CustomSnackbar.show(
+          context,
+          "Personality saved successfully",
+          isError: false,
+        );
+
+        debugPrint("Navigating to TabScreen");
+        // Navigating to TabScreen
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TabScreen(
+              pages: [
+                const SizedBox(
+                  child: Center(child: Text("Discover screen")),
+                ), // Discover screen
+                const SizedBox(
+                  child: Center(child: Text("Match Requests Screen")),
+                ), // Match Requests Screen
+                const SizedBox(
+                  child: Center(child: Text("Chat Screen")),
+                ), // Chat Screen
+                const SizedBox(
+                  child: Center(child: Text("Profile Screen")),
+                ), // Profile settings
+              ],
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        CustomSnackbar.show(context, "Error saving personality: $e");
+      }
+      debugPrint("Error saving personality: $e");
+    }
   }
 
   //************************* Body *************************//
