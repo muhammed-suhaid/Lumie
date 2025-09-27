@@ -316,6 +316,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       email: data["email"],
       password: data["password"],
     );
+    if (mounted) {
+      CustomSnackbar.show(context, "Profile Created!", isError: false);
+    }
 
     if (mounted) {
       Navigator.pushReplacement(

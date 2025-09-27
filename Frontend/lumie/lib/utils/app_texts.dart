@@ -69,7 +69,7 @@ class AppTexts {
   static const String phoneTitle1 = "Can I get your";
   static const String phoneTitle2 = "number?";
   static const String phoneSubtitle =
-      "Please enter your valid phone number. We will send you a 4-digit code to verify your account.";
+      "Please enter your valid phone number. We will send you a 6-digit code to verify your account.";
   static const String otpTitle1 = "Enter Your";
   static const String otpTitle2 = "Code?";
   static const String otpSubtitle = "Enter 6-digit code we have sent to you at";

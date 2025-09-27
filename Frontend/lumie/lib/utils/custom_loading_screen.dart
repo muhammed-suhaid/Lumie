@@ -46,7 +46,7 @@ class LoadingScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: GoogleFonts.poppins(
                   fontSize: AppConstants.kFontSizeM,
-                  color: colorScheme.onSurface.withOpacity(0.7),
+                  color: colorScheme.onSurface.withAlpha(100),
                 ),
               ),
             ],

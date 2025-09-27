@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
 
-      // Automatically follows system dark mode
+      // Automatically follows system mode
       themeMode: ThemeMode.system,
       home: GetStartedScreen(),
     );

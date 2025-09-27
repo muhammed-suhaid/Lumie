@@ -5,6 +5,7 @@ class CustomSnackbar {
   static void show(
     BuildContext context,
     String message, {
+    bool isError = true,
     Duration duration = const Duration(seconds: 2),
   }) {
     final overlay = Overlay.of(context);
@@ -15,7 +16,7 @@ class CustomSnackbar {
         bottom: AppConstants.kPaddingL,
         left: AppConstants.kPaddingL,
         right: AppConstants.kPaddingL,
-        child: _SnackbarAnimated(message: message),
+        child: _SnackbarAnimated(message: message, isError: isError),
       ),
     );
 
@@ -32,8 +33,9 @@ class CustomSnackbar {
 //************************* Animated Snackbar Widget *************************//
 class _SnackbarAnimated extends StatefulWidget {
   final String message;
+  final bool isError;
 
-  const _SnackbarAnimated({required this.message});
+  const _SnackbarAnimated({required this.message, this.isError = true});
 
   @override
   State<_SnackbarAnimated> createState() => _SnackbarAnimatedState();
@@ -81,7 +83,7 @@ class _SnackbarAnimatedState extends State<_SnackbarAnimated>
       child: FadeTransition(
         opacity: _opacityAnimation,
         child: Material(
-          color: Colors.red[400],
+          color: widget.isError ? Colors.red[400] : Colors.green[400],
           borderRadius: BorderRadius.circular(AppConstants.kRadiusM),
           child: Padding(
             padding: const EdgeInsets.symmetric(

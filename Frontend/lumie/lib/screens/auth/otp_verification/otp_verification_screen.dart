@@ -37,7 +37,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       final userCredential = await PhoneAuthService.verifyOTP(_otpCode);
 
       if (!mounted) return;
-
+      CustomSnackbar.show(context, "Registeration Successful", isError: false);
       if (userCredential != null) {
         Navigator.pushAndRemoveUntil(
           context,

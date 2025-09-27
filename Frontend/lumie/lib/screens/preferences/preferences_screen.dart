@@ -5,8 +5,10 @@ import 'package:lumie/screens/preferences/pages/preference_interests_screen.dart
 import 'package:lumie/screens/preferences/pages/preference_meet_screen.dart';
 import 'package:lumie/screens/preferences/pages/preference_status_screen.dart';
 import 'package:lumie/screens/preferences/pages/preference_type_screen.dart';
+import 'package:lumie/services/preferences_service.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
+import 'package:lumie/utils/custom_loading_screen.dart';
 import 'package:lumie/utils/custom_snakbar.dart';
 import 'package:lumie/widgets/custom_button.dart';
 import 'package:lumie/screens/on_boarding/widgets/custom_step_indicator.dart';
@@ -22,6 +24,7 @@ class PreferencesScreen extends StatefulWidget {
 class _PreferencesScreenState extends State<PreferencesScreen> {
   final PageController _pageController = PageController();
   int _currentStep = 0;
+  bool _isLoading = false;
 
   // Preference state
   String? _goalMain;
@@ -121,7 +124,6 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
         debugPrint("===== Preferences Collected =====");
         data.forEach((key, value) => debugPrint("$key: $value"));
         debugPrint("=================================");
-        // TODO: send prefs to API / Firestore
         _finishPreferences();
       }
     }
@@ -148,25 +150,42 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   }
 
   //************************* _finishPreferences Method *************************//
-  void _finishPreferences() {
-    debugPrint("Preferences finished, Navigating to TransitionScreen");
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TransitionScreen(
-          subtitle: AppTexts.transitonPreferencsSubtitle,
-          buttonText: AppTexts.startPersonalityQuiz,
-          onContinue: () {
-            debugPrint("Navigating to PersonalityQuizPage");
-            // Navigating to PersonalityQuizPage
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => PersonalityQuizScreen()),
-            );
-          },
-        ),
-      ),
-    );
+  Future<void> _finishPreferences() async {
+    final data = _collectPreferencesData();
+
+    try {
+      setState(() => _isLoading = true);
+      await PreferencesService.savePreferences(data);
+      if (mounted) {
+        CustomSnackbar.show(context, "Preferences saved!", isError: false);
+      }
+
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TransitionScreen(
+              subtitle: AppTexts.transitonPreferencsSubtitle,
+              buttonText: AppTexts.startPersonalityQuiz,
+              onContinue: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PersonalityQuizScreen(),
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        CustomSnackbar.show(context, "Error saving preferences: $e");
+      }
+    } finally {
+      setState(() => _isLoading = false);
+    }
   }
 
   //************************* Dispose Method *************************//
@@ -185,69 +204,77 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            SizedBox(height: screenHeight * 0.03),
-            // step indicator
-            CustomStepIndicator(currentStep: _currentStep, totalSteps: 5),
-            SizedBox(height: screenHeight * 0.04),
-            // Pages
-            Expanded(
-              child: PageView(
-                controller: _pageController,
-                physics: const BouncingScrollPhysics(),
-                onPageChanged: (index) => setState(() => _currentStep = index),
+    return _isLoading
+        ? LoadingScreen()
+        : Scaffold(
+            body: SafeArea(
+              child: Column(
                 children: [
-                  PreferenceGoalPage(
-                    selectedMain: _goalMain,
-                    selectedSub: _goalSub,
-                    onMainSelected: (main) => setState(() => _goalMain = main),
-                    onSubSelected: (sub) => setState(() => _goalSub = sub),
-                  ),
-                  PreferenceMeetPage(
-                    selected: _whoToMeet,
-                    onSelected: (selected) =>
-                        setState(() => _whoToMeet = selected),
-                  ),
-                  PreferenceStatusPage(
-                    selected: _relationshipStatus,
-                    onSelected: (s) => setState(() => _relationshipStatus = s),
-                  ),
-                  PreferenceTypePage(
-                    selected: _relationshipType,
-                    onSelected: (s) => setState(() => _relationshipType = s),
-                  ),
-                  PreferenceInterestsPage(
-                    selectedInterests: _interests,
-                    onChanged: (list) => setState(() => _interests = list),
+                  SizedBox(height: screenHeight * 0.03),
+                  // step indicator
+                  CustomStepIndicator(currentStep: _currentStep, totalSteps: 5),
+                  SizedBox(height: screenHeight * 0.04),
+                  // Pages
+                  Expanded(
+                    child: PageView(
+                      controller: _pageController,
+                      physics: const BouncingScrollPhysics(),
+                      onPageChanged: (index) =>
+                          setState(() => _currentStep = index),
+                      children: [
+                        PreferenceGoalPage(
+                          selectedMain: _goalMain,
+                          selectedSub: _goalSub,
+                          onMainSelected: (main) =>
+                              setState(() => _goalMain = main),
+                          onSubSelected: (sub) =>
+                              setState(() => _goalSub = sub),
+                        ),
+                        PreferenceMeetPage(
+                          selected: _whoToMeet,
+                          onSelected: (selected) =>
+                              setState(() => _whoToMeet = selected),
+                        ),
+                        PreferenceStatusPage(
+                          selected: _relationshipStatus,
+                          onSelected: (s) =>
+                              setState(() => _relationshipStatus = s),
+                        ),
+                        PreferenceTypePage(
+                          selected: _relationshipType,
+                          onSelected: (s) =>
+                              setState(() => _relationshipType = s),
+                        ),
+                        PreferenceInterestsPage(
+                          selectedInterests: _interests,
+                          onChanged: (list) =>
+                              setState(() => _interests = list),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
-          ],
-        ),
-      ),
-      //************************* Continue Button at Bottom *************************//
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(
-          top: AppConstants.kPaddingM,
-          bottom: AppConstants.kPaddingL,
-          left: AppConstants.kPaddingL,
-          right: AppConstants.kPaddingL,
-        ),
-        child: CustomButton(
-          text: _currentStep == 4 ? AppTexts.done : AppTexts.continueText,
-          type: ButtonType.primary,
-          isFullWidth: true,
-          backgroundColor: colorScheme.secondary,
-          textColor: colorScheme.onPrimary,
-          borderRadius: AppConstants.kRadiusM,
-          fontSize: AppConstants.kFontSizeM,
-          onPressed: _onNextPressed,
-        ),
-      ),
-    );
+            //************************* Continue Button at Bottom *************************//
+            bottomNavigationBar: Padding(
+              padding: const EdgeInsets.only(
+                top: AppConstants.kPaddingM,
+                bottom: AppConstants.kPaddingL,
+                left: AppConstants.kPaddingL,
+                right: AppConstants.kPaddingL,
+              ),
+              child: CustomButton(
+                text: _currentStep == 4 ? AppTexts.done : AppTexts.continueText,
+                type: ButtonType.primary,
+                isFullWidth: true,
+                backgroundColor: colorScheme.secondary,
+                textColor: colorScheme.onPrimary,
+                borderRadius: AppConstants.kRadiusM,
+                fontSize: AppConstants.kFontSizeM,
+                onPressed: _onNextPressed,
+              ),
+            ),
+          );
   }
 }

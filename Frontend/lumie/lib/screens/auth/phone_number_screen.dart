@@ -39,7 +39,7 @@ class _PhoneNumberScreenState extends State<PhoneNumberScreen> {
             context,
             MaterialPageRoute(
               builder: (_) => OtpVerificationScreen(
-                phone: "+91$phone",
+                phone: phone,
                 verificationId: verificationId,
               ),
             ),
