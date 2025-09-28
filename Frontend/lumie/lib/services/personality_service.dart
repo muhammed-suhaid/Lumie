@@ -16,6 +16,7 @@ class PersonalityService {
 
     await userDoc.update({
       "personality": mbti,
+      "personalityComplete": true,
       "personalityUpdatedAt": FieldValue.serverTimestamp(),
     });
   }

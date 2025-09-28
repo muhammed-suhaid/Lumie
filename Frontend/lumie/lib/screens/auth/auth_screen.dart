@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lumie/screens/auth/login_screen.dart';
 import 'package:lumie/screens/auth/phone_number_screen.dart';
 import 'package:lumie/screens/get_started/terms_conditions_screen.dart';
 import 'package:lumie/screens/legal/privacy_policy_screen.dart';
@@ -111,36 +110,7 @@ class AuthScreen extends StatelessWidget {
                   goToPhoneNumberScreen(context);
                 },
               ),
-              const SizedBox(height: AppConstants.kPaddingM),
 
-              //************************* Don't have an account? SignUp *************************//
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Don't have an account? ",
-                    style: GoogleFonts.poppins(
-                      fontSize: AppConstants.kFontSizeS,
-                      color: colorScheme.onSurface.withAlpha(150),
-                    ),
-                  ),
-                  CustomButton(
-                    text: "Sign Up",
-                    type: ButtonType.text,
-                    textColor: colorScheme.secondary,
-                    fontSize: AppConstants.kFontSizeS,
-                    onPressed: () {
-                      debugPrint("Navigate to LoginScreen");
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LoginScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
               const Spacer(flex: 3),
               //************************* Privacy Policy And Terms & Conditions *************************//
               Row(

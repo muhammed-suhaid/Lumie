@@ -59,6 +59,7 @@ class OnboardingService {
             "birthday": birthday,
             "email": email,
             "password": password,
+            "onboardingComplete": true,
             "updatedAt": FieldValue.serverTimestamp(),
           });
     } catch (e) {

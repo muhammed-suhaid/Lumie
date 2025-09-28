@@ -15,44 +15,98 @@ class UserProfileCard extends StatelessWidget {
 
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppConstants.kPaddingL),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // ================= SECTION: Profile Photos =================
-                if (user.photos.isNotEmpty)
-                  _buildPhoto(context, user.photos[0]),
+        child: Stack(
+          children: [
+            // ================= PROFILE SCROLL CONTENT =================
+            Padding(
+              padding: const EdgeInsets.all(AppConstants.kPaddingL),
+              child: SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (user.photos.isNotEmpty)
+                      _buildPhoto(context, user.photos[0]),
+                    _buildBasicInfo(colorScheme),
+                    _buildPersonality(colorScheme),
 
-                // ================= SECTION: Basic Info =================
-                _buildBasicInfo(colorScheme),
+                    if (user.photos.length > 1)
+                      _buildPhoto(context, user.photos[1]),
+                    _buildPreferences(colorScheme),
 
-                // ================= SECTION: Personality =================
-                _buildPersonality(colorScheme),
+                    if (user.photos.length > 2)
+                      _buildPhoto(context, user.photos[2]),
+                    if (user.photos.length > 3)
+                      _buildPhoto(context, user.photos[3]),
+                    _buildInterests(colorScheme),
 
-                // ================= SECTION: Bio =================
-                // _buildBio(colorScheme),
-
-                // ================= SECTION: Preferences =================
-                if (user.photos.length > 1)
-                  _buildPhoto(context, user.photos[1]),
-                _buildPreferences(colorScheme),
-
-                // ================= SECTION: Desire =================
-                if (user.photos.length > 2)
-                  _buildPhoto(context, user.photos[2]),
-                // _buildDesire(colorScheme),
-
-                // ================= SECTION: Interests =================
-                if (user.photos.length > 3)
-                  _buildPhoto(context, user.photos[3]),
-                _buildInterests(colorScheme),
-
-                const SizedBox(height: 110),
-              ],
+                    const SizedBox(height: 200), // leave space for buttons
+                  ],
+                ),
+              ),
             ),
-          ),
+
+            // ================= LIKE & DISLIKE BUTTONS =================
+            Positioned(
+              bottom: 80,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withAlpha(150),
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withAlpha(50),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // ❌ Dislike Button
+                      RawMaterialButton(
+                        onPressed: () => debugPrint("❌ Disliked ${user.name}"),
+                        constraints: const BoxConstraints(
+                          minWidth: 56,
+                          minHeight: 56,
+                        ),
+                        shape: const CircleBorder(),
+                        elevation: 0,
+                        fillColor: Colors.transparent,
+                        child: const Icon(
+                          Icons.close,
+                          size: 32,
+                          color: Colors.red,
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      // ❤️ Like Button
+                      RawMaterialButton(
+                        onPressed: () => debugPrint("❤️ Liked ${user.name}"),
+                        constraints: const BoxConstraints(
+                          minWidth: 56,
+                          minHeight: 56,
+                        ),
+                        shape: const CircleBorder(),
+                        elevation: 0,
+                        fillColor: Colors.transparent,
+                        child: const Icon(
+                          Icons.favorite,
+                          size: 32,
+                          color: Colors.pink,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -16,7 +16,8 @@ class PreferencesService {
     // Update only the "preferences" field and "updatedAt"
     await userDoc.update({
       "preferences": preferences,
-      "updatedAt": FieldValue.serverTimestamp(),
+      "preferencesComplete": true,
+      "preferencesUpdatedAt": FieldValue.serverTimestamp(),
     });
   }
 }

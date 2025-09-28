@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lumie/screens/auth/otp_verification/widgets/custom_otp_field.dart';
+import 'package:lumie/screens/discover_screen/discover_screen.dart';
 import 'package:lumie/screens/on_boarding/on_borading_screen.dart';
+import 'package:lumie/screens/preferences/preferences_screen.dart';
+import 'package:lumie/screens/personality/personality_quiz_screen.dart';
 import 'package:lumie/services/phone_auth_service.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
 import 'package:lumie/utils/custom_snakbar.dart';
 import 'package:lumie/widgets/custom_button.dart';
+import 'package:lumie/widgets/tab_screen.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
   final String phone;
@@ -33,15 +37,56 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
     debugPrint("Entered Phone Number: ${widget.phone}");
     debugPrint("Entered OTP: $_otpCode");
+
     try {
-      final userCredential = await PhoneAuthService.verifyOTP(_otpCode);
+      final nextStep = await PhoneAuthService.verifyOTP(_otpCode);
 
       if (!mounted) return;
-      CustomSnackbar.show(context, "Registeration Successful", isError: false);
-      if (userCredential != null) {
+
+      if (nextStep == AuthNextStep.onboarding) {
+        CustomSnackbar.show(
+          context,
+          "Registeration Successful",
+          isError: false,
+        );
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (_) => const OnboardingScreen()),
+          (route) => false,
+        );
+      } else if (nextStep == AuthNextStep.preferences) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const PreferencesScreen()),
+          (route) => false,
+        );
+      } else if (nextStep == AuthNextStep.personality) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const PersonalityQuizScreen()),
+          (route) => false,
+        );
+      } else if (nextStep == AuthNextStep.discover) {
+        CustomSnackbar.show(context, "Login Successful", isError: false);
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const TabScreen(
+              pages: [
+                // Discover screen
+                DiscoverScreen(),
+                SizedBox(
+                  child: Center(child: Text("Match Requests Screen")),
+                ), // Match Requests Screen
+                SizedBox(
+                  child: Center(child: Text("Chat Screen")),
+                ), // Chat Screen
+                SizedBox(
+                  child: Center(child: Text("Profile Screen")),
+                ), // Profile settings
+              ],
+            ),
+          ),
           (route) => false,
         );
       }
