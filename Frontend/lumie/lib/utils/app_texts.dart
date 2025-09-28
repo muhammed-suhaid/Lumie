@@ -4,12 +4,13 @@ class AppTexts {
   static const String tagline = "For the ones who light up your world";
 
   // Authentication
-  static const String signIn = "Sign in to continue";
+  static const String signIn = "Sign Up to continue";
   static const String continueText = "Continue";
   static const String forgetPassword = "Forgot Password?";
   static const String continueWithGoogle = "Continue with Google";
   static const String continueWithPhone = "Continue with Phone";
   static const String done = "Done";
+  static const String login = "Login";
 
   // Profile
   static const String editProfile = "Edit Profile";

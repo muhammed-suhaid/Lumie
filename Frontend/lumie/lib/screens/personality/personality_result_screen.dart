@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lumie/dummyData/personality_results_data.dart';
 import 'package:lumie/models/personality_result_model.dart';
+import 'package:lumie/screens/discover_screen/discover_screen.dart';
 import 'package:lumie/services/personality_service.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
@@ -62,9 +63,8 @@ class PersonalityResultScreen extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) => TabScreen(
               pages: [
-                const SizedBox(
-                  child: Center(child: Text("Discover screen")),
-                ), // Discover screen
+                // Discover screen
+                DiscoverScreen(),
                 const SizedBox(
                   child: Center(child: Text("Match Requests Screen")),
                 ), // Match Requests Screen
