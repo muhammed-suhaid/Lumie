@@ -1,7 +1,9 @@
 //************************* Imports *************************//
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lumie/models/user_model.dart';
+import 'package:lumie/services/likes_service.dart';
 import 'package:lumie/utils/app_constants.dart';
 
 //************************* UserProfileCard Widget *************************//
@@ -26,6 +28,42 @@ class _UserProfileCardState extends State<UserProfileCard> {
         currentIndex = 0;
       }
     });
+  }
+
+  //************************* Get Current User *************************//
+  String getCurrentUserId() {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      return user.uid;
+    }
+    return "";
+  }
+
+  //************************* Handle Like Action *************************//
+  Future<void> _handleLike(String likedUserId) async {
+    final likesService = LikesService();
+
+    try {
+      // Add the like
+      await likesService.addLike(getCurrentUserId(), likedUserId);
+
+      //  Check if liked user already liked me
+      final isReciprocal = await likesService.isUserLiked(
+        likedUserId,
+        getCurrentUserId(),
+      );
+
+      if (isReciprocal) {
+        // ✅ It's a match!
+        debugPrint("🎉 You matched with $likedUserId!");
+        // You can call your MatchesService here to add a match
+      }
+
+      // Move to next user
+      _showNextUser();
+    } catch (e) {
+      debugPrint("Error liking user: $e");
+    }
   }
 
   @override
@@ -112,7 +150,7 @@ class _UserProfileCardState extends State<UserProfileCard> {
                     RawMaterialButton(
                       onPressed: () {
                         debugPrint("❤️ Liked ${user.name}");
-                        _showNextUser();
+                        _handleLike(user.uid);
                       },
                       constraints: const BoxConstraints(
                         minWidth: 56,

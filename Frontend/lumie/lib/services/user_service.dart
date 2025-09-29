@@ -67,11 +67,22 @@ class UserService {
         return ""; // Everyone
       }
 
+      // Get liked users list
+      final likedSnapshot = await _firestore
+          .collection("likes")
+          .where("from", isEqualTo: currentUser.uid)
+          .get();
+
+      final likedUserIds = likedSnapshot.docs
+          .map((doc) => doc["to"] as String)
+          .toList();
+
+      // Personality based result
       Query query = _firestore
           .collection("users")
           .where("personality", whereIn: matches);
 
-      // Use nested path for gender
+      // WhoToMeet based result
       if (whoToMeet != "Everyone") {
         query = query.where(
           "profile.gender",
@@ -79,12 +90,18 @@ class UserService {
         );
       }
 
-      // Exclude current user
+      // Excluding Current User
       query = query.where(FieldPath.documentId, isNotEqualTo: currentUser.uid);
 
+      // Execute query
       final querySnapshot = await query.get();
 
-      return querySnapshot.docs
+      // Filter out liked users
+      final filteredDocs = querySnapshot.docs.where(
+        (doc) => !likedUserIds.contains(doc.id),
+      );
+
+      return filteredDocs
           .map((doc) => UserModel.fromMap(doc.data() as Map<String, dynamic>))
           .toList();
     } catch (e) {
