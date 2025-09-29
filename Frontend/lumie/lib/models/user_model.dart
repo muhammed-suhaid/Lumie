@@ -64,7 +64,7 @@ class UserModel {
       interests: List<String>.from(map['interests'] ?? []),
       relationshipStatus: map['relationshipStatus'] ?? "",
       relationshipType: map['relationshipType'] ?? "",
-      whoToMeet: map['whoToMeet'] ?? "",
+      whoToMeet: map['preferences']['whoToMeet'] ?? "",
       profileImage: map['profileImage'] ?? "",
       uid: map['uid'] ?? "",
       updatedAt: (map['updatedAt'] as Timestamp).toDate(),

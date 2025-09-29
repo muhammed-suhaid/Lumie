@@ -180,7 +180,7 @@ class PersonalityResultScreen extends StatelessWidget {
                 ),
                 SizedBox(height: screenHeight * 0.01),
                 _chipList(result.idealMatches),
-                SizedBox(height: screenHeight * 0.05),
+                SizedBox(height: screenHeight * 0.02),
 
                 //************************* Button *************************//
                 CustomButton(

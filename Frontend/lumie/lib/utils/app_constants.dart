@@ -16,6 +16,7 @@ class AppConstants {
   static const double kFontSizeXL = 24.0;
   static const double kFontSizeXXL = 32.0;
   static const double kFontSizeXXXL = 40.0;
+  static const double kFontSizeAppBar = 50.0;
   static const double kFontSizeTextLogo = 70.0;
 
   // Icon Sizes

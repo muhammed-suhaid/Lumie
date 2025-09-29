@@ -1,6 +1,26 @@
 import '../models/personality_result_model.dart';
 
 class PersonalityResultsData {
+  //************************* Personality Matches Map *************************//
+  static final Map<String, List<String>> personalityMatches = {
+    "INTJ": ["ENTP", "ENFP", "INFJ", "ENTJ"],
+    "ENTP": ["INFJ", "INTJ", "ENFP", "ENTJ"],
+    "INFJ": ["ENFP", "ENTP", "INTJ", "INFP"],
+    "ENFP": ["INFJ", "INTJ", "ENTP", "ENFJ"],
+    "ISTJ": ["ESFP", "ESTP", "ISFJ", "ESTJ"],
+    "ISFJ": ["ESTP", "ESFP", "ISTJ", "ESFJ"],
+    "ESTJ": ["ISFP", "ISTJ", "ESFJ", "ENTJ"],
+    "ESFJ": ["ISFP", "ISTJ", "ENFP", "ESTJ"],
+    "ISTP": ["ESFJ", "ESTJ", "ISFP", "INTP"],
+    "ISFP": ["ESTJ", "ESFJ", "ISTP", "INFP"],
+    "ESTP": ["ISFJ", "ISTJ", "ESFP", "ENTP"],
+    "ESFP": ["ISTJ", "ISFJ", "ESTP", "ENFP"],
+    "INFP": ["ENFJ", "INFJ", "ISFP", "ENFP"],
+    "ENFJ": ["INFP", "ENFP", "INFJ", "ENTP"],
+    "ENTJ": ["INTJ", "ENTP", "ENFJ", "ESTJ"],
+    "INTP": ["ENTP", "INFJ", "ISTP", "INFP"],
+  };
+
   static final List<PersonalityResult> results = [
     PersonalityResult(
       type: "INTJ",
@@ -16,7 +36,7 @@ class PersonalityResultsData {
         "Overly critical",
         "Struggles with emotions",
       ],
-      idealMatches: ["ENFP", "ENTP"],
+      idealMatches: personalityMatches["INTJ"]!,
     ),
     PersonalityResult(
       type: "INTP",
@@ -28,7 +48,7 @@ class PersonalityResultsData {
           "Independent and curious, they seek understanding above all.",
       strengths: ["Analytical", "Innovative", "Objective", "Independent"],
       weaknesses: ["Indecisive", "Overly abstract", "Can seem detached"],
-      idealMatches: ["ENTJ", "ESTJ"],
+      idealMatches: personalityMatches["INTP"]!,
     ),
     PersonalityResult(
       type: "ENTJ",
@@ -40,7 +60,7 @@ class PersonalityResultsData {
           "Driven and confident, they push themselves and others to succeed.",
       strengths: ["Decisive", "Confident", "Efficient", "Charismatic leader"],
       weaknesses: ["Impatient", "Stubborn", "Insensitive under stress"],
-      idealMatches: ["INTP", "INFP"],
+      idealMatches: personalityMatches["ENTJ"]!,
     ),
     PersonalityResult(
       type: "ENTP",
@@ -56,7 +76,7 @@ class PersonalityResultsData {
         "Argumentative",
         "Can lack follow-through",
       ],
-      idealMatches: ["INFJ", "INTJ"],
+      idealMatches: personalityMatches["ENTP"]!,
     ),
     PersonalityResult(
       type: "INFJ",
@@ -72,7 +92,7 @@ class PersonalityResultsData {
         "Overly sensitive",
         "Can burn out easily",
       ],
-      idealMatches: ["ENFP", "ENTP"],
+      idealMatches: personalityMatches["INFJ"]!,
     ),
     PersonalityResult(
       type: "INFP",
@@ -84,7 +104,7 @@ class PersonalityResultsData {
           "Driven by values, they strive for authenticity in everything they do.",
       strengths: ["Compassionate", "Idealistic", "Creative", "Open-minded"],
       weaknesses: ["Overly sensitive", "Avoids conflict", "Can be unrealistic"],
-      idealMatches: ["ENFJ", "ENTJ"],
+      idealMatches: personalityMatches["INFP"]!,
     ),
     PersonalityResult(
       type: "ENFJ",
@@ -100,7 +120,7 @@ class PersonalityResultsData {
         "Can be controlling",
         "Struggles with criticism",
       ],
-      idealMatches: ["INFP", "ISFP"],
+      idealMatches: personalityMatches["ENFJ"]!,
     ),
     PersonalityResult(
       type: "ENFP",
@@ -116,7 +136,7 @@ class PersonalityResultsData {
         "Overcommits",
         "Struggles with routine",
       ],
-      idealMatches: ["INFJ", "INTJ"],
+      idealMatches: personalityMatches["ENFP"]!,
     ),
     PersonalityResult(
       type: "ISTJ",
@@ -128,7 +148,7 @@ class PersonalityResultsData {
           "They excel at creating stability and structure.",
       strengths: ["Responsible", "Dependable", "Organized", "Practical"],
       weaknesses: ["Rigid", "Struggles with change", "Can be overly cautious"],
-      idealMatches: ["ESFP", "ESTP"],
+      idealMatches: personalityMatches["ISTJ"]!,
     ),
     PersonalityResult(
       type: "ISFJ",
@@ -140,7 +160,7 @@ class PersonalityResultsData {
           "Practical and responsible, they create warm and supportive environments.",
       strengths: ["Loyal", "Caring", "Practical", "Dependable"],
       weaknesses: ["Overly selfless", "Avoids conflict", "Can be too cautious"],
-      idealMatches: ["ESFP", "ESTP"],
+      idealMatches: personalityMatches["ISFJ"]!,
     ),
     PersonalityResult(
       type: "ESTJ",
@@ -152,7 +172,7 @@ class PersonalityResultsData {
           "Confident and practical, they ensure tasks are completed effectively.",
       strengths: ["Efficient", "Confident", "Organized", "Reliable"],
       weaknesses: ["Stubborn", "Insensitive", "Rigid"],
-      idealMatches: ["ISTP", "INTP"],
+      idealMatches: personalityMatches["ESTJ"]!,
     ),
     PersonalityResult(
       type: "ESFJ",
@@ -164,7 +184,7 @@ class PersonalityResultsData {
           "Warm and practical, they thrive in supportive roles.",
       strengths: ["Friendly", "Caring", "Practical", "Organized"],
       weaknesses: ["People-pleasing", "Overly sensitive", "Can avoid conflict"],
-      idealMatches: ["ISFP", "ISTP"],
+      idealMatches: personalityMatches["ESFJ"]!,
     ),
     PersonalityResult(
       type: "ISTP",
@@ -176,7 +196,7 @@ class PersonalityResultsData {
           "Curious and logical, they enjoy experimenting and exploring.",
       strengths: ["Practical", "Logical", "Adaptable", "Independent"],
       weaknesses: ["Risk-taking", "Can be detached", "Struggles with routine"],
-      idealMatches: ["ESTJ", "ESFJ"],
+      idealMatches: personalityMatches["ISTP"]!,
     ),
     PersonalityResult(
       type: "ISFP",
@@ -188,7 +208,7 @@ class PersonalityResultsData {
           "Gentle and compassionate, they prefer to live in the moment.",
       strengths: ["Creative", "Gentle", "Flexible", "Observant"],
       weaknesses: ["Avoids conflict", "Overly reserved", "Can be indecisive"],
-      idealMatches: ["ENFJ", "ESFJ"],
+      idealMatches: personalityMatches["ISFP"]!,
     ),
     PersonalityResult(
       type: "ESTP",
@@ -200,7 +220,7 @@ class PersonalityResultsData {
           "Outgoing and spontaneous, they love living in the moment.",
       strengths: ["Energetic", "Bold", "Practical", "Adaptable"],
       weaknesses: ["Impulsive", "Risk-prone", "Can be insensitive"],
-      idealMatches: ["ISTJ", "ISFJ"],
+      idealMatches: personalityMatches["ESTP"]!,
     ),
     PersonalityResult(
       type: "ESFP",
@@ -212,7 +232,7 @@ class PersonalityResultsData {
           "Warm and enthusiastic, they thrive in fun and dynamic environments.",
       strengths: ["Playful", "Outgoing", "Enthusiastic", "Sociable"],
       weaknesses: ["Impulsive", "Easily bored", "Struggles with planning"],
-      idealMatches: ["ISTJ", "ISFJ"],
+      idealMatches: personalityMatches["ESFP"]!,
     ),
   ];
 

@@ -1,113 +1,138 @@
+//************************* Imports *************************//
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lumie/models/user_model.dart';
 import 'package:lumie/utils/app_constants.dart';
 
-/// Displays a user's profile in a card format
-class UserProfileCard extends StatelessWidget {
-  final UserModel user;
+//************************* UserProfileCard Widget *************************//
+class UserProfileCard extends StatefulWidget {
+  final List<UserModel> users;
 
-  const UserProfileCard({super.key, required this.user});
+  const UserProfileCard({super.key, required this.users});
+
+  @override
+  State<UserProfileCard> createState() => _UserProfileCardState();
+}
+
+class _UserProfileCardState extends State<UserProfileCard> {
+  int currentIndex = 0;
+
+  //************************* Show Next User *************************//
+  void _showNextUser() {
+    setState(() {
+      if (currentIndex < widget.users.length - 1) {
+        currentIndex++;
+      } else {
+        currentIndex = 0;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final user = widget.users[currentIndex];
 
-    return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: [
-            // ================= PROFILE SCROLL CONTENT =================
-            Padding(
-              padding: const EdgeInsets.all(AppConstants.kPaddingL),
-              child: SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+    return SafeArea(
+      child: Stack(
+        children: [
+          //************************* PROFILE SCROLL CONTENT *************************//
+          Padding(
+            padding: const EdgeInsets.all(AppConstants.kPaddingL),
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (user.photos.isNotEmpty)
+                    _buildPhoto(context, user.photos[0]),
+                  _buildBasicInfo(colorScheme, user),
+                  _buildPersonality(colorScheme, user),
+
+                  if (user.photos.length > 1)
+                    _buildPhoto(context, user.photos[1]),
+                  _buildPreferences(colorScheme, user),
+
+                  if (user.photos.length > 2)
+                    _buildPhoto(context, user.photos[2]),
+                  if (user.photos.length > 3)
+                    _buildPhoto(context, user.photos[3]),
+                  _buildInterests(colorScheme, user),
+
+                  const SizedBox(height: 200),
+                ],
+              ),
+            ),
+          ),
+
+          //************************* LIKE & DISLIKE BUTTONS *************************//
+          Positioned(
+            bottom: 80,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                  color: Colors.white.withAlpha(150),
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(50),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    if (user.photos.isNotEmpty)
-                      _buildPhoto(context, user.photos[0]),
-                    _buildBasicInfo(colorScheme),
-                    _buildPersonality(colorScheme),
+                    //❌ Dislike Button
+                    RawMaterialButton(
+                      onPressed: () {
+                        debugPrint("❌ Disliked ${user.name}");
+                        _showNextUser();
+                      },
+                      constraints: const BoxConstraints(
+                        minWidth: 56,
+                        minHeight: 56,
+                      ),
+                      shape: const CircleBorder(),
+                      elevation: 0,
+                      fillColor: Colors.transparent,
+                      child: const Icon(
+                        Icons.close,
+                        size: 32,
+                        color: Colors.red,
+                      ),
+                    ),
+                    const SizedBox(width: 20),
 
-                    if (user.photos.length > 1)
-                      _buildPhoto(context, user.photos[1]),
-                    _buildPreferences(colorScheme),
-
-                    if (user.photos.length > 2)
-                      _buildPhoto(context, user.photos[2]),
-                    if (user.photos.length > 3)
-                      _buildPhoto(context, user.photos[3]),
-                    _buildInterests(colorScheme),
-
-                    const SizedBox(height: 200), // leave space for buttons
+                    //❤️ Like Button
+                    RawMaterialButton(
+                      onPressed: () {
+                        debugPrint("❤️ Liked ${user.name}");
+                        _showNextUser();
+                      },
+                      constraints: const BoxConstraints(
+                        minWidth: 56,
+                        minHeight: 56,
+                      ),
+                      shape: const CircleBorder(),
+                      elevation: 0,
+                      fillColor: Colors.transparent,
+                      child: const Icon(
+                        Icons.favorite,
+                        size: 32,
+                        color: Colors.pink,
+                      ),
+                    ),
                   ],
                 ),
               ),
             ),
-
-            // ================= LIKE & DISLIKE BUTTONS =================
-            Positioned(
-              bottom: 80,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withAlpha(150),
-                    borderRadius: BorderRadius.circular(30),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withAlpha(50),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // ❌ Dislike Button
-                      RawMaterialButton(
-                        onPressed: () => debugPrint("❌ Disliked ${user.name}"),
-                        constraints: const BoxConstraints(
-                          minWidth: 56,
-                          minHeight: 56,
-                        ),
-                        shape: const CircleBorder(),
-                        elevation: 0,
-                        fillColor: Colors.transparent,
-                        child: const Icon(
-                          Icons.close,
-                          size: 32,
-                          color: Colors.red,
-                        ),
-                      ),
-                      const SizedBox(width: 20),
-                      // ❤️ Like Button
-                      RawMaterialButton(
-                        onPressed: () => debugPrint("❤️ Liked ${user.name}"),
-                        constraints: const BoxConstraints(
-                          minWidth: 56,
-                          minHeight: 56,
-                        ),
-                        shape: const CircleBorder(),
-                        elevation: 0,
-                        fillColor: Colors.transparent,
-                        child: const Icon(
-                          Icons.favorite,
-                          size: 32,
-                          color: Colors.pink,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -132,9 +157,8 @@ class UserProfileCard extends StatelessWidget {
   }
 
   //************************* Basic Info Widget *************************//
-  Widget _buildBasicInfo(ColorScheme colorScheme) {
+  Widget _buildBasicInfo(ColorScheme colorScheme, UserModel user) {
     int age = 0;
-
     if (user.birthday.isNotEmpty) {
       try {
         final dobParts = user.birthday.split('/');
@@ -169,7 +193,7 @@ class UserProfileCard extends StatelessWidget {
   }
 
   //************************* Personality Widget *************************//
-  Widget _buildPersonality(ColorScheme colorScheme) {
+  Widget _buildPersonality(ColorScheme colorScheme, UserModel user) {
     if (user.personality.isEmpty) return const SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppConstants.kPaddingS),
@@ -180,29 +204,15 @@ class UserProfileCard extends StatelessWidget {
     );
   }
 
-  //************************* Bio Widget *************************//
-  // Widget _buildBio(ColorScheme colorScheme) {
-  //   if (user.bio.isEmpty) return const SizedBox.shrink();
-  //   return Padding(
-  //     padding: const EdgeInsets.all(AppConstants.kPaddingS),
-  //     child: Text(
-  //       user.bio,
-  //       style: GoogleFonts.poppins(fontSize: AppConstants.kFontSizeM),
-  //     ),
-  //   );
-  // }
-
   //************************* Preferences Widget *************************//
-  Widget _buildPreferences(ColorScheme colorScheme) {
+  Widget _buildPreferences(ColorScheme colorScheme, UserModel user) {
     if (user.preferences.isEmpty) return const SizedBox.shrink();
 
     List<Widget> preferenceWidgets = [];
 
-    // Goal
     if (user.preferences.containsKey("goalMain")) {
       final goalMain = user.preferences["goalMain"] ?? "";
       final goalSub = user.preferences["goalSub"] ?? "";
-
       preferenceWidgets.add(
         Text(
           goalSub.isNotEmpty ? "$goalMain : $goalSub" : goalMain,
@@ -211,7 +221,6 @@ class UserProfileCard extends StatelessWidget {
       );
     }
 
-    // Looking For (whoToMeet)
     if (user.preferences.containsKey("whoToMeet")) {
       preferenceWidgets.add(
         Text(
@@ -221,7 +230,6 @@ class UserProfileCard extends StatelessWidget {
       );
     }
 
-    // Relationship Status
     if (user.preferences.containsKey("relationshipStatus")) {
       preferenceWidgets.add(
         Text(
@@ -231,7 +239,6 @@ class UserProfileCard extends StatelessWidget {
       );
     }
 
-    // Relationship Type
     if (user.preferences.containsKey("relationshipType")) {
       preferenceWidgets.add(
         Text(
@@ -264,20 +271,8 @@ class UserProfileCard extends StatelessWidget {
     );
   }
 
-  // //************************* Desire Widget *************************//
-  // Widget _buildDesire(ColorScheme colorScheme) {
-  //   if (user.whoToMeet.isEmpty) return const SizedBox.shrink();
-  //   return Padding(
-  //     padding: const EdgeInsets.all(AppConstants.kPaddingS),
-  //     child: Text(
-  //       "Desire: ${user.whoToMeet}",
-  //       style: GoogleFonts.poppins(fontSize: AppConstants.kFontSizeM),
-  //     ),
-  //   );
-  // }
-
   //************************* Interests Widget *************************//
-  Widget _buildInterests(ColorScheme colorScheme) {
+  Widget _buildInterests(ColorScheme colorScheme, UserModel user) {
     if (user.preferences["interests"] == null ||
         (user.preferences["interests"] as List).isEmpty) {
       return const SizedBox.shrink();
