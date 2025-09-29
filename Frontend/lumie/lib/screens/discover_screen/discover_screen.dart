@@ -28,17 +28,19 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   //************************* Load Matching Users from Firestore *************************//
   Future<void> _loadMatchingUsers() async {
     final currentUser = await UserService.fetchCurrentUser();
+    debugPrint("Current user fetching");
     if (currentUser == null) return;
-
+    debugPrint("Current user fetched");
     final matches = await UserService.fetchMatchingUsers(
       currentUser.personality,
       currentUser.whoToMeet,
       DateTime.parse(_convertBirthdayToDate(currentUser.birthday)),
     );
-
+    debugPrint("fetchMatchingUsers");
     setState(() {
       userList = matches;
       isLoading = false;
+      debugPrint("setState");
     });
   }
 

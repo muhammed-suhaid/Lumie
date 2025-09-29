@@ -67,36 +67,17 @@ class UserService {
         return ""; // Everyone
       }
 
-      // String formatDate(DateTime date) {
-      //   return "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
-      // }
-
       Query query = _firestore
           .collection("users")
           .where("personality", whereIn: matches);
 
-      // Filter based on whoToMeet
+      // Use nested path for gender
       if (whoToMeet != "Everyone") {
         query = query.where(
-          "gender",
+          "profile.gender",
           isEqualTo: mapWhoToMeetToGender(whoToMeet),
         );
       }
-
-      // Age filter ±2 years
-      // DateTime minBirthday = DateTime(
-      //   userBirthday.year - 2,
-      //   userBirthday.month,
-      //   userBirthday.day,
-      // );
-      // DateTime maxBirthday = DateTime(
-      //   userBirthday.year + 2,
-      //   userBirthday.month,
-      //   userBirthday.day,
-      // );
-      // query = query
-      //     .where("birthday", isGreaterThanOrEqualTo: formatDate(minBirthday))
-      //     .where("birthday", isLessThanOrEqualTo: formatDate(maxBirthday));
 
       // Exclude current user
       query = query.where(FieldPath.documentId, isNotEqualTo: currentUser.uid);

@@ -1,10 +1,11 @@
+//************************* Imports *************************//
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+//************************* Personality Service *************************//
 class PersonalityService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  /// Save the personality result (MBTI) for the current user
   static Future<void> savePersonality(String mbti) async {
     final user = FirebaseAuth.instance.currentUser;
 

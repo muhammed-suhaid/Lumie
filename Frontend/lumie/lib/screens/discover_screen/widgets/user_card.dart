@@ -156,7 +156,7 @@ class _UserProfileCardState extends State<UserProfileCard> {
     );
   }
 
-  //************************* Basic Info Widget *************************//
+  //************************* Basic Info Widget * ************************//
   Widget _buildBasicInfo(ColorScheme colorScheme, UserModel user) {
     int age = 0;
     if (user.birthday.isNotEmpty) {
@@ -184,7 +184,7 @@ class _UserProfileCardState extends State<UserProfileCard> {
       child: Text(
         "${user.name}, $age",
         style: GoogleFonts.poppins(
-          fontSize: AppConstants.kFontSizeL,
+          fontSize: AppConstants.kFontSizeXXL,
           fontWeight: FontWeight.bold,
           color: colorScheme.secondary,
         ),
@@ -196,7 +196,7 @@ class _UserProfileCardState extends State<UserProfileCard> {
   Widget _buildPersonality(ColorScheme colorScheme, UserModel user) {
     if (user.personality.isEmpty) return const SizedBox.shrink();
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppConstants.kPaddingS),
+      padding: const EdgeInsets.all(AppConstants.kPaddingS),
       child: Text(
         "${user.gender} • ${user.personality}",
         style: GoogleFonts.poppins(fontSize: AppConstants.kFontSizeM),
@@ -206,47 +206,48 @@ class _UserProfileCardState extends State<UserProfileCard> {
 
   //************************* Preferences Widget *************************//
   Widget _buildPreferences(ColorScheme colorScheme, UserModel user) {
-    if (user.preferences.isEmpty) return const SizedBox.shrink();
-
     List<Widget> preferenceWidgets = [];
 
-    if (user.preferences.containsKey("goalMain")) {
-      final goalMain = user.preferences["goalMain"] ?? "";
-      final goalSub = user.preferences["goalSub"] ?? "";
+    if (user.goalMain.isNotEmpty) {
+      final text = user.goalSub.isNotEmpty
+          ? "${user.goalMain} : ${user.goalSub}"
+          : user.goalMain;
       preferenceWidgets.add(
         Text(
-          goalSub.isNotEmpty ? "$goalMain : $goalSub" : goalMain,
+          text,
           style: GoogleFonts.poppins(fontSize: AppConstants.kFontSizeM),
         ),
       );
     }
 
-    if (user.preferences.containsKey("whoToMeet")) {
+    if (user.whoToMeet.isNotEmpty) {
       preferenceWidgets.add(
         Text(
-          "Looking For : ${user.preferences["whoToMeet"]}",
+          "Looking For : ${user.whoToMeet}",
           style: GoogleFonts.poppins(fontSize: AppConstants.kFontSizeM),
         ),
       );
     }
 
-    if (user.preferences.containsKey("relationshipStatus")) {
+    if (user.relationshipStatus.isNotEmpty) {
       preferenceWidgets.add(
         Text(
-          "Relationship Status : ${user.preferences["relationshipStatus"]}",
+          "Relationship Status : ${user.relationshipStatus}",
           style: GoogleFonts.poppins(fontSize: AppConstants.kFontSizeM),
         ),
       );
     }
 
-    if (user.preferences.containsKey("relationshipType")) {
+    if (user.relationshipType.isNotEmpty) {
       preferenceWidgets.add(
         Text(
-          "Relationship Type : ${user.preferences["relationshipType"]}",
+          "Relationship Type : ${user.relationshipType}",
           style: GoogleFonts.poppins(fontSize: AppConstants.kFontSizeM),
         ),
       );
     }
+
+    if (preferenceWidgets.isEmpty) return const SizedBox.shrink();
 
     return Padding(
       padding: const EdgeInsets.all(AppConstants.kPaddingS),
@@ -273,12 +274,7 @@ class _UserProfileCardState extends State<UserProfileCard> {
 
   //************************* Interests Widget *************************//
   Widget _buildInterests(ColorScheme colorScheme, UserModel user) {
-    if (user.preferences["interests"] == null ||
-        (user.preferences["interests"] as List).isEmpty) {
-      return const SizedBox.shrink();
-    }
-
-    final interests = user.preferences["interests"] as List<dynamic>;
+    if (user.interests.isEmpty) return const SizedBox.shrink();
 
     return Padding(
       padding: const EdgeInsets.all(AppConstants.kPaddingS),
@@ -297,7 +293,7 @@ class _UserProfileCardState extends State<UserProfileCard> {
           Wrap(
             spacing: 8,
             children: [
-              for (var interest in interests)
+              for (var interest in user.interests)
                 Chip(
                   label: Text(interest),
                   backgroundColor: colorScheme.surface,

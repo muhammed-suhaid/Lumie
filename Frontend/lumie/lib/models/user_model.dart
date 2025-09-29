@@ -2,73 +2,99 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Model class to represent a User document in Firestore
 class UserModel {
+  // Profile
   final String birthday;
-  final DateTime createdAt;
   final String email;
   final String gender;
   final String name;
-  final String bio;
-  final String password;
-  final String personality;
-  final DateTime personalityUpdatedAt;
   final String phone;
+  final String profileImage;
+  final String video;
   final List<String> photos;
-  final Map<String, dynamic> preferences;
-  final List<String> interests;
+
+  // Root-level
+  final String uid;
+  final String personality;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime personalityUpdatedAt;
+  final DateTime preferencesUpdatedAt;
+
+  // Flags
+  final bool onboardingComplete;
+  final bool personalityComplete;
+  final bool preferencesComplete;
+
+  // Preferences
+  final String goalMain;
+  final String goalSub;
   final String relationshipStatus;
   final String relationshipType;
   final String whoToMeet;
-  final String profileImage;
-  final String uid;
-  final DateTime updatedAt;
-  final String video;
+  final List<String> interests;
 
   UserModel({
     required this.birthday,
-    required this.createdAt,
     required this.email,
     required this.gender,
     required this.name,
-    required this.bio,
-    required this.password,
-    required this.personality,
-    required this.personalityUpdatedAt,
     required this.phone,
+    required this.profileImage,
+    required this.video,
     required this.photos,
-    required this.preferences,
-    required this.interests,
+    required this.uid,
+    required this.personality,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.personalityUpdatedAt,
+    required this.preferencesUpdatedAt,
+    required this.onboardingComplete,
+    required this.personalityComplete,
+    required this.preferencesComplete,
+    required this.goalMain,
+    required this.goalSub,
     required this.relationshipStatus,
     required this.relationshipType,
     required this.whoToMeet,
-    required this.profileImage,
-    required this.uid,
-    required this.updatedAt,
-    required this.video,
+    required this.interests,
   });
 
   /// Factory constructor to convert Firestore document data into UserModel
   factory UserModel.fromMap(Map<String, dynamic> map) {
+    final profile = Map<String, dynamic>.from(map['profile'] ?? {});
+    final preferences = Map<String, dynamic>.from(map['preferences'] ?? {});
+
     return UserModel(
-      birthday: map['birthday'] ?? "",
-      createdAt: (map['createdAt'] as Timestamp).toDate(),
-      email: map['email'] ?? "",
-      gender: map['gender'] ?? "",
-      name: map['name'] ?? "",
-      bio: map['bio'] ?? "",
-      password: map['password'] ?? "",
-      personality: map['personality'] ?? "",
-      personalityUpdatedAt: (map['personalityUpdatedAt'] as Timestamp).toDate(),
-      phone: map['phone'] ?? "",
-      photos: List<String>.from(map['photos'] ?? []),
-      preferences: Map<String, dynamic>.from(map['preferences'] ?? {}),
-      interests: List<String>.from(map['interests'] ?? []),
-      relationshipStatus: map['relationshipStatus'] ?? "",
-      relationshipType: map['relationshipType'] ?? "",
-      whoToMeet: map['preferences']['whoToMeet'] ?? "",
-      profileImage: map['profileImage'] ?? "",
+      // Profile
+      birthday: profile['birthday'] ?? "",
+      email: profile['email'] ?? "",
+      gender: profile['gender'] ?? "",
+      name: profile['name'] ?? "",
+      phone: profile['phone'] ?? "",
+      profileImage: profile['profileImage'] ?? "",
+      video: profile['video'] ?? "",
+      photos: List<String>.from(profile['photos'] ?? []),
+
+      // Root
       uid: map['uid'] ?? "",
+      personality: map['personality'] ?? "",
+      createdAt: (map['createdAt'] as Timestamp).toDate(),
       updatedAt: (map['updatedAt'] as Timestamp).toDate(),
-      video: map['video'] ?? "",
+      personalityUpdatedAt: (map['personalityUpdatedAt'] as Timestamp).toDate(),
+      preferencesUpdatedAt: (map['preferencesUpdatedAt'] as Timestamp).toDate(),
+
+      // Flags
+      onboardingComplete: map['onboardingComplete'] ?? false,
+      personalityComplete: map['personalityComplete'] ?? false,
+      preferencesComplete: map['preferencesComplete'] ?? false,
+
+      // Preferences
+      goalMain: preferences['goalMain'] ?? "",
+      goalSub: preferences['goalSub'] ?? "",
+      relationshipStatus: preferences['relationshipStatus'] ?? "",
+      relationshipType: preferences['relationshipType'] ?? "",
+      whoToMeet: preferences['whoToMeet'] ?? "",
+      interests: List<String>.from(preferences['interests'] ?? []),
     );
   }
 }
