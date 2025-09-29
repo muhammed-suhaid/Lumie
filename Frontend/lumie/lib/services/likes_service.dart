@@ -1,8 +1,10 @@
 //************************* Imports *************************//
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'matches_service.dart';
 
 class LikesService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final MatchesService _matchesService = MatchesService();
 
   // Add a like from current user to another user
   Future<void> addLike(String fromUserId, String toUserId) async {
@@ -12,6 +14,9 @@ class LikesService {
         "to": toUserId,
         "createdAt": FieldValue.serverTimestamp(),
       });
+
+      // Check if it's a match
+      await _matchesService.checkAndCreateMatch(fromUserId, toUserId);
     } catch (e) {
       rethrow;
     }

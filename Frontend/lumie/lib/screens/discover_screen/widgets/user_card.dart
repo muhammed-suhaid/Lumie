@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lumie/models/user_model.dart';
 import 'package:lumie/services/likes_service.dart';
+import 'package:lumie/services/matches_service.dart';
 import 'package:lumie/utils/app_constants.dart';
+import 'package:lumie/utils/custom_snakbar.dart';
 
 //************************* UserProfileCard Widget *************************//
 class UserProfileCard extends StatefulWidget {
@@ -18,6 +20,9 @@ class UserProfileCard extends StatefulWidget {
 
 class _UserProfileCardState extends State<UserProfileCard> {
   int currentIndex = 0;
+
+  final LikesService _likesService = LikesService();
+  final MatchesService _matchesService = MatchesService();
 
   //************************* Show Next User *************************//
   void _showNextUser() {
@@ -40,26 +45,32 @@ class _UserProfileCardState extends State<UserProfileCard> {
   }
 
   //************************* Handle Like Action *************************//
-  Future<void> _handleLike(String likedUserId) async {
-    final likesService = LikesService();
-
+  Future<void> _handleLike(String likedUserId, String userName) async {
     try {
-      // Add the like
-      await likesService.addLike(getCurrentUserId(), likedUserId);
+      final currentUserId = getCurrentUserId();
 
-      //  Check if liked user already liked me
-      final isReciprocal = await likesService.isUserLiked(
+      // Add like
+      await _likesService.addLike(currentUserId, likedUserId);
+
+      // Check if liked user liked me → match
+      final isReciprocal = await _likesService.isUserLiked(
         likedUserId,
-        getCurrentUserId(),
+        currentUserId,
       );
 
       if (isReciprocal) {
-        // ✅ It's a match!
-        debugPrint("🎉 You matched with $likedUserId!");
-        // You can call your MatchesService here to add a match
+        debugPrint("🎉 You matched with $userName!");
+        if (mounted) {
+          CustomSnackbar.show(
+            context,
+            "You matched with $userName",
+            isError: false,
+          );
+        }
+        await _matchesService.checkAndCreateMatch(currentUserId, likedUserId);
       }
 
-      // Move to next user
+      // Move to next profile
       _showNextUser();
     } catch (e) {
       debugPrint("Error liking user: $e");
@@ -86,17 +97,14 @@ class _UserProfileCardState extends State<UserProfileCard> {
                     _buildPhoto(context, user.photos[0]),
                   _buildBasicInfo(colorScheme, user),
                   _buildPersonality(colorScheme, user),
-
                   if (user.photos.length > 1)
                     _buildPhoto(context, user.photos[1]),
                   _buildPreferences(colorScheme, user),
-
                   if (user.photos.length > 2)
                     _buildPhoto(context, user.photos[2]),
                   if (user.photos.length > 3)
                     _buildPhoto(context, user.photos[3]),
                   _buildInterests(colorScheme, user),
-
                   const SizedBox(height: 200),
                 ],
               ),
@@ -150,7 +158,12 @@ class _UserProfileCardState extends State<UserProfileCard> {
                     RawMaterialButton(
                       onPressed: () {
                         debugPrint("❤️ Liked ${user.name}");
-                        _handleLike(user.uid);
+                        CustomSnackbar.show(
+                          context,
+                          "Liked ${user.name}",
+                          isError: false,
+                        );
+                        _handleLike(user.uid, user.name);
                       },
                       constraints: const BoxConstraints(
                         minWidth: 56,
@@ -194,7 +207,7 @@ class _UserProfileCardState extends State<UserProfileCard> {
     );
   }
 
-  //************************* Basic Info Widget * ************************//
+  //************************* Basic Info Widget *************************//
   Widget _buildBasicInfo(ColorScheme colorScheme, UserModel user) {
     int age = 0;
     if (user.birthday.isNotEmpty) {
