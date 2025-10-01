@@ -2,8 +2,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lumie/firebase_options.dart';
+import 'package:lumie/screens/discover_screen/discover_screen.dart';
 import 'package:lumie/screens/get_started/get_started_screen.dart';
+import 'package:lumie/screens/match_screen/match_screen.dart';
 import 'package:lumie/utils/app_colors.dart';
+import 'package:lumie/widgets/tab_screen.dart';
 
 void main() async {
   // Firebase Initizing
@@ -58,7 +61,20 @@ class MyApp extends StatelessWidget {
 
       // Automatically follows system mode
       themeMode: ThemeMode.system,
-      home: GetStartedScreen(),
+      // TODO: change to Get Started Screen
+      home: TabScreen(
+        pages: [
+          // Discover screen
+          DiscoverScreen(),
+          MatchesScreen(),
+          const SizedBox(
+            child: Center(child: Text("Chat Screen")),
+          ), // Chat Screen
+          const SizedBox(
+            child: Center(child: Text("Profile Screen")),
+          ), // Profile settings
+        ],
+      ),
     );
   }
 }

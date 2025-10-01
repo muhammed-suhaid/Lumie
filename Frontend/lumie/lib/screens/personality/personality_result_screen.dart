@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lumie/dummyData/personality_results_data.dart';
 import 'package:lumie/models/personality_result_model.dart';
 import 'package:lumie/screens/discover_screen/discover_screen.dart';
+import 'package:lumie/screens/match_screen/match_screen.dart';
 import 'package:lumie/services/personality_service.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
@@ -65,9 +66,7 @@ class PersonalityResultScreen extends StatelessWidget {
               pages: [
                 // Discover screen
                 DiscoverScreen(),
-                const SizedBox(
-                  child: Center(child: Text("Match Requests Screen")),
-                ), // Match Requests Screen
+                MatchesScreen(),
                 const SizedBox(
                   child: Center(child: Text("Chat Screen")),
                 ), // Chat Screen
