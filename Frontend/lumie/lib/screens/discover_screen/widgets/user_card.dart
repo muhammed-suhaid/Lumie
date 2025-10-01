@@ -70,6 +70,14 @@ class _UserProfileCardState extends State<UserProfileCard> {
         await _matchesService.checkAndCreateMatch(currentUserId, likedUserId);
       }
 
+      // Remove liked user from list and refresh
+      setState(() {
+        widget.users.removeAt(currentIndex);
+        if (currentIndex >= widget.users.length && widget.users.isNotEmpty) {
+          currentIndex = widget.users.length - 1;
+        }
+      });
+
       // Move to next profile
       _showNextUser();
     } catch (e) {
