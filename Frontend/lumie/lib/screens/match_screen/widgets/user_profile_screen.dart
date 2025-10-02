@@ -10,8 +10,13 @@ import 'package:lumie/utils/custom_snakbar.dart';
 
 class UserProfileScreen extends StatefulWidget {
   final UserModel user;
+  final bool showActionButtons;
 
-  const UserProfileScreen({super.key, required this.user});
+  const UserProfileScreen({
+    super.key,
+    required this.user,
+    this.showActionButtons = true,
+  });
 
   @override
   State<UserProfileScreen> createState() => _UserProfileScreenState();
@@ -91,36 +96,38 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               _buildInterests(colorScheme, user),
 
               const SizedBox(height: 20),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton.icon(
-                    icon: const Icon(Icons.close),
-                    label: const Text("Dislike"),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red.withAlpha(200),
+              if (widget.showActionButtons)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton.icon(
+                      icon: const Icon(Icons.close),
+                      label: const Text("Dislike"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red.withAlpha(200),
+                      ),
+                      onPressed: isMatched
+                          ? null
+                          : () => Navigator.pop(context),
                     ),
-                    onPressed: isMatched ? null : () => Navigator.pop(context),
-                  ),
-                  ElevatedButton.icon(
-                    icon: const Icon(Icons.favorite),
-                    label: const Text("Like"),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.pink.withAlpha(200),
+                    ElevatedButton.icon(
+                      icon: const Icon(Icons.favorite),
+                      label: const Text("Like"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.pink.withAlpha(200),
+                      ),
+                      onPressed: isMatched
+                          ? null
+                          : () async {
+                              await _handleLike(
+                                widget.user.uid,
+                                widget.user.name,
+                              );
+                              if (context.mounted) Navigator.pop(context);
+                            },
                     ),
-                    onPressed: isMatched
-                        ? null
-                        : () async {
-                            await _handleLike(
-                              widget.user.uid,
-                              widget.user.name,
-                            );
-                            if (context.mounted) Navigator.pop(context);
-                          },
-                  ),
-                ],
-              ),
+                  ],
+                ),
             ],
           ),
         ),

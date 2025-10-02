@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lumie/screens/match_screen/tabs/liked_tab.dart';
 import 'package:lumie/screens/match_screen/tabs/likes_tab.dart';
 import 'package:lumie/services/likes_service.dart';
 import 'package:lumie/utils/app_constants.dart';
@@ -78,7 +79,7 @@ class _MatchesScreenState extends State<MatchesScreen>
         controller: _tabController,
         children: [
           LikesTab(likesService: _likesService, userId: currentUserId),
-          Center(child: Text("Liked Tab")),
+          LikedTab(likesService: _likesService, userId: currentUserId),
           Center(child: Text("Matches Tab")),
         ],
       ),

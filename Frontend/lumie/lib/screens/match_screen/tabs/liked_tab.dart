@@ -1,0 +1,50 @@
+import 'package:flutter/material.dart';
+import 'package:lumie/screens/match_screen/widgets/user_profile_screen.dart';
+import 'package:lumie/screens/match_screen/widgets/user_tile.dart';
+import 'package:lumie/services/likes_service.dart';
+import 'package:lumie/models/user_model.dart';
+
+class LikedTab extends StatelessWidget {
+  final LikesService likesService;
+  final String userId;
+
+  const LikedTab({super.key, required this.likesService, required this.userId});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<List<UserModel>>(
+      stream: likesService.getUsersILiked(userId),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text("No one liked you yet."));
+        }
+
+        final likedUsers = snapshot.data!;
+
+        return ListView.builder(
+          itemCount: likedUsers.length,
+          itemBuilder: (context, index) {
+            final user = likedUsers[index];
+            return UserTile(
+              user: user,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        UserProfileScreen(user: user, showActionButtons: false),
+                  ),
+                );
+              },
+              showChatButton: false,
+            );
+          },
+        );
+      },
+    );
+  }
+}
