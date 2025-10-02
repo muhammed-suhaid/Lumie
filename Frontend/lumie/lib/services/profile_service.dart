@@ -1,7 +1,11 @@
 //************************* Imports *************************//
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:lumie/models/user_model.dart';
+import 'package:lumie/services/cloudinary_service.dart';
 
 class ProfileService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -19,6 +23,43 @@ class ProfileService {
       return UserModel.fromMap(doc.data()!..["uid"] = doc.id);
     }
     return null;
+  }
+
+  //************************* Update User profile Image *************************//
+  Future<void> updateProfileImage(BuildContext context, File image) async {
+    if (currentUserId == null) return;
+
+    final imageUrl = await CloudinaryService.uploadFile(
+      context,
+      image,
+      "users/profile",
+    );
+
+    if (imageUrl != null) {
+      await _firestore.collection("users").doc(currentUserId).update({
+        "profile.profileImage": imageUrl,
+        "updatedAt": FieldValue.serverTimestamp(),
+      });
+    }
+  }
+
+  //************************* Update User Gallery photos *************************//
+  Future<void> updateGalleryPhotos(
+    BuildContext context,
+    List<File> photos,
+  ) async {
+    if (currentUserId == null) return;
+
+    final photoUrls = await CloudinaryService.uploadFiles(
+      context,
+      photos,
+      "users/photos",
+    );
+
+    await _firestore.collection("users").doc(currentUserId).update({
+      "profile.photos": photoUrls,
+      "updatedAt": FieldValue.serverTimestamp(),
+    });
   }
 
   //************************* Update User Profile *************************//

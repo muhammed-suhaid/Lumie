@@ -1,9 +1,13 @@
 //************************* Imports *************************//
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lumie/models/user_model.dart';
 import 'package:lumie/services/profile_service.dart';
 import 'package:lumie/utils/app_constants.dart';
+import 'package:lumie/utils/custom_snakbar.dart';
 import 'package:lumie/widgets/custom_button.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -15,9 +19,13 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final ProfileService _profileService = ProfileService();
+  final ImagePicker _picker = ImagePicker();
 
   UserModel? currentUser;
   bool isEditing = false;
+
+  File? newProfileImage;
+  List<File> newGalleryPhotos = [];
 
   String? goalMain;
   String? goalSub;
@@ -79,6 +87,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  Future<void> _pickProfileImage() async {
+    final pickedFile = await _picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 50,
+    );
+    if (pickedFile != null) {
+      setState(() {
+        newProfileImage = File(pickedFile.path);
+      });
+    }
+  }
+
+  Future<void> _pickGalleryPhotos() async {
+    final pickedFiles = await _picker.pickMultiImage(imageQuality: 50);
+
+    setState(() {
+      newGalleryPhotos = pickedFiles.map((x) => File(x.path)).toList();
+    });
+  }
+
   //************************* Save profile Method *************************//
   Future<void> _saveProfile() async {
     await _profileService.updateUserProfile(
@@ -90,6 +118,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
       interests: interests,
     );
 
+    if (newProfileImage != null && mounted) {
+      await _profileService.updateProfileImage(context, newProfileImage!);
+    }
+    if (newGalleryPhotos.isNotEmpty && mounted) {
+      await _profileService.updateGalleryPhotos(context, newGalleryPhotos);
+    }
+
+    if (mounted) {
+      CustomSnackbar.show(context, "Profile Updated!", isError: false);
+    }
     setState(() => isEditing = false);
     _loadProfile();
   }
@@ -162,6 +200,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: currentUser == null
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
               padding: const EdgeInsets.all(AppConstants.kPaddingL),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -171,15 +210,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   //************************* Profile Image *************************//
                   Center(
                     child: GestureDetector(
-                      onTap: () {
-                        // TODO: Add image picker for profile photo
-                      },
+                      onTap: isEditing ? _pickProfileImage : null,
                       child: CircleAvatar(
                         radius: 60,
-                        backgroundImage: currentUser!.profileImage.isNotEmpty
-                            ? NetworkImage(currentUser!.profileImage)
-                            : const AssetImage("assets/default_profile.png")
-                                  as ImageProvider,
+                        backgroundImage: newProfileImage != null
+                            ? FileImage(newProfileImage!)
+                            : (currentUser!.profileImage.isNotEmpty
+                                  ? NetworkImage(currentUser!.profileImage)
+                                  : const AssetImage(
+                                          "assets/default_profile.png",
+                                        )
+                                        as ImageProvider),
                       ),
                     ),
                   ),
@@ -236,6 +277,68 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     enabled: false,
                   ),
 
+                  const SizedBox(height: AppConstants.kPaddingXXL),
+
+                  //************************* Gallery Images *************************//
+                  Text(
+                    "Gallery Photos",
+                    style: GoogleFonts.poppins(
+                      fontSize: AppConstants.kFontSizeL,
+                      fontWeight: FontWeight.w600,
+                      color: colorScheme.secondary,
+                    ),
+                  ),
+                  const SizedBox(height: AppConstants.kPaddingM),
+                  SizedBox(
+                    height: 120,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      physics: BouncingScrollPhysics(),
+                      itemCount:
+                          (newGalleryPhotos.isNotEmpty
+                              ? newGalleryPhotos.length
+                              : currentUser!.photos.length) +
+                          1,
+                      itemBuilder: (context, index) {
+                        if (index ==
+                            (newGalleryPhotos.isNotEmpty
+                                ? newGalleryPhotos.length
+                                : currentUser!.photos.length)) {
+                          return GestureDetector(
+                            onTap: isEditing ? _pickGalleryPhotos : null,
+                            child: Container(
+                              width: 100,
+                              margin: const EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius: BorderRadius.circular(
+                                  AppConstants.kRadiusM,
+                                ),
+                              ),
+                              child: const Icon(Icons.add_a_photo, size: 40),
+                            ),
+                          );
+                        } else {
+                          return Container(
+                            width: 100,
+                            margin: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(
+                                AppConstants.kRadiusM,
+                              ),
+                              image: DecorationImage(
+                                image: newGalleryPhotos.isNotEmpty
+                                    ? FileImage(newGalleryPhotos[index])
+                                    : NetworkImage(currentUser!.photos[index])
+                                          as ImageProvider,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ),
                   const SizedBox(height: AppConstants.kPaddingXXL),
 
                   //************************* Preferences Section *************************//
