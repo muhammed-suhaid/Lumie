@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lumie/screens/match_screen/tabs/likes_tab.dart';
+import 'package:lumie/services/likes_service.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
 
@@ -16,6 +18,8 @@ class MatchesScreen extends StatefulWidget {
 class _MatchesScreenState extends State<MatchesScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+
+  final _likesService = LikesService();
 
   String currentUserId = "";
 
@@ -73,7 +77,7 @@ class _MatchesScreenState extends State<MatchesScreen>
       body: TabBarView(
         controller: _tabController,
         children: [
-          Center(child: Text("Likes Tab")),
+          LikesTab(likesService: _likesService, userId: currentUserId),
           Center(child: Text("Liked Tab")),
           Center(child: Text("Matches Tab")),
         ],

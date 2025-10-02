@@ -110,6 +110,19 @@ class UserService {
     }
   }
 
+  //************************* Fetching user by Id *************************//
+  Future<UserModel?> getUserById(String userId) async {
+    try {
+      final doc = await _firestore.collection("users").doc(userId).get();
+      if (doc.exists) {
+        return UserModel.fromMap(doc.data()!);
+      }
+    } catch (e) {
+      debugPrint("Error fetching user: $e");
+    }
+    return null;
+  }
+
   //************************* Personality Match Map *************************//
   static Map<String, List<String>> personalityMatches = {
     "INTJ": ["ENTP", "ENFP", "INFJ", "ENTJ"],

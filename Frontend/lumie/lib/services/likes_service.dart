@@ -1,5 +1,6 @@
 //************************* Imports *************************//
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lumie/models/user_model.dart';
 import 'matches_service.dart';
 
 class LikesService {
@@ -68,5 +69,35 @@ class LikesService {
         .get();
 
     return query.docs.isNotEmpty;
+  }
+
+  // Get users who liked the current user
+  Stream<List<UserModel>> getLikedUsersFull(String currentUserId) {
+    return _firestore
+        .collection("likes")
+        .where("to", isEqualTo: currentUserId)
+        .snapshots()
+        .asyncMap((snapshot) async {
+          final likedUserIds = snapshot.docs
+              .map((doc) => doc["from"] as String)
+              .toList();
+
+          if (likedUserIds.isEmpty) return [];
+
+          final users = await Future.wait(
+            likedUserIds.map((id) async {
+              final userDoc = await _firestore
+                  .collection("users")
+                  .doc(id)
+                  .get();
+              if (userDoc.exists) {
+                return UserModel.fromMap(userDoc.data()!..["id"] = userDoc.id);
+              }
+              return null;
+            }),
+          );
+
+          return users.whereType<UserModel>().toList();
+        });
   }
 }
