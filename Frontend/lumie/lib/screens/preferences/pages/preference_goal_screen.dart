@@ -20,9 +20,9 @@ class PreferenceGoalPage extends StatelessWidget {
   //************************* _openGoalSubModal method *************************//
   void _openGoalSubModal(BuildContext context) {
     final options = [
-      "Short-term",
-      "Long-term",
-      "Short-term open to long",
+      "Short-Term",
+      "Long-Term",
+      "Short-Term Open to Long",
       "Open",
     ];
 

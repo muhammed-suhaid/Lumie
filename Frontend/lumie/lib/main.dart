@@ -5,6 +5,7 @@ import 'package:lumie/firebase_options.dart';
 import 'package:lumie/screens/discover_screen/discover_screen.dart';
 import 'package:lumie/screens/get_started/get_started_screen.dart';
 import 'package:lumie/screens/match_screen/match_screen.dart';
+import 'package:lumie/screens/profile/profile_screen.dart';
 import 'package:lumie/utils/app_colors.dart';
 import 'package:lumie/widgets/tab_screen.dart';
 
@@ -62,17 +63,16 @@ class MyApp extends StatelessWidget {
       // Automatically follows system mode
       themeMode: ThemeMode.system,
       // TODO: change to Get Started Screen
-      home: TabScreen(
+      home: const TabScreen(
         pages: [
           // Discover screen
           DiscoverScreen(),
+          // Matches Screen
           MatchesScreen(),
-          const SizedBox(
-            child: Center(child: Text("Chat Screen")),
-          ), // Chat Screen
-          const SizedBox(
-            child: Center(child: Text("Profile Screen")),
-          ), // Profile settings
+          // Chat Screen
+          SizedBox(child: Center(child: Text("Chat Screen"))),
+          // Profile Screen
+          ProfileScreen(),
         ],
       ),
     );

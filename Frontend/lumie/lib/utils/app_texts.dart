@@ -12,6 +12,7 @@ class AppTexts {
   static const String done = "Done";
 
   // Profile
+  static const String profile = "Profile";
   static const String editProfile = "Edit Profile";
   static const String saveProfile = "Save Profile";
   static const String hobbies = "Hobbies";
