@@ -1,5 +1,6 @@
 //************************* Imports *************************//
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lumie/models/user_model.dart';
 
 class MatchesService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -58,5 +59,27 @@ class MatchesService {
       }
     }
     return false;
+  }
+
+  Stream<List<UserModel>> getMatchedUsersFull(String currentUserId) {
+    return getMatches(currentUserId).asyncMap((matchedUserIds) async {
+      if (matchedUserIds.isEmpty) return [];
+
+      final users = await Future.wait(
+        matchedUserIds.map((id) async {
+          final doc = await FirebaseFirestore.instance
+              .collection("users")
+              .doc(id)
+              .get();
+
+          if (doc.exists) {
+            return UserModel.fromMap(doc.data()!..["id"] = doc.id);
+          }
+          return null;
+        }),
+      );
+
+      return users.whereType<UserModel>().toList();
+    });
   }
 }

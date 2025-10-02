@@ -1,5 +1,6 @@
 //*************************  UserTile Widget  *************************//
 import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:lumie/models/user_model.dart';
 
 class UserTile extends StatelessWidget {
@@ -20,6 +21,8 @@ class UserTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -73,8 +76,8 @@ class UserTile extends StatelessWidget {
               if (showChatButton)
                 IconButton(
                   onPressed: onMessageTap,
-                  icon: const Icon(Icons.chat_bubble_outline),
-                  color: Colors.pinkAccent,
+                  icon: const Icon(Iconsax.message),
+                  color: colorScheme.secondary,
                 ),
             ],
           ),
