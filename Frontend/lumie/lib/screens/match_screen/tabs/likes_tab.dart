@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lumie/screens/match_screen/widgets/user_profile_screen.dart';
 import 'package:lumie/screens/match_screen/widgets/user_tile.dart';
 import 'package:lumie/services/likes_service.dart';
 import 'package:lumie/models/user_model.dart';
@@ -31,7 +32,12 @@ class LikesTab extends StatelessWidget {
             return UserTile(
               user: user,
               onTap: () {
-                // TODO: navigate to user profile screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UserProfileScreen(user: user),
+                  ),
+                );
               },
               showChatButton: false,
             );
