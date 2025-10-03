@@ -7,7 +7,7 @@ import 'package:lumie/screens/match_screen/match_screen.dart';
 import 'package:lumie/screens/on_boarding/on_borading_screen.dart';
 import 'package:lumie/screens/preferences/preferences_screen.dart';
 import 'package:lumie/screens/personality/personality_quiz_screen.dart';
-import 'package:lumie/screens/profile/profile_screen.dart';
+import 'package:lumie/screens/settings/settings_screen.dart';
 import 'package:lumie/services/phone_auth_service.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
@@ -82,8 +82,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 MatchesScreen(),
                 // Chat Screen
                 ChatsListScreen(),
-                // Profile Screen
-                ProfileScreen(),
+                // Settings Screen
+                SettingsPage(),
               ],
             ),
           ),

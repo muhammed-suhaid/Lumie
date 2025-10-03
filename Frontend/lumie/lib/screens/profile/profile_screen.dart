@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lumie/models/user_model.dart';
-import 'package:lumie/screens/auth/auth_screen.dart';
-import 'package:lumie/services/phone_auth_service.dart';
 import 'package:lumie/services/profile_service.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/custom_snakbar.dart';
@@ -62,24 +60,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     _loadProfile();
-  }
-
-  //************************* Sign Out method *************************//
-  Future<void> _signOut() async {
-    try {
-      await PhoneAuthService.signOut();
-
-      if (!mounted) return;
-
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const AuthScreen()),
-        (route) => false,
-      );
-    } catch (e) {
-      debugPrint("Sign out failed: $e");
-      CustomSnackbar.show(context, "Failed to sign out", isError: true);
-    }
   }
 
   //************************* Loading profile method *************************//
@@ -501,19 +481,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       onPressed: _saveProfile,
                     ),
 
-                  isEditing ? const SizedBox(height: 20) : SizedBox(),
-                  //************************* Custom button *************************//
-                  !isEditing
-                      ? Center(
-                          child: CustomButton(
-                            text: "Sign Out",
-                            type: ButtonType.secondary,
-                            onPressed: _signOut,
-                            icon: Icons.logout,
-                          ),
-                        )
-                      : SizedBox(),
-                  const SizedBox(height: 80),
+                  const SizedBox(height: 30),
                 ],
               ),
             ),
