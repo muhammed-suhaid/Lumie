@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lumie/models/user_model.dart';
+import 'package:lumie/screens/chat_screen/widgets/chat_input_field.dart';
 
 class ChatScreen extends StatefulWidget {
   final String chatId;
@@ -109,22 +110,9 @@ class _ChatScreenState extends State<ChatScreen> {
           //************************* Text field *************************//
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _messageController,
-                    decoration: const InputDecoration(
-                      hintText: "Type a message...",
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.send),
-                  onPressed: _sendMessage,
-                ),
-              ],
+            child: ChatInputField(
+              controller: _messageController,
+              onSend: _sendMessage,
             ),
           ),
         ],
