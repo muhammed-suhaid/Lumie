@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lumie/screens/auth/phone_number_screen.dart';
-import 'package:lumie/screens/get_started/terms_conditions_screen.dart';
+import 'package:lumie/screens/legal/terms_conditions_screen.dart';
 import 'package:lumie/screens/legal/privacy_policy_screen.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
