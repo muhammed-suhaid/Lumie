@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lumie/screens/auth/otp_verification/widgets/custom_otp_field.dart';
+import 'package:lumie/screens/chat_screen/chat_list_screen.dart';
 import 'package:lumie/screens/discover_screen/discover_screen.dart';
+import 'package:lumie/screens/match_screen/match_screen.dart';
 import 'package:lumie/screens/on_boarding/on_borading_screen.dart';
 import 'package:lumie/screens/preferences/preferences_screen.dart';
 import 'package:lumie/screens/personality/personality_quiz_screen.dart';
+import 'package:lumie/screens/profile/profile_screen.dart';
 import 'package:lumie/services/phone_auth_service.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
@@ -75,15 +78,12 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
               pages: [
                 // Discover screen
                 DiscoverScreen(),
-                SizedBox(
-                  child: Center(child: Text("Match Requests Screen")),
-                ), // Match Requests Screen
-                SizedBox(
-                  child: Center(child: Text("Chat Screen")),
-                ), // Chat Screen
-                SizedBox(
-                  child: Center(child: Text("Profile Screen")),
-                ), // Profile settings
+                // Matches Screen
+                MatchesScreen(),
+                // Chat Screen
+                ChatsListScreen(),
+                // Profile Screen
+                ProfileScreen(),
               ],
             ),
           ),
