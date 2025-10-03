@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lumie/screens/auth/auth_screen.dart';
 import 'package:lumie/screens/legal/privacy_policy_screen.dart';
 import 'package:lumie/screens/legal/terms_conditions_screen.dart';
+import 'package:lumie/screens/payment/payment_screen.dart';
 import 'package:lumie/screens/profile/profile_screen.dart';
 import 'package:lumie/services/phone_auth_service.dart';
 import 'package:lumie/services/profile_service.dart';
@@ -160,7 +161,12 @@ class _SettingsPageState extends State<SettingsPage> {
                     title: const Text("Payment"),
                     trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                     onTap: () {
-                      // TODO: Add Payment page
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const PaymentPage(),
+                        ),
+                      );
                     },
                   ),
                   //************************* SignOut *************************//
