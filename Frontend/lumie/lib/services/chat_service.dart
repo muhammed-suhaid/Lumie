@@ -26,7 +26,7 @@ class ChatService {
       // Fetch user profiles
       final userDocs = await _firestore
           .collection('users')
-          .where('id', whereIn: userIds.toList())
+          .where('uid', whereIn: userIds.toList())
           .get();
 
       return userDocs.docs.map((doc) => UserModel.fromMap(doc.data())).toList();
@@ -34,5 +34,33 @@ class ChatService {
       debugPrint("Error fetching chat users: $e");
       return [];
     }
+  }
+
+  /// Create or get chat between two users
+  Future<String> createOrGetChat(
+    String currentUserId,
+    String otherUserId,
+  ) async {
+    final chatId = _generateChatId(currentUserId, otherUserId);
+
+    final chatRef = _firestore.collection("chats").doc(chatId);
+
+    final chatDoc = await chatRef.get();
+
+    if (!chatDoc.exists) {
+      await chatRef.set({
+        "participants": [currentUserId, otherUserId],
+        "lastMessage": "",
+        "updatedAt": FieldValue.serverTimestamp(),
+      });
+    }
+
+    return chatId;
+  }
+
+  /// Generate a unique chatId
+  String _generateChatId(String user1, String user2) {
+    // Always sort IDs to prevent duplicates
+    return (user1.compareTo(user2) < 0) ? "${user1}_$user2" : "${user2}_$user1";
   }
 }

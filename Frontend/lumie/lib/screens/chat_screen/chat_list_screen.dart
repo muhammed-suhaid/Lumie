@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lumie/models/user_model.dart';
+import 'package:lumie/screens/chat_screen/chat_screen.dart';
 import 'package:lumie/screens/match_screen/widgets/user_tile.dart';
 import 'package:lumie/services/chat_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,100 +28,43 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
   }
 
   //************************* _loadChatUsers method *************************//
-  // Future<void> _loadChatUsers() async {
-  //   final currentUser = FirebaseAuth.instance.currentUser;
-  //   if (currentUser == null) return;
-
-  //   final users = await _chatService.getChatUsers(currentUser.uid);
-  //   setState(() {
-  //     chatUsers = users;
-  //     isLoading = false;
-  //   });
-  // }
-  //************************* _loadChatUsers method *************************//
   Future<void> _loadChatUsers() async {
-    await Future.delayed(const Duration(seconds: 1)); // simulate loading
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) return;
 
+    final users = await _chatService.getChatUsers(currentUser.uid);
     setState(() {
-      chatUsers = [
-        UserModel(
-          uid: "1",
-          name: "Alice Johnson",
-          birthday: "1998-05-21",
-          gender: "Female",
-          phone: "+911234567890",
-          personality: "ENFP",
-          profileImage: "https://randomuser.me/api/portraits/women/65.jpg",
-          photos: [],
-          video: "",
-          email: '',
-          createdAt: DateTime(DateTime.april),
-          updatedAt: DateTime(DateTime.april),
-          personalityUpdatedAt: DateTime(DateTime.april),
-          preferencesUpdatedAt: DateTime(DateTime.april),
-          onboardingComplete: true,
-          personalityComplete: true,
-          preferencesComplete: true,
-          goalMain: '',
-          goalSub: '',
-          relationshipStatus: '',
-          relationshipType: '',
-          whoToMeet: '',
-          interests: [],
-        ),
-        UserModel(
-          uid: "2",
-          name: "Michael Smith",
-          birthday: "1995-11-10",
-          gender: "Male",
-          phone: "+919876543210",
-          personality: "INTJ",
-          profileImage: "https://randomuser.me/api/portraits/men/72.jpg",
-          photos: [],
-          video: "",
-          email: '',
-          createdAt: DateTime(DateTime.april),
-          updatedAt: DateTime(DateTime.april),
-          personalityUpdatedAt: DateTime(DateTime.april),
-          preferencesUpdatedAt: DateTime(DateTime.april),
-          onboardingComplete: true,
-          personalityComplete: true,
-          preferencesComplete: true,
-          goalMain: '',
-          goalSub: '',
-          relationshipStatus: '',
-          relationshipType: '',
-          whoToMeet: '',
-          interests: [],
-        ),
-        UserModel(
-          uid: "3",
-          name: "Sophia Williams",
-          birthday: "2000-02-14",
-          gender: "Female",
-          phone: "+911112223334",
-          personality: "INFJ",
-          profileImage: "https://randomuser.me/api/portraits/women/44.jpg",
-          photos: [],
-          video: "",
-          email: '',
-          createdAt: DateTime(DateTime.april),
-          updatedAt: DateTime(DateTime.april),
-          personalityUpdatedAt: DateTime(DateTime.april),
-          preferencesUpdatedAt: DateTime(DateTime.april),
-          onboardingComplete: true,
-          personalityComplete: true,
-          preferencesComplete: true,
-          goalMain: '',
-          goalSub: '',
-          relationshipStatus: '',
-          relationshipType: '',
-          whoToMeet: '',
-          interests: [],
-        ),
-      ];
+      chatUsers = users;
       isLoading = false;
     });
+  }
+
+  //************************* onTap Function *************************//
+  Future<void> _onTap(BuildContext context, UserModel otherUser) async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) return;
+    final chatService = ChatService();
+    final currentUserId = currentUser.uid;
+
+    // Create or get chatId from service
+    final chatId = await chatService.createOrGetChat(
+      currentUserId,
+      otherUser.uid,
+    );
+
+    // Navigate to ChatScreen
+    if (context.mounted) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ChatScreen(
+            chatId: chatId,
+            currentUserId: currentUserId,
+            otherUser: otherUser,
+          ),
+        ),
+      );
+    }
   }
 
   //************************* Body *************************//
@@ -154,7 +98,7 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
                 return UserTile(
                   user: user,
                   onTap: () {
-                    //  TODO: Go to chat screen
+                    _onTap(context, user);
                     debugPrint("Chat of ${user.name} pressed");
                   },
                 );
