@@ -1,11 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lumie/screens/legal/privacy_policy_screen.dart';
 import 'package:lumie/screens/legal/terms_conditions_screen.dart';
+import 'package:lumie/services/razorpay_service.dart';
 import 'package:lumie/utils/app_constants.dart';
 import 'package:lumie/utils/app_texts.dart';
 import 'package:lumie/utils/custom_snakbar.dart';
 import 'package:lumie/widgets/custom_button.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class PaymentPage extends StatefulWidget {
   const PaymentPage({super.key});
@@ -15,9 +19,92 @@ class PaymentPage extends StatefulWidget {
 }
 
 class _PaymentPageState extends State<PaymentPage> {
-  String? selectedPlan; // Track selected plan
+  late RazorpayService _razorpayService;
+  String? selectedPlan;
+  int? selectedAmount;
 
-  //************************* Body *************************//
+  @override
+  void initState() {
+    super.initState();
+    _razorpayService = RazorpayService(
+      onPaymentSuccess: _handlePaymentSuccess,
+      onPaymentError: _handlePaymentError,
+      onExternalWallet: _handleExternalWallet,
+    );
+  }
+
+  @override
+  void dispose() {
+    _razorpayService.dispose();
+    super.dispose();
+  }
+
+  //************************* Handlers *************************//
+  void _handlePaymentSuccess(PaymentSuccessResponse response) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final planEndDate = selectedPlan == "monthly"
+        ? DateTime.now().add(const Duration(days: 30))
+        : DateTime.now().add(const Duration(days: 365));
+
+    final userDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid);
+
+    await userDoc.update({
+      'isAdFree': true,
+      'paymentHistory': {
+        'planType': selectedPlan,
+        'planStart': Timestamp.now(),
+        'planEnd': Timestamp.fromDate(planEndDate),
+        'lastPaymentId': response.paymentId,
+        'amountPaid': selectedAmount,
+      },
+    });
+
+    if (mounted) {
+      CustomSnackbar.show(
+        context,
+        "Payment successful and plan updated!",
+        isError: false,
+      );
+    }
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    CustomSnackbar.show(context, "Payment Failed ❌ ${response.message}");
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    CustomSnackbar.show(context, "External Wallet: ${response.walletName}");
+  }
+
+  //************************* Start Payment *************************//
+  void _startPayment() {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (selectedPlan == null || selectedAmount == null) {
+      CustomSnackbar.show(context, "Please select a plan first");
+      return;
+    }
+
+    CustomSnackbar.show(
+      context,
+      "Proceeding with ${selectedPlan == 'monthly' ? '1 Month Plan' : '1 Year Plan'}",
+      isError: false,
+    );
+
+    _razorpayService.openCheckout(
+      amount: selectedAmount!,
+      planName: selectedPlan!,
+      contact: user?.phoneNumber ?? "user",
+      email: user?.email ?? "user@email.com",
+      userId: user?.uid ?? "unknown",
+    );
+  }
+
+  //************************* Build *************************//
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -73,6 +160,7 @@ class _PaymentPageState extends State<PaymentPage> {
               title: "1 Month Plan",
               price: "₹199",
               subtitle: "Billed Monthly",
+              amount: 199,
               isPopular: false,
             ),
             const SizedBox(height: 20),
@@ -82,9 +170,9 @@ class _PaymentPageState extends State<PaymentPage> {
               title: "1 Year Plan",
               price: "₹1499",
               subtitle: "Save 35% compared to monthly",
+              amount: 1499,
               isPopular: true,
             ),
-
             const Spacer(),
 
             //************************* Payment Button *************************//
@@ -97,19 +185,11 @@ class _PaymentPageState extends State<PaymentPage> {
                 textColor: colorScheme.onPrimary,
                 borderRadius: AppConstants.kRadiusM,
                 fontSize: AppConstants.kFontSizeM,
-                onPressed: () {
-                  CustomSnackbar.show(
-                    context,
-                    "Proceeding with ${selectedPlan == 'monthly' ? '1 Month Plan' : '1 Year Plan'}",
-                    isError: false,
-                  );
-                  // TODO: Integrate RazorpayService here
-                },
+                onPressed: _startPayment,
               ),
-
             const SizedBox(height: 20),
 
-            //************************* Privacy Policy And Terms & Conditions *************************//
+            //************************* Legal *************************//
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -171,6 +251,7 @@ class _PaymentPageState extends State<PaymentPage> {
     required String title,
     required String price,
     required String subtitle,
+    required int amount,
     bool isPopular = false,
   }) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -178,7 +259,10 @@ class _PaymentPageState extends State<PaymentPage> {
 
     return GestureDetector(
       onTap: () {
-        setState(() => selectedPlan = id);
+        setState(() {
+          selectedPlan = id;
+          selectedAmount = amount;
+        });
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),

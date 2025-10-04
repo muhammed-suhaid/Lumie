@@ -70,6 +70,7 @@ class PhoneAuthService {
             "onboardingComplete": false,
             "preferencesComplete": false,
             "personalityComplete": false,
+            'isAdFree': false,
             "createdAt": FieldValue.serverTimestamp(),
           });
           debugPrint("First Time Registering");
