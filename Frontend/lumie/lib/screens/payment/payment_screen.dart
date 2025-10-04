@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:lumie/models/user_model.dart';
 import 'package:lumie/screens/legal/privacy_policy_screen.dart';
 import 'package:lumie/screens/legal/terms_conditions_screen.dart';
 import 'package:lumie/services/razorpay_service.dart';
@@ -23,6 +25,10 @@ class _PaymentPageState extends State<PaymentPage> {
   String? selectedPlan;
   int? selectedAmount;
 
+  UserModel? currentUserModel;
+  bool hasActiveSubscription = false;
+  Map<String, dynamic>? activeSubscription;
+
   @override
   void initState() {
     super.initState();
@@ -31,12 +37,41 @@ class _PaymentPageState extends State<PaymentPage> {
       onPaymentError: _handlePaymentError,
       onExternalWallet: _handleExternalWallet,
     );
+    _loadUserData();
   }
 
   @override
   void dispose() {
     _razorpayService.dispose();
     super.dispose();
+  }
+
+  //************************* _checkSubscription method *************************//
+  Future<void> _loadUserData() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final doc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
+    if (doc.exists) {
+      currentUserModel = UserModel.fromMap(doc.data()!);
+
+      // Check for active subscription
+      final now = DateTime.now();
+      if (currentUserModel!.paymentHistory.isNotEmpty) {
+        for (var payment in currentUserModel!.paymentHistory) {
+          final planEnd = (payment['planEnd'] as Timestamp).toDate();
+          if (planEnd.isAfter(now)) {
+            hasActiveSubscription = true;
+            activeSubscription = payment;
+            break;
+          }
+        }
+      }
+      setState(() {});
+    }
   }
 
   //************************* Handlers *************************//
@@ -54,13 +89,15 @@ class _PaymentPageState extends State<PaymentPage> {
 
     await userDoc.update({
       'isAdFree': true,
-      'paymentHistory': {
-        'planType': selectedPlan,
-        'planStart': Timestamp.now(),
-        'planEnd': Timestamp.fromDate(planEndDate),
-        'lastPaymentId': response.paymentId,
-        'amountPaid': selectedAmount,
-      },
+      'paymentHistory': FieldValue.arrayUnion([
+        {
+          'planType': selectedPlan,
+          'planStart': Timestamp.now(),
+          'planEnd': Timestamp.fromDate(planEndDate),
+          'lastPaymentId': response.paymentId,
+          'amountPaid': selectedAmount,
+        },
+      ]),
     });
 
     if (mounted) {
@@ -84,7 +121,12 @@ class _PaymentPageState extends State<PaymentPage> {
   void _startPayment() {
     final user = FirebaseAuth.instance.currentUser;
 
-    if (selectedPlan == null || selectedAmount == null) {
+    if (hasActiveSubscription && activeSubscription != null) {
+      _showSubscriptionBottomSheet();
+      return;
+    }
+
+    if (selectedPlan == null) {
       CustomSnackbar.show(context, "Please select a plan first");
       return;
     }
@@ -330,6 +372,53 @@ class _PaymentPageState extends State<PaymentPage> {
           ),
         ),
       ),
+    );
+  }
+
+  //************************* _showSubscriptionBottomSheet *************************//
+  void _showSubscriptionBottomSheet() {
+    final colorScheme = Theme.of(context).colorScheme;
+    final dateFormat = DateFormat('dd MMM yyyy');
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        final startDate = (activeSubscription?['planStart'] as Timestamp)
+            .toDate();
+        final endDate = (activeSubscription?['planEnd'] as Timestamp).toDate();
+        return Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "You already have an active subscription",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              Text("Plan Type: ${activeSubscription?['planType']}"),
+              Text("Start Date: ${dateFormat.format(startDate)}"),
+              Text("End Date: ${dateFormat.format(endDate)}"),
+              Text("Amount Paid: ₹${activeSubscription?['amountPaid']}"),
+              const SizedBox(height: 20),
+              CustomButton(
+                text: "Close",
+                type: ButtonType.primary,
+                isFullWidth: true,
+                backgroundColor: colorScheme.secondary,
+                textColor: colorScheme.onPrimary,
+                borderRadius: AppConstants.kRadiusM,
+                fontSize: AppConstants.kFontSizeM,
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

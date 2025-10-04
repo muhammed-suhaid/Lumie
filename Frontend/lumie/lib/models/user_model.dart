@@ -24,6 +24,7 @@ class UserModel {
   final bool onboardingComplete;
   final bool personalityComplete;
   final bool preferencesComplete;
+  final bool isAdFree;
 
   // Preferences
   final String goalMain;
@@ -32,6 +33,9 @@ class UserModel {
   final String relationshipType;
   final String whoToMeet;
   final List<String> interests;
+
+  // Payment History — now a list
+  final List<Map<String, dynamic>> paymentHistory;
 
   UserModel({
     required this.birthday,
@@ -51,12 +55,14 @@ class UserModel {
     required this.onboardingComplete,
     required this.personalityComplete,
     required this.preferencesComplete,
+    required this.isAdFree,
     required this.goalMain,
     required this.goalSub,
     required this.relationshipStatus,
     required this.relationshipType,
     required this.whoToMeet,
     required this.interests,
+    required this.paymentHistory,
   });
 
   /// Factory constructor to convert Firestore document data into UserModel
@@ -87,6 +93,7 @@ class UserModel {
       onboardingComplete: map['onboardingComplete'] ?? false,
       personalityComplete: map['personalityComplete'] ?? false,
       preferencesComplete: map['preferencesComplete'] ?? false,
+      isAdFree: map['isAdFree'] ?? false,
 
       // Preferences
       goalMain: preferences['goalMain'] ?? "",
@@ -95,6 +102,11 @@ class UserModel {
       relationshipType: preferences['relationshipType'] ?? "",
       whoToMeet: preferences['whoToMeet'] ?? "",
       interests: List<String>.from(preferences['interests'] ?? []),
+
+      // Payment History as list
+      paymentHistory: List<Map<String, dynamic>>.from(
+        map['paymentHistory'] ?? [],
+      ),
     );
   }
 }
