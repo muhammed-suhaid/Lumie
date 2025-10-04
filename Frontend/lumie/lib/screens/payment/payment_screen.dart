@@ -73,7 +73,7 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
-    CustomSnackbar.show(context, "Payment Failed ❌ ${response.message}");
+    CustomSnackbar.show(context, "Payment Failed");
   }
 
   void _handleExternalWallet(ExternalWalletResponse response) {
@@ -88,12 +88,6 @@ class _PaymentPageState extends State<PaymentPage> {
       CustomSnackbar.show(context, "Please select a plan first");
       return;
     }
-
-    CustomSnackbar.show(
-      context,
-      "Proceeding with ${selectedPlan == 'monthly' ? '1 Month Plan' : '1 Year Plan'}",
-      isError: false,
-    );
 
     _razorpayService.openCheckout(
       amount: selectedAmount!,
