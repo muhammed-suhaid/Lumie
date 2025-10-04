@@ -1,14 +1,26 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lumie/firebase_options.dart';
 import 'package:lumie/screens/get_started/get_started_screen.dart';
 import 'package:lumie/utils/app_colors.dart';
 
 void main() async {
-  // Firebase Initizing
+  //************************* Initialization *************************//
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Initialize Google Mobile Ads
+  await MobileAds.instance.initialize();
+
+  MobileAds.instance.updateRequestConfiguration(
+    RequestConfiguration(testDeviceIds: ['4B952E6A4AB1BE2EE259A16EE7A8F199']),
+  );
+
+  // Run App
   runApp(const MyApp());
 }
 

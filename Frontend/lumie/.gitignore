@@ -57,3 +57,6 @@ app.*.map.json
 
 # razorpay_service.dart
 /lib/services/razorpay_service.dart
+
+# Google Ads
+/lib/services/ad_service.dart

@@ -5,6 +5,7 @@ import 'package:lumie/screens/legal/privacy_policy_screen.dart';
 import 'package:lumie/screens/legal/terms_conditions_screen.dart';
 import 'package:lumie/screens/payment/payment_screen.dart';
 import 'package:lumie/screens/profile/profile_screen.dart';
+import 'package:lumie/services/ad_service.dart';
 import 'package:lumie/services/phone_auth_service.dart';
 import 'package:lumie/services/profile_service.dart';
 import 'package:lumie/utils/app_constants.dart';
@@ -24,6 +25,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   String profileImageUrl = "";
   String userName = "";
+  // bool isAdFree = false;
 
   bool isLoading = true;
 
@@ -31,6 +33,15 @@ class _SettingsPageState extends State<SettingsPage> {
   void initState() {
     super.initState();
     _loadUserProfile();
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   AdService.loadBannerAd(context);
+    // });
+  }
+
+  @override
+  void dispose() {
+    AdService.disposeBannerAd();
+    super.dispose();
   }
 
   //************************* load user Profile *************************//
@@ -41,6 +52,7 @@ class _SettingsPageState extends State<SettingsPage> {
         profileImageUrl = user.profileImage;
         userName = user.name;
         isLoading = false;
+        // isAdFree = user.isAdFree;
       });
     }
   }
@@ -85,6 +97,7 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Column(
                 children: [
                   const SizedBox(height: 20),
+                  // if (!isAdFree) AdService.getBannerAdWidget(),
 
                   //************************* Profile Image *************************//
                   CircleAvatar(
