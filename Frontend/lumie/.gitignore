@@ -54,3 +54,6 @@ app.*.map.json
 
 # cloudinary_service.dart
 /lib/services/cloudinary_service.dart
+
+# razorpay_service.dart
+/lib/services/razorpay_service.dart

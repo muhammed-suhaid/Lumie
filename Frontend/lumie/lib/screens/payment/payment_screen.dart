@@ -1,4 +1,3 @@
-//************************* Imports *************************//
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lumie/screens/legal/privacy_policy_screen.dart';
@@ -8,8 +7,16 @@ import 'package:lumie/utils/app_texts.dart';
 import 'package:lumie/utils/custom_snakbar.dart';
 import 'package:lumie/widgets/custom_button.dart';
 
-class PaymentPage extends StatelessWidget {
+class PaymentPage extends StatefulWidget {
   const PaymentPage({super.key});
+
+  @override
+  State<PaymentPage> createState() => _PaymentPageState();
+}
+
+class _PaymentPageState extends State<PaymentPage> {
+  String? selectedPlan; // Track selected plan
+
   //************************* Body *************************//
   @override
   Widget build(BuildContext context) {
@@ -17,7 +24,6 @@ class PaymentPage extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      //************************* Appbar *************************//
       appBar: AppBar(
         title: Text(
           "Upgrade to Ad-Free",
@@ -33,7 +39,6 @@ class PaymentPage extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            //************************* Header *************************//
             const SizedBox(height: 30),
             Icon(
               Icons.workspace_premium,
@@ -64,6 +69,7 @@ class PaymentPage extends StatelessWidget {
             //************************* Plans *************************//
             _buildPlanCard(
               context,
+              id: "monthly",
               title: "1 Month Plan",
               price: "₹199",
               subtitle: "Billed Monthly",
@@ -72,6 +78,7 @@ class PaymentPage extends StatelessWidget {
             const SizedBox(height: 20),
             _buildPlanCard(
               context,
+              id: "yearly",
               title: "1 Year Plan",
               price: "₹1499",
               subtitle: "Save 35% compared to monthly",
@@ -79,6 +86,28 @@ class PaymentPage extends StatelessWidget {
             ),
 
             const Spacer(),
+
+            //************************* Payment Button *************************//
+            if (selectedPlan != null)
+              CustomButton(
+                text: "Proceed to Payment",
+                isFullWidth: true,
+                type: ButtonType.primary,
+                backgroundColor: colorScheme.secondary,
+                textColor: colorScheme.onPrimary,
+                borderRadius: AppConstants.kRadiusM,
+                fontSize: AppConstants.kFontSizeM,
+                onPressed: () {
+                  CustomSnackbar.show(
+                    context,
+                    "Proceeding with ${selectedPlan == 'monthly' ? '1 Month Plan' : '1 Year Plan'}",
+                    isError: false,
+                  );
+                  // TODO: Integrate RazorpayService here
+                },
+              ),
+
+            const SizedBox(height: 20),
 
             //************************* Privacy Policy And Terms & Conditions *************************//
             Row(
@@ -91,15 +120,12 @@ class PaymentPage extends StatelessWidget {
                     color: colorScheme.onSurface.withAlpha(150),
                   ),
                 ),
-
-                // Terms & Conditions button
                 CustomButton(
                   text: AppTexts.termsAndConditions,
                   type: ButtonType.text,
                   textColor: colorScheme.secondary,
                   fontSize: AppConstants.kFontSizeXS,
                   onPressed: () {
-                    debugPrint("Navigate to Terms & Conditions");
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -108,7 +134,6 @@ class PaymentPage extends StatelessWidget {
                     );
                   },
                 ),
-
                 Text(
                   " and ",
                   style: GoogleFonts.poppins(
@@ -116,15 +141,12 @@ class PaymentPage extends StatelessWidget {
                     color: colorScheme.onSurface.withAlpha(150),
                   ),
                 ),
-
-                // Privacy Policy button
                 CustomButton(
                   text: AppTexts.privacyPolicy,
                   type: ButtonType.text,
                   textColor: colorScheme.secondary,
                   fontSize: AppConstants.kFontSizeXS,
                   onPressed: () {
-                    debugPrint("Navigate to Privacy Policy");
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -135,7 +157,7 @@ class PaymentPage extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: screenHeight * 0.05),
+            SizedBox(height: screenHeight * 0.03),
           ],
         ),
       ),
@@ -145,76 +167,90 @@ class PaymentPage extends StatelessWidget {
   //************************* Plan Card Widget *************************//
   Widget _buildPlanCard(
     BuildContext context, {
+    required String id,
     required String title,
     required String price,
     required String subtitle,
     bool isPopular = false,
   }) {
-    ColorScheme colorScheme = Theme.of(context).colorScheme;
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: isPopular ? colorScheme.secondary : colorScheme.primary,
-          width: 2,
-        ),
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.onSurface.withAlpha(100),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
+    final colorScheme = Theme.of(context).colorScheme;
+    final bool isSelected = selectedPlan == id;
+
+    return GestureDetector(
+      onTap: () {
+        setState(() => selectedPlan = id);
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isSelected
+                ? colorScheme.secondary
+                : (isPopular
+                      ? colorScheme.primary
+                      : colorScheme.onSurface.withAlpha(80)),
+            width: isSelected ? 3 : 1.5,
           ),
-        ],
-      ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(20),
-        title: Text(
-          title,
-          style: GoogleFonts.poppins(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: colorScheme.secondary,
-          ),
-        ),
-        subtitle: Text(
-          subtitle,
-          style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey[600]),
-        ),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              price,
-              style: GoogleFonts.poppins(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: isSelected
+                  ? colorScheme.secondary.withAlpha(100)
+                  : colorScheme.onSurface.withAlpha(80),
+              blurRadius: isSelected ? 12 : 6,
+              offset: const Offset(0, 4),
             ),
-            if (isPopular)
-              Container(
-                margin: const EdgeInsets.only(top: 5),
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  color: colorScheme.secondary,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  "Popular",
-                  style: GoogleFonts.poppins(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
           ],
         ),
-        onTap: () {
-          // TODO: Handle payment logic
-          CustomSnackbar.show(context, "Selected $title", isError: false);
-        },
+        child: ListTile(
+          contentPadding: const EdgeInsets.all(20),
+          title: Text(
+            title,
+            style: GoogleFonts.poppins(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: colorScheme.secondary,
+            ),
+          ),
+          subtitle: Text(
+            subtitle,
+            style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey[600]),
+          ),
+          trailing: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                price,
+                style: GoogleFonts.poppins(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              if (isPopular)
+                Container(
+                  margin: const EdgeInsets.only(top: 5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: colorScheme.secondary,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    "Popular",
+                    style: GoogleFonts.poppins(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }
