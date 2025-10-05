@@ -30,6 +30,8 @@ class _ChatScreenState extends State<ChatScreen> {
   final BlockReportService _blockReportService = BlockReportService();
 
   bool _isBlocked = false;
+  bool _isBlockedByMe = false;
+  bool _isBlockedByOther = false;
 
   @override
   void initState() {
@@ -38,13 +40,17 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   //************************* Check if either user blocked *************************//
-  Future<void> _checkBlockedStatus() async {
-    bool blocked = await _blockReportService.isBlocked(
+  void _checkBlockedStatus() async {
+    final blockStatus = await _blockReportService.isBlocked(
       widget.currentUserId,
       widget.otherUser.uid,
     );
 
-    setState(() => _isBlocked = blocked);
+    setState(() {
+      _isBlocked = blockStatus["isBlocked"]!;
+      _isBlockedByMe = blockStatus["isBlockedByMe"]!;
+      _isBlockedByOther = blockStatus["isBlockedByOther"]!;
+    });
   }
 
   //************************* Send Message method *************************//
@@ -178,7 +184,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   ],
                 ),
               ),
-              if (!_isBlocked)
+              if (!_isBlockedByMe && !_isBlockedByOther)
                 const PopupMenuItem(
                   value: 'block',
                   child: Row(
@@ -189,7 +195,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     ],
                   ),
                 ),
-              if (_isBlocked)
+              if (_isBlockedByMe)
                 const PopupMenuItem(
                   value: 'unblock',
                   child: Row(
@@ -200,6 +206,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     ],
                   ),
                 ),
+
               const PopupMenuItem(
                 value: 'report',
                 child: Row(
@@ -272,14 +279,24 @@ class _ChatScreenState extends State<ChatScreen> {
             child: ChatInputField(
               controller: _messageController,
               onSend: _sendMessage,
-              enabled: !_isBlocked,
+              enabled: !_isBlockedByOther && !_isBlockedByMe,
             ),
           ),
-          if (_isBlocked)
+
+          //************************* Blocked Message *************************//
+          if (_isBlockedByOther)
             const Padding(
               padding: EdgeInsets.all(8.0),
               child: Text(
-                "You can't send messages to this user.",
+                "This user has blocked you. You can't send messages.",
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          if (_isBlockedByMe)
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text(
+                "You have blocked this user.",
                 style: TextStyle(color: Colors.red),
               ),
             ),

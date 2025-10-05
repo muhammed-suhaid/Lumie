@@ -47,7 +47,7 @@ class AppTexts {
   static const String femaleGender = "Female";
   static const String dating = "Dating";
   static const String friends = "Friends";
-  static const String man = "Man";
+  static const String man = "Men";
   static const String women = "Women";
   static const String everyone = "Everyone";
 
