@@ -20,6 +20,7 @@ class UserProfileCard extends StatefulWidget {
 
 class _UserProfileCardState extends State<UserProfileCard> {
   int currentIndex = 0;
+  int _mainPhotoIndex = 0;
 
   final LikesService _likesService = LikesService();
   final MatchesService _matchesService = MatchesService();
@@ -32,6 +33,7 @@ class _UserProfileCardState extends State<UserProfileCard> {
       } else {
         currentIndex = 0;
       }
+      _mainPhotoIndex = 0;
     });
   }
 
@@ -101,17 +103,17 @@ class _UserProfileCardState extends State<UserProfileCard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Header photo with overlayed name and quick facts
                   if (user.photos.isNotEmpty)
-                    _buildPhoto(context, user.photos[0]),
+                    _buildHeaderCard(context, colorScheme, user),
+                  const SizedBox(height: 12),
+                  // Extra photos strip
+                  if (user.photos.length > 1) _buildPhotoStrip(context, user),
+                  const SizedBox(height: 12),
+                  // Details
                   _buildBasicInfo(colorScheme, user),
                   _buildPersonality(colorScheme, user),
-                  if (user.photos.length > 1)
-                    _buildPhoto(context, user.photos[1]),
                   _buildPreferences(colorScheme, user),
-                  if (user.photos.length > 2)
-                    _buildPhoto(context, user.photos[2]),
-                  if (user.photos.length > 3)
-                    _buildPhoto(context, user.photos[3]),
                   _buildInterests(colorScheme, user),
                   const SizedBox(height: 200),
                 ],
@@ -126,15 +128,18 @@ class _UserProfileCardState extends State<UserProfileCard> {
             right: 0,
             child: Center(
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
-                  color: Colors.white.withAlpha(150),
-                  borderRadius: BorderRadius.circular(30),
+                  color: Colors.white.withAlpha(217),
+                  borderRadius: BorderRadius.circular(28),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withAlpha(50),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
+                      color: Colors.black.withAlpha(31),
+                      blurRadius: 16,
+                      offset: const Offset(0, 8),
                     ),
                   ],
                 ),
@@ -142,29 +147,20 @@ class _UserProfileCardState extends State<UserProfileCard> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     //❌ Dislike Button
-                    RawMaterialButton(
-                      onPressed: () {
+                    _CircleActionButton(
+                      icon: Icons.close,
+                      color: Colors.redAccent,
+                      onTap: () {
                         debugPrint("❌ Disliked ${user.name}");
                         _showNextUser();
                       },
-                      constraints: const BoxConstraints(
-                        minWidth: 56,
-                        minHeight: 56,
-                      ),
-                      shape: const CircleBorder(),
-                      elevation: 0,
-                      fillColor: Colors.transparent,
-                      child: const Icon(
-                        Icons.close,
-                        size: 32,
-                        color: Colors.red,
-                      ),
                     ),
-                    const SizedBox(width: 20),
-
+                    const SizedBox(width: 18),
                     //❤️ Like Button
-                    RawMaterialButton(
-                      onPressed: () {
+                    _CircleActionButton(
+                      icon: Icons.favorite,
+                      color: Colors.pinkAccent,
+                      onTap: () {
                         debugPrint("❤️ Liked ${user.name}");
                         CustomSnackbar.show(
                           context,
@@ -173,18 +169,6 @@ class _UserProfileCardState extends State<UserProfileCard> {
                         );
                         _handleLike(user.uid, user.name);
                       },
-                      constraints: const BoxConstraints(
-                        minWidth: 56,
-                        minHeight: 56,
-                      ),
-                      shape: const CircleBorder(),
-                      elevation: 0,
-                      fillColor: Colors.transparent,
-                      child: const Icon(
-                        Icons.favorite,
-                        size: 32,
-                        color: Colors.pink,
-                      ),
                     ),
                   ],
                 ),
@@ -196,21 +180,146 @@ class _UserProfileCardState extends State<UserProfileCard> {
     );
   }
 
-  //************************* Photo Widget *************************//
-  Widget _buildPhoto(BuildContext context, String url) {
+  //************************* Header with main image and gradient overlay text *************************//
+  Widget _buildHeaderCard(
+    BuildContext context,
+    ColorScheme colorScheme,
+    UserModel user,
+  ) {
+    final cover = user.photos[_mainPhotoIndex.clamp(0, user.photos.length - 1)];
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: AspectRatio(
-          aspectRatio: 3 / 4,
-          child: Image.network(
-            url,
-            fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) =>
-                const Center(child: Icon(Icons.broken_image, size: 60)),
-          ),
+        borderRadius: BorderRadius.circular(24),
+        child: Stack(
+          children: [
+            AspectRatio(
+              aspectRatio: 3 / 4,
+              child: Image.network(
+                cover,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) =>
+                    const Center(child: Icon(Icons.broken_image, size: 60)),
+              ),
+            ),
+            Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withAlpha(13),
+                      Colors.black.withAlpha(89),
+                      Colors.black.withAlpha(179),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              left: 16,
+              right: 16,
+              bottom: 16,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildNameAndAge(user, colorScheme),
+                  const SizedBox(height: 4),
+                  if (user.personality.isNotEmpty)
+                    Text(
+                      "${user.gender} • ${user.personality}",
+                      style: GoogleFonts.poppins(
+                        color: Colors.white.withAlpha(242),
+                        fontSize: AppConstants.kFontSizeM,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildNameAndAge(UserModel user, ColorScheme colorScheme) {
+    int age = 0;
+    if (user.birthday.isNotEmpty) {
+      try {
+        final dobParts = user.birthday.split('/');
+        final dob = DateTime(
+          int.parse(dobParts[2]),
+          int.parse(dobParts[1]),
+          int.parse(dobParts[0]),
+        );
+        final today = DateTime.now();
+        age = today.year - dob.year;
+        if (today.month < dob.month ||
+            (today.month == dob.month && today.day < dob.day)) {
+          age--;
+        }
+      } catch (_) {}
+    }
+    return Text(
+      "${user.name}, $age",
+      style: GoogleFonts.poppins(
+        fontSize: AppConstants.kFontSizeXXL,
+        fontWeight: FontWeight.w700,
+        color: Colors.white,
+        height: 1.1,
+      ),
+    );
+  }
+
+  // Thumbnails that switch the main image
+  Widget _buildPhotoStrip(BuildContext context, UserModel user) {
+    final thumbs = user.photos;
+    if (thumbs.isEmpty) return const SizedBox.shrink();
+    return SizedBox(
+      height: 110,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        itemBuilder: (_, i) {
+          final url = thumbs[i];
+          final isSelected = i == _mainPhotoIndex;
+          return InkWell(
+            borderRadius: BorderRadius.circular(16),
+            onTap: () {
+              setState(() {
+                _mainPhotoIndex = i;
+              });
+            },
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: isSelected
+                      ? Theme.of(context).colorScheme.secondary
+                      : Colors.transparent,
+                  width: 2,
+                ),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(14),
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: Image.network(
+                    url,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) =>
+                        const Center(child: Icon(Icons.broken_image)),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+        separatorBuilder: (_, __) => const SizedBox(width: 10),
+        itemCount: thumbs.length,
       ),
     );
   }
@@ -351,15 +460,57 @@ class _UserProfileCardState extends State<UserProfileCard> {
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
+            runSpacing: 8,
             children: [
               for (var interest in user.interests)
                 Chip(
                   label: Text(interest),
+                  labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600),
                   backgroundColor: colorScheme.surface,
+                  side: BorderSide(color: colorScheme.secondary.withAlpha(100)),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
                 ),
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+//************************* Small round action button *************************//
+class _CircleActionButton extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+  const _CircleActionButton({
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+  @override
+  Widget build(BuildContext context) {
+    return InkResponse(
+      onTap: onTap,
+      radius: 28,
+      child: Container(
+        width: 56,
+        height: 56,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: color.withAlpha(100),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Icon(icon, color: color, size: 28),
       ),
     );
   }

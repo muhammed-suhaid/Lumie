@@ -106,7 +106,11 @@ class _AudioMessageBubbleState extends State<AudioMessageBubble> {
               width: 30,
               height: 30,
               decoration: BoxDecoration(
-                color: (widget.isMe ? colorScheme.onSecondary : colorScheme.onPrimary).withOpacity(0.15),
+                color:
+                    (widget.isMe
+                            ? colorScheme.onSecondary
+                            : colorScheme.onPrimary)
+                        .withAlpha(100),
                 shape: BoxShape.circle,
               ),
               child: Icon(
@@ -127,17 +131,23 @@ class _AudioMessageBubbleState extends State<AudioMessageBubble> {
                   data: SliderTheme.of(context).copyWith(
                     trackHeight: 2,
                     activeTrackColor: fg,
-                    inactiveTrackColor: fg.withOpacity(0.25),
+                    inactiveTrackColor: fg.withAlpha(64),
                     thumbColor: fg,
-                    overlayColor: fg.withOpacity(0.1),
-                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
+                    overlayColor: fg.withAlpha(26),
+                    thumbShape: const RoundSliderThumbShape(
+                      enabledThumbRadius: 5,
+                    ),
                   ),
                   child: Slider(
                     value: total.inMilliseconds == 0
                         ? 0
-                        : (_position.inMilliseconds.clamp(0, total.inMilliseconds)).toDouble(),
+                        : (_position.inMilliseconds.clamp(
+                            0,
+                            total.inMilliseconds,
+                          )).toDouble(),
                     min: 0,
-                    max: (total.inMilliseconds == 0 ? 1 : total.inMilliseconds).toDouble(),
+                    max: (total.inMilliseconds == 0 ? 1 : total.inMilliseconds)
+                        .toDouble(),
                     onChanged: (v) async {
                       final newPos = Duration(milliseconds: v.toInt());
                       await _player.seek(newPos);
@@ -147,19 +157,29 @@ class _AudioMessageBubbleState extends State<AudioMessageBubble> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(_format(_position), style: TextStyle(color: fg.withOpacity(0.9), fontSize: 11)),
+                    Text(
+                      _format(_position),
+                      style: TextStyle(color: fg.withAlpha(230), fontSize: 11),
+                    ),
                     Row(
                       children: [
-                        const Icon(Icons.mic_rounded, size: 12, color: Colors.white70),
+                        const Icon(
+                          Icons.mic_rounded,
+                          size: 12,
+                          color: Colors.white70,
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           total == Duration.zero ? '' : _format(total),
-                          style: TextStyle(color: fg.withOpacity(0.9), fontSize: 11),
+                          style: TextStyle(
+                            color: fg.withAlpha(230),
+                            fontSize: 11,
+                          ),
                         ),
                       ],
                     ),
                   ],
-                )
+                ),
               ],
             ),
           ),

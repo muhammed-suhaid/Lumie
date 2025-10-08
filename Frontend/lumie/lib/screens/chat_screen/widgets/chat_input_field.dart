@@ -73,7 +73,9 @@ class _ChatInputFieldState extends State<ChatInputField> {
   void _onPanEnd(DragEndDetails d) {
     if (!_isRecording) return;
     // Treat lift as end of recording (will also get longPressEnd on most platforms).
-    _onLongPressEnd(LongPressEndDetails(velocity: d.velocity, globalPosition: Offset.zero));
+    _onLongPressEnd(
+      LongPressEndDetails(velocity: d.velocity, globalPosition: Offset.zero),
+    );
   }
 
   void _onLongPressEnd(LongPressEndDetails d) {
@@ -125,19 +127,26 @@ class _ChatInputFieldState extends State<ChatInputField> {
             child: Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: widget.enabled ? ( _isRecording ? colorScheme.secondary : colorScheme.primary) : Colors.grey,
+                color: widget.enabled
+                    ? (_isRecording
+                          ? colorScheme.secondary
+                          : colorScheme.primary)
+                    : Colors.grey,
                 shape: BoxShape.circle,
                 boxShadow: _isRecording
                     ? [
                         BoxShadow(
-                          color:  colorScheme.secondary,
+                          color: colorScheme.secondary,
                           blurRadius: 16,
                           spreadRadius: 2,
                         ),
                       ]
                     : [],
               ),
-              child: Icon(_isRecording ? Icons.mic_rounded : Icons.mic, color: Colors.white),
+              child: Icon(
+                _isRecording ? Icons.mic_rounded : Icons.mic,
+                color: Colors.white,
+              ),
             ),
           ),
           const SizedBox(width: 8),
@@ -148,7 +157,9 @@ class _ChatInputFieldState extends State<ChatInputField> {
               style: GoogleFonts.poppins(fontSize: 16),
               decoration: InputDecoration(
                 hintText: widget.enabled
-                    ? (_isRecording ? 'Swipe right to cancel' : 'Type a message...')
+                    ? (_isRecording
+                          ? 'Swipe right to cancel'
+                          : 'Type a message...')
                     : "You can't message this user",
                 hintStyle: GoogleFonts.poppins(color: colorScheme.onSurface),
                 border: InputBorder.none,
@@ -183,62 +194,21 @@ class _ChatInputFieldState extends State<ChatInputField> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(_willCancel ? Icons.delete_forever : Icons.mic, color: Colors.white),
+                    Icon(
+                      _willCancel ? Icons.delete_forever : Icons.mic,
+                      color: Colors.white,
+                    ),
                     const SizedBox(width: 6),
-                    Text(_willCancel ? 'Cancel' : 'Recording...', style: const TextStyle(color: Colors.white)),
+                    Text(
+                      _willCancel ? 'Cancel' : 'Recording...',
+                      style: const TextStyle(color: Colors.white),
+                    ),
                   ],
                 ),
               ),
             ),
           ],
         ],
-      ),
-    );
-  }
-}
-
-class _PulsingDot extends StatefulWidget {
-  final bool isDanger;
-  const _PulsingDot({required this.isDanger});
-  @override
-  State<_PulsingDot> createState() => _PulsingDotState();
-}
-
-class _PulsingDotState extends State<_PulsingDot> with SingleTickerProviderStateMixin {
-  late final AnimationController _ctrl;
-  late final Animation<double> _scale;
-
-  @override
-  void initState() {
-    super.initState();
-    _ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 900))..repeat(reverse: true);
-    _scale = Tween(begin: 0.9, end: 1.2).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut));
-  }
-
-  @override
-  void dispose() {
-    _ctrl.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ScaleTransition(
-      scale: _scale,
-      child: Container(
-        width: 12,
-        height: 12,
-        decoration: BoxDecoration(
-          color: widget.isDanger ? Colors.orange : Colors.red,
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: (widget.isDanger ? Colors.orange : Colors.red).withOpacity(0.6),
-              blurRadius: 12,
-              spreadRadius: 2,
-            )
-          ],
-        ),
       ),
     );
   }

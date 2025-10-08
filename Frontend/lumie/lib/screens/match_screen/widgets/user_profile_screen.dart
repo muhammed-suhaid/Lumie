@@ -26,6 +26,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   final LikesService _likesService = LikesService();
   final MatchesService _matchesService = MatchesService();
   bool isMatched = false;
+  int _mainPhotoIndex = 0;
 
   @override
   void initState() {
@@ -87,11 +88,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (user.photos.isNotEmpty) _buildPhoto(context, user.photos[0]),
+              if (user.photos.isNotEmpty)
+                _buildHeaderCard(context, colorScheme, user),
+              const SizedBox(height: 12),
+              if (user.photos.length > 1) _buildPhotoStrip(context, user),
+              const SizedBox(height: 12),
               _buildBasicInfo(colorScheme, user),
               _buildPersonality(colorScheme, user),
-              for (int i = 1; i < user.photos.length; i++)
-                _buildPhoto(context, user.photos[i]),
               _buildPreferences(colorScheme, user),
               _buildInterests(colorScheme, user),
 
@@ -135,20 +138,146 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-  Widget _buildPhoto(BuildContext context, String url) {
+  // Header with main image and gradient overlay text
+  Widget _buildHeaderCard(
+    BuildContext context,
+    ColorScheme colorScheme,
+    UserModel user,
+  ) {
+    final cover = user.photos[_mainPhotoIndex.clamp(0, user.photos.length - 1)];
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: AspectRatio(
-          aspectRatio: 3 / 4,
-          child: Image.network(
-            url,
-            fit: BoxFit.cover,
-            errorBuilder: (_, __, ___) =>
-                const Center(child: Icon(Icons.broken_image, size: 60)),
-          ),
+        borderRadius: BorderRadius.circular(24),
+        child: Stack(
+          children: [
+            AspectRatio(
+              aspectRatio: 3 / 4,
+              child: Image.network(
+                cover,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) =>
+                    const Center(child: Icon(Icons.broken_image, size: 60)),
+              ),
+            ),
+            Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withAlpha(13),
+                      Colors.black.withAlpha(89),
+                      Colors.black.withAlpha(179),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              left: 16,
+              right: 16,
+              bottom: 16,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildNameAndAge(user, colorScheme),
+                  const SizedBox(height: 4),
+                  if (user.personality.isNotEmpty)
+                    Text(
+                      "${user.gender} • ${user.personality}",
+                      style: GoogleFonts.poppins(
+                        color: Colors.white.withAlpha(242),
+                        fontSize: AppConstants.kFontSizeM,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildNameAndAge(UserModel user, ColorScheme colorScheme) {
+    int age = 0;
+    if (user.birthday.isNotEmpty) {
+      try {
+        final dobParts = user.birthday.split('/');
+        final dob = DateTime(
+          int.parse(dobParts[2]),
+          int.parse(dobParts[1]),
+          int.parse(dobParts[0]),
+        );
+        final today = DateTime.now();
+        age = today.year - dob.year;
+        if (today.month < dob.month ||
+            (today.month == dob.month && today.day < dob.day)) {
+          age--;
+        }
+      } catch (_) {}
+    }
+    return Text(
+      "${user.name}, $age",
+      style: GoogleFonts.poppins(
+        fontSize: AppConstants.kFontSizeXXL,
+        fontWeight: FontWeight.w700,
+        color: Colors.white,
+        height: 1.1,
+      ),
+    );
+  }
+
+  // Thumbnails that switch the main image
+  Widget _buildPhotoStrip(BuildContext context, UserModel user) {
+    final thumbs = user.photos;
+    if (thumbs.isEmpty) return const SizedBox.shrink();
+    return SizedBox(
+      height: 110,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        itemBuilder: (_, i) {
+          final url = thumbs[i];
+          final isSelected = i == _mainPhotoIndex;
+          return InkWell(
+            borderRadius: BorderRadius.circular(16),
+            onTap: () {
+              setState(() {
+                _mainPhotoIndex = i;
+              });
+            },
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: isSelected
+                      ? Theme.of(context).colorScheme.secondary
+                      : Colors.transparent,
+                  width: 2,
+                ),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(14),
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: Image.network(
+                    url,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) =>
+                        const Center(child: Icon(Icons.broken_image)),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+        separatorBuilder: (_, __) => const SizedBox(width: 10),
+        itemCount: thumbs.length,
       ),
     );
   }
