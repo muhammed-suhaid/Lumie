@@ -108,7 +108,7 @@ class AppTexts {
   static const String idealMatches = "Ideal Matches";
   static const String addMediaTitle = "Add Media";
   static const String addMediaSubTitle =
-      "Add at least one photo and one video to complete your profile";
+      "Add at least one photo and one video (Introuction Video) to complete your profile";
 
   // Dummy Content
   static const String privacyPolicyContent = """
