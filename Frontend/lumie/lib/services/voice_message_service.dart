@@ -24,7 +24,8 @@ class VoiceMessageService {
     }
 
     final dir = await getTemporaryDirectory();
-    final filePath = '${dir.path}/voice_${DateTime.now().millisecondsSinceEpoch}.m4a';
+    final filePath =
+        '${dir.path}/voice_${DateTime.now().millisecondsSinceEpoch}.m4a';
 
     _currentFilePath = filePath;
     _currentDurationMs = 0;
@@ -67,8 +68,6 @@ class VoiceMessageService {
     _currentDurationMs = 0;
   }
 
-  
-
   Future<void> sendVoiceMessage({
     required BuildContext context,
     required String chatId,
@@ -93,14 +92,18 @@ class VoiceMessageService {
       throw Exception('Upload failed. Please try again.');
     }
 
-    await _firestore.collection('chats').doc(chatId).collection('messages').add({
-      'senderId': senderId,
-      'text': null,
-      'type': 'audio',
-      'audioUrl': audioUrl,
-      'audioDurationMs': _currentDurationMs,
-      'timestamp': FieldValue.serverTimestamp(),
-    });
+    await _firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .add({
+          'senderId': senderId,
+          'text': null,
+          'type': 'audio',
+          'audioUrl': audioUrl,
+          'audioDurationMs': _currentDurationMs,
+          'timestamp': FieldValue.serverTimestamp(),
+        });
 
     await _firestore.collection('chats').doc(chatId).update({
       'lastMessage': 'Voice message',
