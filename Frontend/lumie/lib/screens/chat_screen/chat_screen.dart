@@ -6,6 +6,8 @@ import 'package:lumie/screens/match_screen/widgets/user_profile_screen.dart';
 import 'package:lumie/screens/chat_screen/widgets/chat_input_field.dart';
 import 'package:lumie/services/block_report_service.dart';
 import 'package:lumie/utils/custom_snakbar.dart';
+import 'package:lumie/services/voice_message_service.dart';
+import 'package:lumie/screens/chat_screen/widgets/audio_message_bubble.dart';
 
 class ChatScreen extends StatefulWidget {
   final String chatId;
@@ -28,6 +30,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   final BlockReportService _blockReportService = BlockReportService();
+  final VoiceMessageService _voiceService = VoiceMessageService();
 
   bool _isBlocked = false;
   bool _isBlockedByMe = false;
@@ -77,6 +80,40 @@ class _ChatScreenState extends State<ChatScreen> {
     });
 
     _messageController.clear();
+  }
+
+  //************************* Voice Recording Handlers *************************//
+  Future<void> _startRecording() async {
+    if (_isBlocked || _isBlockedByOther || _isBlockedByMe) return;
+    try {
+      await _voiceService.startRecording();
+    } catch (e) {
+      if (mounted) {
+        CustomSnackbar.show(context, e.toString(), isError: true);
+      }
+    }
+  }
+
+  Future<void> _stopAndSendRecording() async {
+    try {
+      await _voiceService.stopRecording();
+      if (mounted) {
+        await _voiceService.sendVoiceMessage(
+          context: context,
+          chatId: widget.chatId,
+          senderId: widget.currentUserId,
+          receiverId: widget.otherUser.uid,
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        CustomSnackbar.show(context, e.toString(), isError: true);
+      }
+    }
+  }
+
+  Future<void> _cancelRecording() async {
+    await _voiceService.cancelRecording();
   }
 
   //************************* Block User *************************//
@@ -245,6 +282,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   itemBuilder: (context, index) {
                     final data = messages[index].data() as Map<String, dynamic>;
                     final isMe = data["senderId"] == widget.currentUserId;
+                    final type = data["type"] ?? 'text';
                     return Align(
                       alignment: isMe
                           ? Alignment.centerRight
@@ -258,14 +296,20 @@ class _ChatScreenState extends State<ChatScreen> {
                               : colorScheme.primary,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Text(
-                          data["text"] ?? "",
-                          style: TextStyle(
-                            color: isMe
-                                ? colorScheme.onSecondary
-                                : colorScheme.onSurface,
-                          ),
-                        ),
+                        child: type == 'audio'
+                            ? AudioMessageBubble(
+                                audioUrl: data['audioUrl'] ?? '',
+                                isMe: isMe,
+                                durationMs: data['audioDurationMs'],
+                              )
+                            : Text(
+                                data["text"] ?? "",
+                                style: TextStyle(
+                                  color: isMe
+                                      ? colorScheme.onSecondary
+                                      : colorScheme.onSurface,
+                                ),
+                              ),
                       ),
                     );
                   },
@@ -280,6 +324,9 @@ class _ChatScreenState extends State<ChatScreen> {
               controller: _messageController,
               onSend: _sendMessage,
               enabled: !_isBlockedByOther && !_isBlockedByMe,
+              onMicStart: _startRecording,
+              onMicEnd: _stopAndSendRecording,
+              onMicCancel: _cancelRecording,
             ),
           ),
 
