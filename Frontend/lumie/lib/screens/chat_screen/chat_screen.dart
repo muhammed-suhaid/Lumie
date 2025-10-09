@@ -8,6 +8,7 @@ import 'package:lumie/services/block_report_service.dart';
 import 'package:lumie/utils/custom_snakbar.dart';
 import 'package:lumie/services/voice_message_service.dart';
 import 'package:lumie/screens/chat_screen/widgets/audio_message_bubble.dart';
+import 'package:lumie/services/encryption_service.dart';
 
 class ChatScreen extends StatefulWidget {
   final String chatId;
@@ -31,15 +32,18 @@ class _ChatScreenState extends State<ChatScreen> {
 
   final BlockReportService _blockReportService = BlockReportService();
   final VoiceMessageService _voiceService = VoiceMessageService();
+  final EncryptionService _encryptionService = EncryptionService();
 
   bool _isBlocked = false;
   bool _isBlockedByMe = false;
   bool _isBlockedByOther = false;
+  String? _chatSaltB64;
 
   @override
   void initState() {
     super.initState();
     _checkBlockedStatus();
+    _initEncryptionSalt();
   }
 
   //************************* Check if either user blocked *************************//
@@ -56,6 +60,21 @@ class _ChatScreenState extends State<ChatScreen> {
     });
   }
 
+  //************************* Init per-chat encryption salt *************************//
+  Future<void> _initEncryptionSalt() async {
+    try {
+      final salt = await _encryptionService.ensureChatSalt(widget.chatId);
+      if (mounted) {
+        setState(() {
+          _chatSaltB64 = salt;
+        });
+      }
+    } catch (e) {
+      // Even if salt init fails, allow UI; messages will be plain
+      debugPrint('Salt init failed: $e');
+    }
+  }
+
   //************************* Send Message method *************************//
   void _sendMessage() async {
     if (_messageController.text.trim().isEmpty) return;
@@ -63,19 +82,48 @@ class _ChatScreenState extends State<ChatScreen> {
 
     final message = _messageController.text.trim();
 
+    Map<String, dynamic> payload;
+    try {
+      // If we have a salt, encrypt; else store plaintext as fallback
+      String salt = _chatSaltB64 ??
+          await _encryptionService.ensureChatSalt(widget.chatId);
+      _chatSaltB64 = salt;
+
+      final enc = await _encryptionService.encryptText(
+        chatId: widget.chatId,
+        currentUserId: widget.currentUserId,
+        otherUserId: widget.otherUser.uid,
+        plaintext: message,
+        saltB64: salt,
+      );
+      payload = {
+        "senderId": widget.currentUserId,
+        "cipherText": enc['cipherText'],
+        "nonce": enc['nonce'],
+        "mac": enc['mac'],
+        "enc": true,
+        "type": 'text',
+        "timestamp": FieldValue.serverTimestamp(),
+      };
+    } catch (e) {
+      // On any failure, fallback to plaintext to avoid message loss
+      payload = {
+        "senderId": widget.currentUserId,
+        "text": message,
+        "type": 'text',
+        "timestamp": FieldValue.serverTimestamp(),
+      };
+    }
+
     await _firestore
         .collection("chats")
         .doc(widget.chatId)
         .collection("messages")
-        .add({
-          "senderId": widget.currentUserId,
-          "text": message,
-          "timestamp": FieldValue.serverTimestamp(),
-        });
+        .add(payload);
 
-    // update last message
+    // update last message without revealing content
     await _firestore.collection("chats").doc(widget.chatId).update({
-      "lastMessage": message,
+      "lastMessage": "New message",
       "updatedAt": FieldValue.serverTimestamp(),
     });
 
@@ -302,13 +350,19 @@ class _ChatScreenState extends State<ChatScreen> {
                                 isMe: isMe,
                                 durationMs: data['audioDurationMs'],
                               )
-                            : Text(
-                                data["text"] ?? "",
-                                style: TextStyle(
-                                  color: isMe
-                                      ? colorScheme.onSecondary
-                                      : colorScheme.onSurface,
-                                ),
+                            : FutureBuilder<String>(
+                                future: _resolveMessageText(data),
+                                builder: (context, snap) {
+                                  final displayText = snap.data ?? '';
+                                  return Text(
+                                    displayText,
+                                    style: TextStyle(
+                                      color: isMe
+                                          ? colorScheme.onSecondary
+                                          : colorScheme.onSurface,
+                                    ),
+                                  );
+                                },
                               ),
                       ),
                     );
@@ -441,5 +495,41 @@ class _ChatScreenState extends State<ChatScreen> {
         );
       },
     );
+  }
+
+  //************************* Resolve Message Text (decrypt or fallback) *************************//
+  Future<String> _resolveMessageText(Map<String, dynamic> data) async {
+    try {
+      final bool isEncrypted = (data['enc'] == true) ||
+          (data.containsKey('cipherText') && data.containsKey('nonce') && data.containsKey('mac'));
+      if (!isEncrypted) {
+        // plaintext or legacy messages
+        return (data['text'] ?? '').toString();
+      }
+
+      // Ensure salt availability
+      String salt = _chatSaltB64 ?? await _encryptionService.ensureChatSalt(widget.chatId);
+      _chatSaltB64 = salt;
+
+      final cipherText = (data['cipherText'] ?? '').toString();
+      final nonce = (data['nonce'] ?? '').toString();
+      final mac = (data['mac'] ?? '').toString();
+      if (cipherText.isEmpty || nonce.isEmpty || mac.isEmpty) {
+        return '⚠️ Unable to decrypt';
+      }
+
+      final plain = await _encryptionService.decryptText(
+        chatId: widget.chatId,
+        currentUserId: widget.currentUserId,
+        otherUserId: widget.otherUser.uid,
+        cipherTextB64: cipherText,
+        nonceB64: nonce,
+        macB64: mac,
+        saltB64: salt,
+      );
+      return plain;
+    } catch (_) {
+      return '⚠️ Unable to decrypt';
+    }
   }
 }
