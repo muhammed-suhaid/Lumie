@@ -1,4 +1,4 @@
-# 💖 Lumie: Find Your Match, Feel the Connection ✨
+# 💖 Lumie: For The Ones Who Light Up Your World ✨
 
 ### Overview
 
