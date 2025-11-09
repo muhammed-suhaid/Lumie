@@ -46,7 +46,7 @@ The app guides users through an easy onboarding flow — from creating a profile
 3. **Navigate to the project directory** :
    
      ````bash
-     cd lumie bash
+     cd lumie
    
 4. **Get the dependencies** :
    
