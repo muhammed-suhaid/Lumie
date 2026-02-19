@@ -25,7 +25,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   String profileImageUrl = "";
   String userName = "";
-  // bool isAdFree = false;
+  bool isAdFree = false;
 
   bool isLoading = true;
 
@@ -33,9 +33,9 @@ class _SettingsPageState extends State<SettingsPage> {
   void initState() {
     super.initState();
     _loadUserProfile();
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   AdService.loadBannerAd(context);
-    // });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      AdService.loadBannerAd(context);
+    });
   }
 
   @override
@@ -52,7 +52,7 @@ class _SettingsPageState extends State<SettingsPage> {
         profileImageUrl = user.profileImage;
         userName = user.name;
         isLoading = false;
-        // isAdFree = user.isAdFree;
+        isAdFree = user.isAdFree;
       });
     }
   }
@@ -97,7 +97,7 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Column(
                 children: [
                   const SizedBox(height: 20),
-                  // if (!isAdFree) AdService.getBannerAdWidget(),
+                  if (!isAdFree) AdService.getBannerAdWidget(),
 
                   //************************* Profile Image *************************//
                   CircleAvatar(

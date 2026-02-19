@@ -397,13 +397,41 @@ class _PaymentPageState extends State<PaymentPage> {
             children: [
               Text(
                 "You already have an active subscription",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.secondary,
+                ),
               ),
               const SizedBox(height: 10),
-              Text("Plan Type: ${activeSubscription?['planType']}"),
-              Text("Start Date: ${dateFormat.format(startDate)}"),
-              Text("End Date: ${dateFormat.format(endDate)}"),
-              Text("Amount Paid: ₹${activeSubscription?['amountPaid']}"),
+              Text(
+                "Plan Type: ${activeSubscription?['planType']}",
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  color: colorScheme.primary,
+                ),
+              ),
+              Text(
+                "Start Date: ${dateFormat.format(startDate)}",
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  color: colorScheme.primary,
+                ),
+              ),
+              Text(
+                "End Date: ${dateFormat.format(endDate)}",
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  color: colorScheme.primary,
+                ),
+              ),
+              Text(
+                "Amount Paid: ₹${activeSubscription?['amountPaid']}",
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  color: colorScheme.primary,
+                ),
+              ),
               const SizedBox(height: 20),
               CustomButton(
                 text: "Close",

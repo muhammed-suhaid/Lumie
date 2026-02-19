@@ -80,21 +80,6 @@ class AuthScreen extends StatelessWidget {
               ),
               const Spacer(flex: 2),
 
-              //************************* Google Sign In *************************//
-              // CustomButton(
-              //   text: AppTexts.continueWithGoogle,
-              //   type: ButtonType.primary,
-              //   isFullWidth: true,
-              //   backgroundColor: colorScheme.onSurface,
-              //   textColor: colorScheme.surface,
-              //   borderRadius: AppConstants.kRadiusL,
-              //   fontSize: AppConstants.kFontSizeM,
-              //   icon: Icons.g_mobiledata,
-              //   isIconRight: false,
-              //   onPressed: handleGoogleSignIn,
-              // ),
-              // const SizedBox(height: AppConstants.kPaddingM),
-
               //************************* Phone Sign In *************************//
               CustomButton(
                 text: AppTexts.continueWithPhone,

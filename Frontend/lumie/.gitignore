@@ -59,4 +59,4 @@ app.*.map.json
 /lib/services/razorpay_service.dart
 
 # Google Ads
-/lib/services/ad_service.dart
+# /lib/services/ad_service.dart
