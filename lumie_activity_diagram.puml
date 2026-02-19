@@ -1,0 +1,103 @@
+@startuml Lumie Activity Diagram
+skinparam monochrome true
+skinparam shadowing false
+skinparam ActivityBorderColor Black
+skinparam ActivityBackgroundColor White
+
+title Lumie - Dating App Activity Diagram
+
+start
+
+:User opens Lumie app;
+
+if (User Registered?) then (Yes)
+else (No)
+  stop
+endif
+
+partition "Authentication & Onboarding" {
+  :Enter phone number;
+  :Send OTP via Firebase;
+  
+  if (OTP Valid?) then (Yes)
+  else (No)
+    stop
+  endif
+  
+  :Complete Onboarding:
+  - Profile photo
+  - Name, gender, birthday
+  - Photos and video
+  - Email and password;
+  
+  :Upload media to Cloudinary;
+  :Save profile to Firestore;
+}
+
+partition "Preferences & Personality" {
+  :Set Preferences:
+  - Goal, Who to meet
+  - Status, Type
+  - Interests (min 5);
+  
+  :Take MBTI quiz (16 questions);
+  :Calculate and save personality;
+}
+
+partition "Discover & Matching" {
+  :Fetch matching users;
+  
+  if (Users found?) then (Yes)
+    :Display swipeable cards;
+    
+    if (Swipe Right?) then (Yes)
+      :Save like;
+      if (Mutual match?) then (Yes)
+        :Create match;
+        :Enable chat;
+      endif
+    elseif (Swipe Left) then
+      :Skip user;
+    endif
+  endif
+}
+
+partition "Matches Management" {
+  :Display Matches (3 tabs):
+  - Likes, Liked, Matches;
+  
+  if (Click profile?) then (Yes)
+    :Show profile details;
+  endif
+  
+  if (Click match?) then (Yes)
+    :Open chat;
+  endif
+}
+
+partition "Chat & Messaging" {
+  if (Select chat?) then (Yes)
+    :Load encrypted messages;
+    
+    if (Send?) then (Text)
+      :Encrypt and send;
+    elseif (Voice/Image) then
+      :Upload to Cloudinary;
+    endif
+  endif
+}
+
+partition "Settings" {
+  if (Action?) then (Edit Profile)
+    :Update and save;
+  elseif (Subscription) then
+    :Process payment;
+  elseif (Logout) then
+    :Sign out;
+    stop
+  endif
+}
+
+stop
+
+@enduml

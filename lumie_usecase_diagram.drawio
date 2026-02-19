@@ -1,0 +1,108 @@
+<mxfile host="app.diagrams.net" modified="2025-10-23T09:40:00.000Z" agent="5.0" version="22.0.0" etag="lumie-usecase" type="device">
+  <diagram name="Lumie Use Case Diagram" id="lumie-usecase-1">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- System Boundary -->
+        <mxCell id="2" value="Lumie Dating App" style="swimlane;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontStyle=1;fontSize=14;dashed=1;dashPattern=8 8;" vertex="1" parent="1">
+          <mxGeometry x="200" y="40" width="350" height="720" as="geometry" />
+        </mxCell>
+        
+        <!-- Use Cases in Single Column -->
+        <mxCell id="uc1" value="Register/Login" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="2">
+          <mxGeometry x="100" y="30" width="140" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="uc2" value="Onboarding" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="2">
+          <mxGeometry x="100" y="100" width="140" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="uc3" value="Set Preferences" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="2">
+          <mxGeometry x="100" y="170" width="140" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="uc4" value="Personality Quiz" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="2">
+          <mxGeometry x="100" y="240" width="140" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="uc5" value="Browse Matches" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="2">
+          <mxGeometry x="100" y="310" width="140" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="uc6" value="Like/Pass" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="2">
+          <mxGeometry x="100" y="380" width="140" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="uc7" value="Chat/Messaging" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="2">
+          <mxGeometry x="100" y="450" width="140" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="uc8" value="Manage Account" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="2">
+          <mxGeometry x="100" y="520" width="140" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="uc9" value="Moderate Users" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="2">
+          <mxGeometry x="100" y="590" width="140" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="uc10" value="Manage Database" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="2">
+          <mxGeometry x="100" y="660" width="140" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Actors on Left Side -->
+        <mxCell id="actor1" value="Seeker" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="60" y="250" width="50" height="100" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="actor2" value="Admin" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="60" y="600" width="50" height="100" as="geometry" />
+        </mxCell>
+        
+        <!-- Seeker Associations -->
+        <mxCell id="assoc1" value="" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="actor1" target="uc1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="assoc2" value="" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="actor1" target="uc2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="assoc3" value="" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="actor1" target="uc3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="assoc4" value="" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="actor1" target="uc4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="assoc5" value="" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="actor1" target="uc5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="assoc6" value="" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="actor1" target="uc6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="assoc7" value="" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="actor1" target="uc7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="assoc8" value="" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="actor1" target="uc8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Admin Associations -->
+        <mxCell id="assoc9" value="" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="actor2" target="uc9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="assoc10" value="" style="endArrow=none;html=1;strokeColor=#000000;" edge="1" parent="1" source="actor2" target="uc10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
