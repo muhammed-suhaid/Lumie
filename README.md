@@ -15,7 +15,8 @@ The app guides users through an easy onboarding flow — from creating a profile
 5. **Chat System** : Seamless one-to-one messaging once a match is made.
 6. **Secure Authentication** : Firebase phone authentication with OTP verification.
 7. **Media Storage** : Cloudinary integration for smooth image and video handling.
-8. **AdMob** : Integrated AdMob - Google Ads
+8. **Razorpay** : Integrated payment gateway
+9. **AdMob** : Integrated AdMob - Google Ads
 
 
 ### User Interface Screens
@@ -36,6 +37,7 @@ The app guides users through an easy onboarding flow — from creating a profile
 3. **Firebase Firestore** : Real-time database for storing user data and matches.
 4. **Cloudinary** : Handles image and video uploads.
 5. **AdMob** : Handles Ads
+6. **Razorpay** : Handles payments
 
 
 Youtube Link : https://youtu.be/3BXyzFlH4Ac
